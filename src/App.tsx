@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
+﻿import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,10 +18,11 @@ import NotFound from "./pages/NotFound";
 import GlobalMining from "./pages/GlobalMining";
 import Litepaper from "./pages/Litepaper";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Ambassadors from "./pages/Ambassadors";
-import AmbassadorApply from "./pages/AmbassadorApply";
-import AmbassadorPortal from "./pages/AmbassadorPortal";
-import AmbassadorAdmin from "./pages/AmbassadorAdmin";
+// AMBASSADOR PROGRAM — hidden from public (re-enable when ready)
+// import Ambassadors from "./pages/Ambassadors";
+// import AmbassadorApply from "./pages/AmbassadorApply";
+// import AmbassadorPortal from "./pages/AmbassadorPortal";
+// import AmbassadorAdmin from "./pages/AmbassadorAdmin";
 
 const queryClient = new QueryClient();
 
@@ -38,10 +39,12 @@ const App = () => (
           <Route path="/global-mining" element={<GlobalMining />} />
           <Route path="/litepaper" element={<Litepaper />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          {/* AMBASSADOR PROGRAM — hidden from public (re-enable when ready)
           <Route path="/ambassadors" element={<Ambassadors />} />
           <Route path="/ambassadors/apply" element={<AmbassadorApply />} />
           <Route path="/ambassadors/portal" element={<AmbassadorPortal />} />
           <Route path="/ambassadors/admin" element={<AmbassadorAdmin />} />
+          */}
           <Route path="/faq" element={<FAQ />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
