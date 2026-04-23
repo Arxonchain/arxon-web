@@ -1,0 +1,2 @@
+# YOUR own Supabase project ID goes here (find it in Supabase Dashboard -> Settings -> General)
+project_id = "YOUR_PROJECT_REF"
