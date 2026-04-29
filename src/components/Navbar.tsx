@@ -104,11 +104,10 @@ const Navbar = () => {
           ))}
         </div>
 
+        {/* Desktop Start Mining button → goes to /mining-choice */}
         <div className="hidden md:flex items-center gap-3">
-          <motion.a
-            href="https://arxonchain.xyz"
-            target="_blank"
-            rel="noopener noreferrer"
+          <motion.button
+            onClick={() => navigate("/mining-choice")}
             whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(124,147,195,0.3)" }}
             whileTap={{ scale: 0.96 }}
             className="btn-shimmer relative bg-[#7c93c3] text-white text-[13px] font-bold px-5 py-2 rounded-lg transition-colors flex items-center gap-2 overflow-hidden"
@@ -116,7 +115,7 @@ const Navbar = () => {
             <Sparkles size={12} className="opacity-70" />
             Start Mining
             <ArrowRight size={13} />
-          </motion.a>
+          </motion.button>
         </div>
 
         <motion.button
@@ -156,10 +155,10 @@ const Navbar = () => {
                   {l.label}
                 </motion.button>
               ))}
-              <motion.a
-                href="https://arxonchain.xyz"
-                target="_blank"
-                rel="noopener noreferrer"
+
+              {/* Mobile Start Mining button → goes to /mining-choice */}
+              <motion.button
+                onClick={() => { setOpen(false); navigate("/mining-choice"); }}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25 }}
@@ -168,7 +167,7 @@ const Navbar = () => {
                 <Sparkles size={13} className="opacity-70" />
                 Start Mining
                 <ArrowRight size={14} />
-              </motion.a>
+              </motion.button>
             </div>
           </motion.div>
         )}

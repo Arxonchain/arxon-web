@@ -129,16 +129,16 @@ const MiningWaitlist = () => {
 
               <div>
                 <a
-                  href="https://arxonchain.xyz"
+                  onClick={() => navigate("/mining-choice")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-shimmer group flex items-center justify-center gap-2 w-full bg-[#7c93c3] text-white text-sm font-bold py-3 rounded-lg hover:bg-[#6b82b2] transition-all shadow-[0_0_30px_rgba(124,147,195,0.15)]"
                 >
-                  Register for Mining
+                  Start Mining
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </a>
                 <p className="text-center text-[#3f3f46] text-[11px] mt-3 tracking-wide font-medium">
-                  arxonchain.xyz
+                  web · android · ios
                 </p>
               </div>
             </div>
