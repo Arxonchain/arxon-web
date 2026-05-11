@@ -169,7 +169,7 @@ const MiningChoice = () => {
 
               {/* APK Download — LIVE */}
               <motion.a
-               href="https://github.com/Arxonchain/arxon-web/releases/download/v1.70/Arxon-Mining-App.apk"
+               href="/Arxon-Mining-App.apk"
                 download="Arxon-Mining-App.apk"
                 onClick={(e) => e.stopPropagation()}
                 whileHover={{ scale: 1.01 }}
