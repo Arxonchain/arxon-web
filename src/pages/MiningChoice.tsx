@@ -12,7 +12,7 @@ import {
   CheckCircle2,
   Apple,
 } from "lucide-react";
-import arxonLogoWide from "@/assets/arxon-logo-wide.png";
+import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 
 // Custom Android / Google Play icon as SVG
 const AndroidIcon = () => (

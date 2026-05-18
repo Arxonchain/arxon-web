@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import arxonLogoWide from "@/assets/arxon-logo-wide.png";
+import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 import { FaXTwitter, FaDiscord, FaMedium } from "react-icons/fa6";
 
 const Footer = () => {

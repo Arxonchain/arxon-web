@@ -3,7 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Play, Pause, TrendingUp, Zap, Cpu, Wallet } from "lucide-react";
-import arxonLogo from "@/assets/arxon-logo-main.png";
+import arxonLogo from "@/assets/arxon-icon.svg";
 
 const Mining = () => {
   const [isMining, setIsMining] = useState(false);

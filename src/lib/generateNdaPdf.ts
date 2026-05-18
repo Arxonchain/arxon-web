@@ -1,5 +1,5 @@
 import jsPDF from "jspdf";
-import arxonLogo from "@/assets/arxon-logo-header.jpeg";
+import arxonLogo from "@/assets/arxon-logo-header.png";
 
 export function generateNdaPdf() {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
@@ -80,7 +80,7 @@ export function generateNdaPdf() {
 
   // Logo
   try {
-    doc.addImage(arxonLogo, "JPEG", marginL, 12, 50, 16);
+    doc.addImage(arxonLogo, "PNG", marginL, 12, 50, 16);
   } catch {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);

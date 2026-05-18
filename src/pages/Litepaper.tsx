@@ -3,7 +3,7 @@ import { Download, Shield, Globe, Vote, Code, Coins, FileText, ArrowRight, Users
 import Navbar from "@/components/Navbar";
 import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
-import arxonLogo from "@/assets/arxon-logo-square.png";
+import arxonLogo from "@/assets/arxon-icon.svg";
 
 const sectionVariant = {
   hidden: { opacity: 0, y: 30 },

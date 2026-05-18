@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import arxonHeaderText from "@/assets/arxon-header-text.png";
+import arxonHeaderText from "@/assets/arxon-header-text.svg";
 import EarthPrivacyVisual from "@/components/EarthPrivacyVisual";
 
 const Hero = () => {

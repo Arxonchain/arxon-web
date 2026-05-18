@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "lucide-react";
-import arxonLogo from "@/assets/arxon-logo-profile.png";
+import arxonLogo from "@/assets/arxon-icon.svg";
 
 const Profile = () => {
   return (

@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { z } from "zod";
-import arxonLogoWide from "@/assets/arxon-logo-wide.png";
+import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 
 const investorSchema = z.object({
   full_name: z.string().trim().min(1, "Full name is required").max(100),

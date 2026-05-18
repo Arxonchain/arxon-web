@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { waitlistSchema } from "@/lib/validations";
-import arxonLogo from "@/assets/arxon-logo-main.png";
+import arxonLogo from "@/assets/arxon-icon.svg";
 import miningIllustration from "@/assets/mining-illustration.jpg";
 
 const Waitlist = () => {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import arxonLogoWide from "@/assets/arxon-logo-wide.png";
+import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
