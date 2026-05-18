@@ -303,14 +303,11 @@ const EarthPrivacyVisual = () => {
         className="absolute"
         style={{ width: "100px", height: "100px" }}
       >
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full rounded-full flex items-center justify-center" style={{ background: 'radial-gradient(circle, hsl(220 40% 14%) 0%, hsl(220 40% 8%) 100%)', boxShadow: `0 0 30px ${BRAND_BLUE}66, 0 0 60px ${BRAND_BLUE}26` }}>
           <img
             src={arxonLogo}
             alt="Arxon"
-            className="w-full h-full rounded-full object-cover"
-            style={{
-              boxShadow: `0 0 30px ${BRAND_BLUE}66, 0 0 60px ${BRAND_BLUE}26`,
-            }}
+            style={{ width: "58%", height: "58%", objectFit: "contain" }}
           />
           {/* Multi-layer breathing glow */}
           <motion.div
