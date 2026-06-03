@@ -14,6 +14,7 @@ import InvestorForm from "./pages/InvestorForm";
 import InvestorAdmin from "./pages/InvestorAdmin";
 import LearnMore from "./pages/LearnMore";
 import Partners from "./pages/Partners";
+import Ambassador from "./pages/Ambassador";
 import NotFound from "./pages/NotFound";
 import GlobalMining from "./pages/GlobalMining";
 import Litepaper from "./pages/Litepaper";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/learn-more" element={<LearnMore />} />
           <Route path="/partners" element={<Partners />} />
+          <Route path="/ambassador" element={<Ambassador />} />
           <Route path="/global-mining" element={<GlobalMining />} />
           <Route path="/litepaper" element={<Litepaper />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
