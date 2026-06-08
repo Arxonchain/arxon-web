@@ -1,4 +1,4 @@
-﻿import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -19,6 +19,10 @@ import GlobalMining from "./pages/GlobalMining";
 import Litepaper from "./pages/Litepaper";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MiningChoice from "./pages/MiningChoice";
+import Ambassadors from "./pages/Ambassadors";
+import AmbassadorApply from "./pages/AmbassadorApply";
+import AmbassadorPortal from "./pages/AmbassadorPortal";
+import AmbassadorAdmin from "./pages/AmbassadorAdmin";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +48,10 @@ const App = () => (
           <Route path="/waitlist-admin" element={<WaitlistAdmin />} />
           <Route path="/investor-form" element={<InvestorForm />} />
           <Route path="/investor-admin" element={<InvestorAdmin />} />
+          <Route path="/ambassadors" element={<Ambassadors />} />
+          <Route path="/ambassador-apply" element={<AmbassadorApply />} />
+          <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
+          <Route path="/ambassador-admin" element={<AmbassadorAdmin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
