@@ -174,7 +174,7 @@ const Hero = () => {
             <Terminal size={10} className="text-[#7c93c3]/40" />
             <span>ARXON</span><span className="text-[#7c93c3]/25">/</span>
             <span>PROTOCOLS</span><span className="text-[#7c93c3]/25">/</span>
-            <span className="text-[#7c93c3]/50">AMBASSADOR_NODE</span>
+            <span className="text-[#7c93c3]/50">AMBASSADOR CAMPAIGN</span>
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent" />
           <span className="font-mono text-[9px] text-white/15">{ts}</span>
@@ -192,7 +192,7 @@ const Hero = () => {
 
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="text-[clamp(38px,5.5vw,68px)] font-bold leading-[1.04] tracking-tight text-white mb-6">
-              Ambassador<br />
+              ARXON<br />
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#7c93c3,#a8b8d8 50%,#7c93c3)" }}>
                 Ambassador Program
               </span>
