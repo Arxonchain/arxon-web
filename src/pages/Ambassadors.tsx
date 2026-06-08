@@ -1,242 +1,383 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { 
-  Trophy, Users, Sparkles, ArrowRight, Star, 
-  Globe, Video, Hash, MessageSquare, Award, ChevronDown, 
-  Rocket, Clock
-} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import trophyImg from "@/assets/trophy-3d.png";
-import diamondImg from "@/assets/diamond-3d.png";
-import moneybagImg from "@/assets/moneybag-3d.png";
+import {
+  Terminal, Cpu, Network, Shield, Zap, ChevronRight,
+  Activity, Radio, Database, Lock, GitBranch, Hash,
+  Users, Globe, Video, MessageSquare, Award, ArrowRight,
+  Signal, Server, Code2, Layers, TrendingUp,
+  AlertCircle, CheckCircle2, Clock, ExternalLink, ArrowUpRight
+} from "lucide-react";
 
-/* ─── Hero ─── */
-const HeroSection = () => {
-  const navigate = useNavigate();
+/* ─── Canvas Grid Background ─── */
+const CircuitBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let W = 0, H = 0, raf: number;
+
+    type Node = { x: number; y: number; pulse: number; speed: number };
+    const nodes: Node[] = [];
+
+    const resize = () => {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+      nodes.length = 0;
+      for (let i = 0; i < 50; i++) {
+        nodes.push({
+          x: Math.random() * W, y: Math.random() * H,
+          pulse: Math.random() * Math.PI * 2,
+          speed: 0.008 + Math.random() * 0.008,
+        });
+      }
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    let frame = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+      nodes.forEach(n => {
+        n.x += (Math.random() - 0.5) * 0.15;
+        n.y += (Math.random() - 0.5) * 0.15;
+        n.x = Math.max(0, Math.min(W, n.x));
+        n.y = Math.max(0, Math.min(H, n.y));
+        n.pulse += n.speed;
+      });
+      // Draw edges
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+          if (d < 140) {
+            const a = (1 - d / 140) * 0.06;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(124,147,195,${a})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      // Draw nodes
+      nodes.forEach((n) => {
+        const p = Math.sin(n.pulse) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 1.5 + p, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(124,147,195,${0.15 + p * 0.25})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
+};
+
+/* ─── Scanline ─── */
+const Scanline = () => (
+  <motion.div
+    className="absolute inset-x-0 h-px pointer-events-none z-10"
+    style={{ background: "linear-gradient(90deg,transparent,rgba(124,147,195,0.12),transparent)" }}
+    animate={{ top: ["0%", "100%"] }}
+    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+  />
+);
+
+/* ─── Terminal type-in ─── */
+const TypeLine = ({ text, delay = 0, color = "text-[#7c93c3]/60" }: { text: string; delay?: number; color?: string }) => {
+  const [show, setShow] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setShow(true), delay * 1000); return () => clearTimeout(t); }, [delay]);
+  if (!show) return null;
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-[#0c0c10] to-[#09090b]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(circle,hsl(220_50%_20%/0.2)_0%,transparent_60%)]" />
-        
-        {/* Floating 3D elements in background */}
-        <motion.img
-          src={trophyImg}
-          alt=""
-          className="absolute top-[15%] right-[5%] w-32 md:w-48 opacity-[0.08] pointer-events-none"
-          animate={{ y: [-15, 15, -15], rotate: [-3, 3, -3] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.img
-          src={diamondImg}
-          alt=""
-          className="absolute bottom-[20%] left-[3%] w-24 md:w-36 opacity-[0.06] pointer-events-none"
-          animate={{ y: [10, -10, 10], rotate: [5, -5, 5] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.img
-          src={moneybagImg}
-          alt=""
-          className="absolute top-[60%] right-[10%] w-20 md:w-28 opacity-[0.05] pointer-events-none"
-          animate={{ y: [-8, 12, -8] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
+    <motion.p initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={`font-mono text-[11px] leading-relaxed ${color}`}>
+      {text}
+    </motion.p>
+  );
+};
 
-        {/* Animated particles */}
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 rounded-full bg-[#7c93c3]/30"
-            style={{ left: `${8 + i * 8}%`, top: `${15 + (i % 4) * 20}%` }}
-            animate={{ 
-              y: [-20, 20, -20], 
-              opacity: [0.1, 0.5, 0.1],
-              scale: [0.8, 1.2, 0.8]
-            }}
-            transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
-          />
-        ))}
+/* ─── Status pill ─── */
+const Pill = ({ label, variant = "blue" }: { label: string; variant?: "blue" | "green" | "amber" }) => {
+  const v = { blue: "text-[#7c93c3] bg-[#7c93c3]/8 border-[#7c93c3]/20", green: "text-emerald-400 bg-emerald-400/8 border-emerald-400/20", amber: "text-amber-400 bg-amber-400/8 border-amber-400/20" }[variant];
+  const dot = { blue: "bg-[#7c93c3]", green: "bg-emerald-400", amber: "bg-amber-400" }[variant];
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border font-mono text-[10px] font-semibold tracking-wider ${v}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${dot} animate-pulse`} />
+      {label}
+    </span>
+  );
+};
 
-        {/* Light beams */}
-        <motion.div
-          className="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-[#7c93c3]/10 to-transparent"
-          animate={{ opacity: [0, 0.5, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-0 right-1/3 w-[1px] h-full bg-gradient-to-b from-transparent via-[#7c93c3]/[0.07] to-transparent"
-          animate={{ opacity: [0, 0.4, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        />
+/* ─── Grid overlay ─── */
+const Grid = ({ size = 60, opacity = 0.025 }) => (
+  <div className="absolute inset-0 pointer-events-none" style={{
+    backgroundImage: `linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)`,
+    backgroundSize: `${size}px ${size}px`, opacity,
+  }} />
+);
+
+/* ─── Corner chrome ─── */
+const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
+  const cls = { tl: "top-0 left-0", tr: "top-0 right-0", bl: "bottom-0 left-0", br: "bottom-0 right-0" }[pos];
+  const bord = { tl: "border-t border-l rounded-tl-sm", tr: "border-t border-r rounded-tr-sm", bl: "border-b border-l rounded-bl-sm", br: "border-b border-r rounded-br-sm" }[pos];
+  return <div className={`absolute ${cls} w-4 h-4 ${bord} border-[#7c93c3]/30`} />;
+};
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+const Hero = () => {
+  const navigate = useNavigate();
+  const [ts, setTs] = useState("");
+  useEffect(() => {
+    const iv = setInterval(() => setTs(new Date().toISOString().replace("T", " ").slice(0, 19) + " UTC"), 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex items-center overflow-hidden">
+      <div className="absolute inset-0 bg-[#09090b]">
+        <CircuitBackground />
+        <Scanline />
+        <Grid size={64} opacity={0.022} />
+        {/* Radial bloom */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] pointer-events-none"
+          style={{ background: "radial-gradient(ellipse,rgba(124,147,195,0.055) 0%,transparent 65%)" }} />
+        {/* Corner circuit traces */}
+        <svg className="absolute top-20 left-0 w-48 h-48 opacity-20 pointer-events-none" viewBox="0 0 192 192" fill="none">
+          <path d="M0 8h24l8 8h40" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M0 24h12l8 8h32" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M8 0v24l8 8v40" stroke="#7c93c3" strokeWidth="0.5"/>
+          <rect x="68" y="12" width="6" height="6" stroke="#7c93c3" strokeWidth="0.5"/>
+          <rect x="36" y="12" width="4" height="4" fill="rgba(124,147,195,0.3)"/>
+        </svg>
+        <svg className="absolute top-20 right-0 w-48 h-48 opacity-20 pointer-events-none" viewBox="0 0 192 192" fill="none">
+          <path d="M192 8h-24l-8 8h-40" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M192 24h-12l-8 8h-32" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M184 0v24l-8 8v40" stroke="#7c93c3" strokeWidth="0.5"/>
+          <rect x="118" y="12" width="6" height="6" stroke="#7c93c3" strokeWidth="0.5"/>
+        </svg>
       </div>
 
-      <div className="relative z-10 max-w-[1000px] mx-auto px-6 pt-28 pb-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#7c93c3]/20 bg-[#7c93c3]/5 text-[#7c93c3] text-xs font-semibold mb-6"
-        >
-          <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-            <Sparkles size={12} />
-          </motion.span>
-          Limited Spots Available
+      <div className="relative z-10 max-w-[1120px] mx-auto px-6 pt-28 pb-20 w-full">
+        {/* System path */}
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 mb-12">
+          <div className="flex items-center gap-1.5 font-mono text-[10px] text-white/20">
+            <Terminal size={10} className="text-[#7c93c3]/40" />
+            <span>ARXON</span><span className="text-[#7c93c3]/25">/</span>
+            <span>PROTOCOLS</span><span className="text-[#7c93c3]/25">/</span>
+            <span className="text-[#7c93c3]/50">AMBASSADOR_NODE</span>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent" />
+          <span className="font-mono text-[9px] text-white/15">{ts}</span>
+          <Pill label="LIVE" variant="green" />
         </motion.div>
 
-        {/* 3D Images Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          className="flex items-center justify-center gap-4 md:gap-6 mb-8"
-        >
-          <motion.img
-            src={moneybagImg}
-            alt="Rewards"
-            className="w-16 h-16 md:w-24 md:h-24 object-contain drop-shadow-[0_0_20px_rgba(124,147,195,0.3)]"
-            animate={{ y: [-5, 5, -5] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.img
-            src={trophyImg}
-            alt="Trophy"
-            className="w-24 h-24 md:w-36 md:h-36 object-contain drop-shadow-[0_0_30px_rgba(124,147,195,0.4)]"
-            animate={{ y: [-8, 8, -8], scale: [1, 1.02, 1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.img
-            src={diamondImg}
-            alt="Diamond"
-            className="w-16 h-16 md:w-24 md:h-24 object-contain drop-shadow-[0_0_20px_rgba(124,147,195,0.3)]"
-            animate={{ y: [5, -5, 5], rotate: [-3, 3, -3] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </motion.div>
+        <div className="grid lg:grid-cols-[1fr_440px] gap-12 items-center">
+          {/* Left */}
+          <div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#7c93c3]/20 bg-[#7c93c3]/5 rounded font-mono text-[9px] text-[#7c93c3]/80 tracking-widest uppercase mb-6">
+              <Radio size={8} className="animate-pulse" />
+              Protocol v1.0 · 30-Day Campaign · $100K ARX Allocation
+            </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6"
-        >
-          Arxon Ambassador Program
-          <br />
-          <span className="bg-gradient-to-r from-[#7c93c3] to-[#a8b8d8] bg-clip-text text-transparent">
-            $100,000 Rewards Campaign
-          </span>
-        </motion.h1>
+            <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+              className="text-[clamp(38px,5.5vw,68px)] font-bold leading-[1.04] tracking-tight text-white mb-6">
+              Ambassador<br />
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#7c93c3,#a8b8d8 50%,#7c93c3)" }}>
+                Node Program
+              </span>
+            </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
-          className="text-[#a1a1aa] text-base md:text-lg max-w-[700px] mx-auto mb-8 leading-relaxed"
-        >
-          Join the movement. Prove yourself in 30 days. Get rewarded at TGE. 
-          Help expand Arxon's reach across the globe and earn your place as an official Arxon Ambassador.
-        </motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
+              className="text-white/45 text-[15px] leading-relaxed max-w-[500px] mb-10">
+              Deploy yourself as a signal node in the Arxon network. 30 days of verified output. 
+              Quality over vanity metrics. Share the $100,000 ARX reward pool at TGE.
+            </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <motion.button
-            onClick={() => navigate("/ambassadors/apply")}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(124,147,195,0.4)" }}
-            whileTap={{ scale: 0.96 }}
-            className="relative overflow-hidden bg-[#7c93c3] text-white font-bold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm group"
-          >
-            {/* Shimmer effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
-              animate={{ x: ["-200%", "200%"] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-            />
-            {/* Pulse ring */}
-            <motion.div
-              className="absolute inset-0 rounded-xl border-2 border-[#7c93c3]"
-              animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="relative z-10 flex items-center gap-2">
-              <motion.span animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-                <Rocket size={16} />
-              </motion.span>
-              Apply Now
-              <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                <ArrowRight size={16} />
-              </motion.span>
-            </span>
-          </motion.button>
-          <motion.button
-            onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-            className="border border-white/10 text-white/80 font-semibold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm hover:bg-white/5 transition-colors"
-          >
-            Learn More <ChevronDown size={16} />
-          </motion.button>
-        </motion.div>
+            {/* Metric strip */}
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="relative flex gap-0 mb-10 rounded-xl overflow-hidden border border-white/[0.07] bg-white/[0.02]">
+              <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+              {[
+                { label: "REWARD_POOL", val: "$100K", sub: "ARX Token" },
+                { label: "DURATION", val: "30D", sub: "Challenge" },
+                { label: "VEST_PERIOD", val: "12MO", sub: "Post-TGE" },
+              ].map((m, i) => (
+                <div key={i} className="flex-1 px-5 py-4 border-r border-white/[0.06] last:border-0">
+                  <div className="font-mono text-[9px] text-white/20 mb-1 tracking-widest">{m.label}</div>
+                  <div className="font-mono text-2xl font-bold text-white">{m.val}</div>
+                  <div className="font-mono text-[9px] text-[#7c93c3]/50 mt-0.5">{m.sub}</div>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}
+              className="flex flex-col sm:flex-row gap-3">
+              <motion.button
+                onClick={() => navigate("/ambassador-apply")}
+                whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }}
+                whileTap={{ scale: 0.97 }}
+                className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ background: "linear-gradient(135deg,#a8b8d8,#7c93c3)" }} />
+                <span className="relative z-10 flex items-center gap-2"><Cpu size={13} /> APPLY NOW <ChevronRight size={13} /></span>
+              </motion.button>
+              <motion.button
+                onClick={() => navigate("/ambassador-portal")}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-semibold text-[#7c93c3] border border-[#7c93c3]/25 hover:bg-[#7c93c3]/5 hover:border-[#7c93c3]/40 transition-all">
+                <Terminal size={13} /> ACCESS PORTAL
+              </motion.button>
+            </motion.div>
+          </div>
+
+          {/* Right: terminal */}
+          <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
+            {/* Floating cards */}
+            <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-5 -right-4 z-20 bg-[#0c0c10] border border-[#7c93c3]/20 rounded-lg px-4 py-3 shadow-xl">
+              <div className="font-mono text-[9px] text-white/25 mb-1">REWARD_ALLOCATION</div>
+              <div className="font-mono text-base font-bold text-[#7c93c3]">$100,000 ARX</div>
+            </motion.div>
+            <motion.div animate={{ y: [4, -4, 4] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute -bottom-4 -left-4 z-20 bg-[#0c0c10] border border-emerald-400/20 rounded-lg px-4 py-3 shadow-xl flex items-center gap-2.5">
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <div className="font-mono text-[9px] text-white font-semibold">NODE_STATUS</div>
+                <div className="font-mono text-[9px] text-emerald-400">ACCEPTING_APPLICATIONS</div>
+              </div>
+            </motion.div>
+
+            {/* Terminal panel */}
+            <div className="relative bg-[#0a0a0d] border border-[#7c93c3]/15 rounded-xl overflow-hidden shadow-2xl">
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-[#7c93c3]/10 bg-[#7c93c3]/[0.02]">
+                <div className="flex gap-1.5">
+                  {["bg-white/8","bg-white/8","bg-white/8"].map((c,i) => <div key={i} className={`w-2.5 h-2.5 rounded-full ${c}`} />)}
+                </div>
+                <span className="font-mono text-[9px] text-white/25 ml-2">arxon://ambassador_protocol.sh</span>
+                <div className="flex-1" />
+                <Activity size={9} className="text-[#7c93c3]/40 animate-pulse" />
+              </div>
+              <div className="p-5 space-y-1 min-h-[310px]">
+                <TypeLine text="$ ./init --protocol ambassador --network arxon" delay={0.3} color="text-white/50" />
+                <TypeLine text="  ↳ Bootstrapping reward allocation module..." delay={0.9} />
+                <TypeLine text="  ↳ Verifying ARX TGE contract binding..." delay={1.5} />
+                <TypeLine text="  ↳ Loading node eligibility criteria..." delay={2.1} />
+                <TypeLine text="" delay={2.6} />
+                <TypeLine text="[PASS] POOL_SIZE          = 100,000 ARX" delay={2.9} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] CAMPAIGN_DURATION  = 30 DAYS" delay={3.3} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] VEST_SCHEDULE      = 12 MONTHS" delay={3.7} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] SELECTION_MODE     = QUALITY_FIRST" delay={4.1} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] CHAIN              = ARXON_MAINNET" delay={4.5} color="text-emerald-400/60" />
+                <TypeLine text="" delay={4.9} />
+                <TypeLine text="[INFO] Min requirements: 8 posts + 100 referrals" delay={5.2} />
+                <TypeLine text="[INFO] Video content earns priority scoring" delay={5.6} />
+                <TypeLine text="" delay={6.0} />
+                <TypeLine text="$ ready. awaiting applications_" delay={6.3} color="text-[#7c93c3]/80" />
+              </div>
+              <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none overflow-hidden">
+                <Grid size={8} opacity={0.05} />
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
 };
 
-/* ─── Benefits ─── */
-const benefits = [
-  { icon: Trophy, title: "$100,000 ARX Reward Pool", desc: "Top performers share the reward pool at TGE, vested over 12 months for long-term alignment.", img: moneybagImg },
-  { icon: Award, title: "Official Ambassador Badge", desc: "Earn your official Arxon Ambassador title with early access to new features and updates.", img: diamondImg },
-  { icon: Globe, title: "Partnership Opportunities", desc: "Unlock future collaborations, exclusive events, and direct access to the Arxon core team.", img: trophyImg },
+/* ═══════════════════════════════════════════════
+   BENEFITS / INFRASTRUCTURE MODULES
+═══════════════════════════════════════════════ */
+const modules = [
+  {
+    id: "MOD-001", icon: TrendingUp, label: "REWARD_NODE",
+    title: "ARX Reward Pool",
+    spec: "$100,000 · TGE-linked · 12mo vest",
+    desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE and vested linearly over 12 months.",
+    tags: ["ARX_TOKEN","TGE_LINKED","12MO_VEST","QUALITY_SCORED"],
+    status: "green" as const,
+  },
+  {
+    id: "MOD-002", icon: Shield, label: "CREDENTIAL_NODE",
+    title: "Official Ambassador Badge",
+    spec: "Verified status · Early access · Core comms",
+    desc: "Earn verified Arxon Ambassador credentials. Unlocks early access to feature previews, protocol updates, and direct dev communication channels.",
+    tags: ["VERIFIED","EARLY_ACCESS","CORE_COMMS","PRIVILEGED"],
+    status: "blue" as const,
+  },
+  {
+    id: "MOD-003", icon: Network, label: "NETWORK_ACCESS",
+    title: "Network Layer Access",
+    spec: "Private channels · Exclusive events · VIP privileges",
+    desc: "Private collaboration channels, exclusive ambassador-only events, and embedded network-level privileges unavailable to standard users.",
+    tags: ["PRIVATE_CHANNELS","EXCLUSIVE_EVENTS","NETWORK_PRIV","VIP_TIER"],
+    status: "blue" as const,
+  },
 ];
 
 const BenefitsSection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <section ref={ref} className="py-20 px-6">
-      <div className="max-w-[1000px] mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="text-2xl md:text-3xl font-bold text-white text-center mb-12"
-        >
-          What You'll <span className="text-[#7c93c3]">Earn</span>
-        </motion.h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {benefits.map((b, i) => (
-            <motion.div
-              key={b.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.15 }}
-              whileHover={{ y: -5, borderColor: "rgba(124,147,195,0.4)" }}
-              className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 overflow-hidden group transition-all"
-            >
-              {/* Glow on hover */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#7c93c3]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              />
-              {/* Floating image accent */}
-              <motion.img
-                src={b.img}
-                alt=""
-                className="absolute -right-4 -bottom-4 w-20 h-20 opacity-[0.06] group-hover:opacity-[0.12] transition-opacity"
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 8, repeat: Infinity }}
-              />
-              <div className="relative z-10">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-12 h-12 rounded-xl bg-[#7c93c3]/10 flex items-center justify-center mb-4 group-hover:bg-[#7c93c3]/20 transition-colors"
-                >
-                  <b.icon size={22} className="text-[#7c93c3]" />
+    <section ref={ref} className="py-24 px-6 relative bg-[#09090b]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/10 to-transparent" />
+      <Grid size={80} opacity={0.018} />
+      <div className="max-w-[1120px] mx-auto">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-14">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-8 bg-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">node_modules.config</span>
+          </div>
+          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
+            What You <span className="text-[#7c93c3]">Deploy Into</span>
+          </h2>
+          <p className="font-mono text-xs text-white/25">3 modules initialized · awaiting ambassador allocation</p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {modules.map((m, i) => (
+            <motion.div key={m.id}
+              initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.1 }}
+              className="group relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl overflow-hidden hover:border-[#7c93c3]/30 transition-all duration-500">
+              {/* Header bar */}
+              <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04] bg-white/[0.01]">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[9px] text-white/20">{m.id}</span>
+                  <span className="font-mono text-[9px] text-[#7c93c3]/35 tracking-widest">/{m.label}</span>
+                </div>
+                <Pill label="ACTIVE" variant={m.status} />
+              </div>
+
+              <div className="p-5">
+                <motion.div whileHover={{ scale: 1.08, rotate: 4 }}
+                  className="w-10 h-10 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center mb-5 group-hover:bg-[#7c93c3]/14 transition-colors">
+                  <m.icon size={17} className="text-[#7c93c3]" />
                 </motion.div>
-                <h3 className="text-white font-semibold text-lg mb-2">{b.title}</h3>
-                <p className="text-[#a1a1aa] text-sm leading-relaxed">{b.desc}</p>
+                <h3 className="text-white font-bold text-[17px] mb-1">{m.title}</h3>
+                <p className="font-mono text-[9px] text-[#7c93c3]/55 mb-3 tracking-wide">{m.spec}</p>
+                <p className="text-white/45 text-sm leading-relaxed mb-5">{m.desc}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {m.tags.map(t => (
+                    <span key={t} className="font-mono text-[8px] text-white/20 bg-white/[0.025] border border-white/[0.05] px-2 py-1 rounded tracking-wider">{t}</span>
+                  ))}
+                </div>
+              </div>
+              {/* Hover grid glow corner */}
+              <div className="absolute bottom-0 right-0 w-16 h-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+                <Grid size={8} opacity={0.08} />
               </div>
             </motion.div>
           ))}
@@ -246,118 +387,128 @@ const BenefitsSection = () => {
   );
 };
 
-/* ─── How It Works ─── */
+/* ═══════════════════════════════════════════════
+   PROTOCOL / HOW IT WORKS
+═══════════════════════════════════════════════ */
 const steps = [
-  { num: "01", title: "Create Your Arxon Mining Account", desc: "Sign up at arxonchain.xyz and create your mining account to get started." },
-  { num: "02", title: "Apply for the Program", desc: "Fill out the application form with your details and crypto content experience." },
-  { num: "03", title: "Complete the 30-Day Challenge", desc: "Post quality content, host Spaces, bring referrals, and use #ArxonAmbassador." },
-  { num: "04", title: "Submit Your Best Work", desc: "Submit up to 8 of your best work via your personal portal." },
-  { num: "05", title: "Get Selected and Rewarded", desc: "Top performers become official Arxon Ambassadors and share the $100K pool." },
+  { seq: "01", cmd: "REGISTER_NODE", title: "Create Arxon Mining Account", desc: "Initialize your identity at arxonchain.xyz. Your mining account ID becomes your ambassador credential and referral tracking key.", params: ["NETWORK=ARXON","ACCOUNT_TYPE=MINING"] },
+  { seq: "02", cmd: "SUBMIT_APPLICATION", title: "Deploy Your Application", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
+  { seq: "03", cmd: "RUN_30D_CHALLENGE", title: "Execute the 30-Day Protocol", desc: "Post quality content, host Spaces, drive referrals, and tag #ArxonAmbassador. Every action builds your scoring index.", params: ["DURATION=30_DAYS","MODE=QUALITY_FIRST","TAG=#ArxonAmbassador"] },
+  { seq: "04", cmd: "PUSH_DELIVERABLES", title: "Submit Your Best Work", desc: "Access your personal portal and push up to 8 top-performing content pieces to the evaluation queue.", params: ["MAX_ITEMS=8","PORTAL_REQUIRED=TRUE","DEADLINE=END_OF_CAMPAIGN"] },
+  { seq: "05", cmd: "CLAIM_ALLOCATION", title: "Selection & Reward Allocation", desc: "Top performers are minted as official Arxon Ambassadors. ARX allocations distribute at TGE, vested linearly over 12 months.", params: ["TOKEN=ARX","VEST=12_MONTHS","TRIGGER=TGE_EVENT"] },
 ];
 
 const requirements = [
-  { icon: MessageSquare, text: "Post minimum 8 quality tweets/threads about Arxon (more gives you an edge)" },
-  { icon: Users, text: "Host or co-host at least 2 Twitter Spaces about Arxon and tag @ARXONarx" },
-  { icon: Globe, text: "Bring in at least 100 new verified users via your referral link" },
-  { icon: Hash, text: "Use hashtag #ArxonAmbassador and tag @ARXONarx in all content" },
-  { icon: Video, text: "Bonus: Create 1-2 videos talking about Arxon for a huge advantage" },
+  { icon: MessageSquare, cmd: "POST_CONTENT", req: "Minimum 8 quality tweets/threads about Arxon", type: "REQUIRED" },
+  { icon: Users, cmd: "HOST_SPACES", req: "2+ Twitter Spaces co-hosted with @ARXONarx", type: "REQUIRED" },
+  { icon: Globe, cmd: "DRIVE_REFERRALS", req: "100+ verified new users via your referral link", type: "REQUIRED" },
+  { icon: Hash, cmd: "TAG_PROTOCOL", req: "#ArxonAmbassador on all content + @ARXONarx mentions", type: "REQUIRED" },
+  { icon: Video, cmd: "CREATE_VIDEO", req: "1-2 video pieces — unlocks priority scoring weight", type: "BONUS" },
 ];
 
-const HowItWorksSection = () => {
+const ProtocolSection = () => {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const [active, setActive] = useState(0);
+
   return (
-    <section id="how-it-works" ref={ref} className="py-20 px-6 bg-white/[0.01]">
-      <div className="max-w-[1000px] mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="text-2xl md:text-3xl font-bold text-white text-center mb-4"
-        >
-          How It <span className="text-[#7c93c3]">Works</span>
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.2 }}
-          className="text-[#a1a1aa] text-center mb-12 text-sm"
-        >
-          Complete the 30-day challenge and prove you have what it takes
-        </motion.p>
+    <section ref={ref} id="how-it-works" className="py-24 px-6 relative bg-[#080810]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/12 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/12 to-transparent" />
+      <Grid size={80} opacity={0.015} />
 
-        {/* Steps */}
-        <div className="space-y-4 mb-16">
-          {steps.map((s, i) => (
-            <motion.div
-              key={s.num}
-              initial={{ opacity: 0, x: -30 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ x: 5, borderColor: "rgba(124,147,195,0.3)" }}
-              className="flex items-start gap-4 bg-white/[0.02] border border-white/[0.05] rounded-xl p-5 transition-all group"
-            >
-              <motion.span
-                className="text-[#7c93c3] font-bold text-lg shrink-0 w-8"
-                whileHover={{ scale: 1.2 }}
-              >
-                {s.num}
-              </motion.span>
-              <div>
-                <h3 className="text-white font-semibold mb-1 group-hover:text-[#7c93c3] transition-colors">{s.title}</h3>
-                <p className="text-[#a1a1aa] text-sm">{s.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Requirements */}
-        <motion.h3
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="text-xl font-bold text-white mb-6 text-center"
-        >
-          30-Day Challenge Requirements
-        </motion.h3>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3 }}
-          className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 md:p-8"
-        >
-          <ul className="space-y-4">
-            {requirements.map((r, i) => (
-              <motion.li
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.4 + i * 0.08 }}
-                className="flex items-start gap-3 group"
-              >
-                <motion.span
-                  className="mt-1 w-2 h-2 rounded-full bg-[#7c93c3] shrink-0"
-                  whileHover={{ scale: 1.5 }}
-                />
-                <p className="text-[#a1a1aa] text-sm leading-relaxed group-hover:text-white/70 transition-colors">{r.text}</p>
-              </motion.li>
-            ))}
-          </ul>
+      <div className="max-w-[1120px] mx-auto">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-14">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-8 bg-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">protocol.execution</span>
+          </div>
+          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
+            Execution <span className="text-[#7c93c3]">Protocol</span>
+          </h2>
+          <p className="font-mono text-xs text-white/25">5 sequential operations · all required for selection eligibility</p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.6 }}
-          className="mt-8 bg-[#7c93c3]/5 border border-[#7c93c3]/15 rounded-xl p-5"
-        >
-          <div className="flex items-start gap-3">
-            <Clock size={18} className="text-[#7c93c3] mt-0.5 shrink-0" />
-            <div>
-              <p className="text-white text-sm font-semibold mb-1">Important Note</p>
-              <p className="text-[#a1a1aa] text-xs leading-relaxed">
-                Rewards are paid at TGE and vested over 12 months. Selected Ambassadors are expected to continue promotion until TGE. 
-                We prioritize quality and real engagement over follower count.
-              </p>
+        {/* Steps + detail */}
+        <div className="grid lg:grid-cols-[360px_1fr] gap-5 mb-16">
+          <div className="space-y-2">
+            {steps.map((s, i) => (
+              <motion.div key={s.seq}
+                initial={{ opacity: 0, x: -16 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: i * 0.08 }}
+                onClick={() => setActive(i)}
+                className={`group cursor-pointer relative rounded-xl p-4 border transition-all duration-300 ${active === i ? "border-[#7c93c3]/35 bg-[#7c93c3]/[0.04]" : "border-white/[0.05] hover:border-[#7c93c3]/18 bg-white/[0.01]"}`}>
+                <div className="flex items-start gap-3">
+                  <div className={`shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs font-bold transition-colors ${active === i ? "bg-[#7c93c3]/20 text-[#7c93c3]" : "bg-white/[0.04] text-white/25"}`}>{s.seq}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-mono text-[9px] text-white/20 mb-0.5">{s.cmd}</div>
+                    <h3 className={`text-sm font-semibold transition-colors ${active === i ? "text-white" : "text-white/55 group-hover:text-white/75"}`}>{s.title}</h3>
+                  </div>
+                  <ChevronRight size={12} className={`shrink-0 mt-1.5 transition-all ${active === i ? "text-[#7c93c3]" : "text-white/15"}`} />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            className="relative bg-[#0a0a0d] border border-[#7c93c3]/18 rounded-xl overflow-hidden">
+            <div className="flex items-center gap-2 px-5 py-3 border-b border-[#7c93c3]/10 bg-[#7c93c3]/[0.015]">
+              <Terminal size={11} className="text-[#7c93c3]/40" />
+              <span className="font-mono text-[9px] text-white/25">STEP_{steps[active].seq}.detail</span>
+              <div className="flex-1" />
+              <div className="font-mono text-[9px] text-white/15">{active + 1} / {steps.length}</div>
             </div>
+            <div className="p-7">
+              <p className="font-mono text-xs text-[#7c93c3]/50 mb-4">$ execute {steps[active].cmd}</p>
+              <h3 className="text-white font-bold text-xl mb-4">{steps[active].title}</h3>
+              <p className="text-white/50 leading-relaxed mb-7">{steps[active].desc}</p>
+              <div className="space-y-2 p-4 bg-white/[0.02] rounded-lg border border-white/[0.04]">
+                {steps[active].params.map(p => (
+                  <div key={p} className="flex items-center gap-2 font-mono text-[10px]">
+                    <span className="text-[#7c93c3]/35">──</span>
+                    <span className="text-white/35">{p}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="absolute bottom-0 right-0 w-28 h-28 pointer-events-none overflow-hidden"><Grid size={8} opacity={0.04} /></div>
+          </motion.div>
+        </div>
+
+        {/* Requirements table */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.4 }}>
+          <div className="flex items-center gap-3 mb-5">
+            <span className="font-mono text-[10px] text-white/25 tracking-widest">MINIMUM_REQUIREMENTS</span>
+            <div className="flex-1 h-px bg-white/[0.05]" />
+            <span className="font-mono text-[9px] text-white/15">5 OPERATIONS · {requirements.filter(r => r.type === "REQUIRED").length} REQUIRED</span>
+          </div>
+          <div className="bg-[#0a0a0d] border border-white/[0.05] rounded-xl overflow-hidden">
+            <div className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-2.5 border-b border-white/[0.04] bg-white/[0.01]">
+              {["#","OP_CODE","REQUIREMENT","TYPE"].map(h => (
+                <span key={h} className="font-mono text-[8px] text-white/20 tracking-widest">{h}</span>
+              ))}
+            </div>
+            {requirements.map((r, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 + i * 0.06 }}
+                className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.01] transition-colors group items-center">
+                <span className="font-mono text-[9px] text-white/15">{String(i + 1).padStart(2, "0")}</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center group-hover:bg-[#7c93c3]/14 transition-colors">
+                    <r.icon size={11} className="text-[#7c93c3]/60" />
+                  </div>
+                  <span className="font-mono text-[8px] text-white/18 hidden sm:block">{r.cmd}</span>
+                </div>
+                <span className="text-white/55 text-sm">{r.req}</span>
+                <span className={`font-mono text-[8px] px-2 py-1 rounded border text-center ${r.type === "REQUIRED" ? "text-emerald-400/70 bg-emerald-400/8 border-emerald-400/15" : "text-amber-400/70 bg-amber-400/8 border-amber-400/15"}`}>{r.type}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-start gap-3 px-5 py-4 bg-[#7c93c3]/[0.03] border border-[#7c93c3]/12 rounded-xl">
+            <AlertCircle size={13} className="text-[#7c93c3]/60 shrink-0 mt-0.5" />
+            <p className="font-mono text-[10px] text-white/35 leading-relaxed">
+              <span className="text-[#7c93c3]/60">NOTICE:</span> Rewards vest at TGE over 12 months. Selected ambassadors continue promotion through TGE. Quality and genuine engagement are prioritized over raw follower metrics.
+            </p>
           </div>
         </motion.div>
       </div>
@@ -365,61 +516,58 @@ const HowItWorksSection = () => {
   );
 };
 
-/* ─── CTA Section ─── */
+/* ═══════════════════════════════════════════════
+   CTA
+═══════════════════════════════════════════════ */
 const CTASection = () => {
   const navigate = useNavigate();
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-50px" });
-
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
-    <section ref={ref} className="py-20 px-6">
-      <div className="max-w-[800px] mx-auto text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          className="bg-gradient-to-br from-[#7c93c3]/[0.08] to-transparent border border-[#7c93c3]/20 rounded-2xl p-10 md:p-14 relative overflow-hidden"
-        >
-          {/* Ambient glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[radial-gradient(circle,rgba(124,147,195,0.1)_0%,transparent_60%)]" />
-          
-          <div className="relative z-10">
-            <motion.div
-              className="flex items-center justify-center gap-3 mb-6"
-              initial={{ opacity: 0 }}
-              animate={inView ? { opacity: 1 } : {}}
-              transition={{ delay: 0.2 }}
-            >
-              <motion.img src={moneybagImg} alt="" className="w-12 h-12 object-contain" animate={{ y: [-3, 3, -3] }} transition={{ duration: 2, repeat: Infinity }} />
-              <motion.img src={trophyImg} alt="" className="w-16 h-16 object-contain" animate={{ y: [3, -3, 3] }} transition={{ duration: 2.5, repeat: Infinity }} />
-              <motion.img src={diamondImg} alt="" className="w-12 h-12 object-contain" animate={{ y: [-3, 3, -3] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }} />
-            </motion.div>
+    <section ref={ref} className="py-24 px-6 relative bg-[#09090b]">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/10 to-transparent" />
+      <div className="max-w-[900px] mx-auto">
+        <motion.div initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          className="relative bg-[#0a0a0d] border border-[#7c93c3]/20 rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <CircuitBackground />
+            <Grid size={48} opacity={0.025} />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center,rgba(124,147,195,0.06) 0%,transparent 65%)" }} />
+          </div>
+          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
 
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to Become an Ambassador?</h2>
-            <p className="text-[#a1a1aa] text-sm mb-8 max-w-[500px] mx-auto">
-              Join the 30-day challenge, prove yourself, and earn your share of the $100,000 ARX reward pool at TGE.
+          <div className="relative z-10 px-8 md:px-16 py-14 text-center">
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-12 bg-[#7c93c3]/25" />
+              <span className="font-mono text-[9px] text-[#7c93c3]/45 tracking-widest">READY_TO_DEPLOY</span>
+              <div className="h-px w-12 bg-[#7c93c3]/25" />
+            </div>
+            <h2 className="text-[clamp(28px,4vw,44px)] font-bold text-white mb-4 leading-tight">
+              Initialize Your<br />
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}>
+                Ambassador Node
+              </span>
+            </h2>
+            <p className="font-mono text-xs text-white/35 mb-10 max-w-md mx-auto leading-relaxed">
+              30 days · quality over quantity · $100K ARX pool for top performers
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.button
-                onClick={() => navigate("/ambassadors/apply")}
-                whileHover={{ scale: 1.05, boxShadow: "0 0 50px rgba(124,147,195,0.4)" }}
-                whileTap={{ scale: 0.96 }}
-                className="relative overflow-hidden bg-[#7c93c3] text-white font-bold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 text-sm"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
-                  animate={{ x: ["-200%", "200%"] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-                />
-                <span className="relative z-10 flex items-center gap-2">
-                  <Rocket size={16} /> Apply Now <ArrowRight size={16} />
-                </span>
+                onClick={() => navigate("/ambassador-apply")}
+                whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }}
+                whileTap={{ scale: 0.97 }}
+                className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ background: "linear-gradient(135deg,#a8b8d8,#7c93c3)" }} />
+                <span className="relative z-10 flex items-center gap-2"><Cpu size={15} /> APPLY NOW <ArrowRight size={15} /></span>
               </motion.button>
               <motion.button
-                onClick={() => navigate("/ambassadors/portal")}
+                onClick={() => navigate("/ambassador-portal")}
                 whileHover={{ scale: 1.03 }}
-                className="border border-white/10 text-white/80 font-semibold px-8 py-3.5 rounded-xl text-sm hover:bg-white/5 transition-colors"
-              >
-                Access Portal
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-semibold text-[#7c93c3] border border-[#7c93c3]/28 hover:bg-[#7c93c3]/5 hover:border-[#7c93c3]/45 transition-all">
+                <Terminal size={15} /> ACCESS PORTAL
               </motion.button>
             </div>
           </div>
@@ -429,53 +577,18 @@ const CTASection = () => {
   );
 };
 
-/* ─── Main Page ─── */
-const Ambassadors = () => {
-  return (
-    <div className="min-h-screen bg-[#09090b] relative overflow-hidden">
-      {/* Glowing ambient background */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <motion.div
-          className="absolute top-[10%] left-[-10%] w-[700px] h-[700px] rounded-full bg-[#7c93c3]/[0.04] blur-[120px]"
-          animate={{ x: [-20, 20, -20], y: [-10, 10, -10] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-[50%] right-[-15%] w-[600px] h-[600px] rounded-full bg-[#5a7bbf]/[0.03] blur-[100px]"
-          animate={{ x: [20, -20, 20], y: [10, -10, 10] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-[5%] left-[25%] w-[500px] h-[500px] rounded-full bg-[#7c93c3]/[0.025] blur-[80px]"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Floating 3D accents */}
-        <motion.img
-          src={diamondImg}
-          alt=""
-          className="absolute top-[35%] left-[5%] w-16 opacity-[0.03]"
-          animate={{ y: [-20, 20, -20], rotate: [0, 10, 0] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-        <motion.img
-          src={trophyImg}
-          alt=""
-          className="absolute top-[65%] right-[8%] w-20 opacity-[0.03]"
-          animate={{ y: [15, -15, 15] }}
-          transition={{ duration: 12, repeat: Infinity }}
-        />
-      </div>
-      <div className="relative z-10">
-        <Navbar />
-        <HeroSection />
-        <BenefitsSection />
-        <HowItWorksSection />
-        <CTASection />
-        <Footer />
-      </div>
-    </div>
-  );
-};
+/* ═══════════════════════════════════════════════
+   PAGE
+═══════════════════════════════════════════════ */
+const Ambassadors = () => (
+  <div className="min-h-screen bg-[#09090b] overflow-hidden">
+    <Navbar />
+    <Hero />
+    <BenefitsSection />
+    <ProtocolSection />
+    <CTASection />
+    <Footer />
+  </div>
+);
 
 export default Ambassadors;
