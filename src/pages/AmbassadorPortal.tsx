@@ -3,18 +3,79 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { 
+import {
   CheckCircle2, Award, AlertCircle, Link2, ArrowLeft, Plus,
-  User, FileText, MessageSquare, Users, Globe, Video, Hash, ArrowRight, Wifi, WifiOff
+  MessageSquare, Users, Globe, Video, Hash, ArrowRight,
+  Wifi, WifiOff, Terminal, Activity, Shield, Database,
+  Cpu, Lock, Server, ChevronRight, Signal
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-type PortalData = {
-  application: any;
-  submissions: any[];
+type PortalData = { application: any; submissions: any[] };
+
+/* ─── Shared UI ─── */
+const Grid = ({ size = 60, opacity = 0.022 }) => (
+  <div className="absolute inset-0 pointer-events-none" style={{
+    backgroundImage: `linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)`,
+    backgroundSize: `${size}px ${size}px`, opacity,
+  }} />
+);
+
+const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
+  const cls = { tl: "top-0 left-0", tr: "top-0 right-0", bl: "bottom-0 left-0", br: "bottom-0 right-0" }[pos];
+  const bord = { tl: "border-t border-l", tr: "border-t border-r", bl: "border-b border-l", br: "border-b border-r" }[pos];
+  return <div className={`absolute ${cls} w-4 h-4 ${bord} border-[#7c93c3]/30`} />;
 };
 
+const Pill = ({ label, variant = "blue" }: { label: string; variant?: "blue" | "green" | "amber" | "red" }) => {
+  const v = {
+    blue: "text-[#7c93c3] bg-[#7c93c3]/8 border-[#7c93c3]/20",
+    green: "text-emerald-400 bg-emerald-400/8 border-emerald-400/20",
+    amber: "text-amber-400 bg-amber-400/8 border-amber-400/20",
+    red: "text-red-400 bg-red-400/8 border-red-400/20",
+  }[variant];
+  const dot = { blue: "bg-[#7c93c3]", green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[variant];
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border font-mono text-[9px] font-semibold tracking-wider ${v}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${dot} animate-pulse`} />
+      {label}
+    </span>
+  );
+};
+
+const inputCls = "w-full bg-white/[0.03] border border-white/[0.07] rounded-lg px-4 py-3 text-white/85 text-sm font-mono placeholder:text-white/20 focus:outline-none focus:border-[#7c93c3]/35 focus:bg-[#7c93c3]/[0.02] transition-all";
+
+/* ─── Stat card ─── */
+const StatCard = ({ icon: Icon, label, value, target, met }: { icon: any; label: string; value: any; target: string; met: boolean }) => (
+  <div className={`relative bg-[#0a0a0d] border rounded-xl p-4 overflow-hidden transition-colors ${met ? "border-emerald-400/20" : "border-white/[0.06]"}`}>
+    <div className="flex items-center justify-between mb-3">
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${met ? "bg-emerald-400/10" : "bg-[#7c93c3]/8"}`}>
+        <Icon size={13} className={met ? "text-emerald-400" : "text-[#7c93c3]/60"} />
+      </div>
+      {met && <div className="w-2 h-2 rounded-full bg-emerald-400" />}
+    </div>
+    <div className={`font-mono text-xl font-bold mb-0.5 ${met ? "text-emerald-400" : "text-white"}`}>{value}</div>
+    <div className="font-mono text-[9px] text-white/25">{label}</div>
+    <div className="font-mono text-[9px] text-white/15 mt-0.5">TARGET: {target}</div>
+  </div>
+);
+
+/* ─── Requirement row ─── */
+const ReqRow = ({ icon: Icon, label, met, bonus }: { icon: any; label: string; met: boolean; bonus?: boolean }) => (
+  <div className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${met ? "border-emerald-400/12 bg-emerald-400/[0.03]" : "border-white/[0.04] bg-white/[0.01]"}`}>
+    <CheckCircle2 size={14} className={met ? "text-emerald-400 shrink-0" : "text-white/15 shrink-0"} />
+    <div className="w-6 h-6 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center shrink-0">
+      <Icon size={11} className="text-[#7c93c3]/55" />
+    </div>
+    <span className={`text-sm flex-1 ${met ? "text-white/75" : "text-white/40"}`}>{label}</span>
+    {bonus && <span className="font-mono text-[8px] text-amber-400/65 bg-amber-400/8 border border-amber-400/15 px-2 py-0.5 rounded">BONUS</span>}
+  </div>
+);
+
+/* ════════════════════════════════════════
+   MAIN COMPONENT
+════════════════════════════════════════ */
 const AmbassadorPortal = () => {
   const navigate = useNavigate();
   const [arxonId, setArxonId] = useState("");
@@ -33,419 +94,301 @@ const AmbassadorPortal = () => {
     setLoading(true);
     setNotFound(false);
     setPortalData(null);
-
-    const { data: app } = await supabase
-      .from("ambassador_applications")
-      .select("*")
-      .eq("arxon_account_id", arxonId.trim())
-      .maybeSingle();
-
-    if (!app) {
-      setNotFound(true);
-      setLoading(false);
-      return;
-    }
-
-    const { data: subs } = await supabase
-      .from("ambassador_submissions")
-      .select("*")
-      .eq("arxon_account_id", arxonId.trim())
-      .order("created_at", { ascending: true });
-
+    const { data: app } = await supabase.from("ambassador_applications").select("*").eq("arxon_account_id", arxonId.trim()).maybeSingle();
+    if (!app) { setNotFound(true); setLoading(false); return; }
+    const { data: subs } = await supabase.from("ambassador_submissions").select("*").eq("arxon_account_id", arxonId.trim()).order("created_at", { ascending: true });
     setPortalData({ application: app, submissions: subs || [] });
-
     if (subs && subs.length > 0) {
-      const urls = subs.map(s => s.submission_url);
-      const notes = subs.map(s => s.notes || "");
-      // Pad to minimum 8
+      const urls = subs.map((s: any) => s.submission_url);
+      const notes = subs.map((s: any) => s.notes || "");
       while (urls.length < 8) { urls.push(""); notes.push(""); }
-      setSubmissionUrls(urls);
-      setSubmissionNotes(notes);
+      setSubmissionUrls(urls); setSubmissionNotes(notes);
     }
-
     setLoading(false);
-  };
-
-  const addMoreFields = () => {
-    setSubmissionUrls(prev => [...prev, ""]);
-    setSubmissionNotes(prev => [...prev, ""]);
   };
 
   const handleConnectMining = async () => {
     setConnectingMining(true);
-    // Simulate connecting to Arxon mining app API
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(r => setTimeout(r, 2000));
     setMiningConnected(true);
-    // Simulate fetching referral count from the mining account
-    const simulatedReferrals = Math.floor(Math.random() * 150) + 10;
-    setReferralCount(simulatedReferrals);
+    setReferralCount(Math.floor(Math.random() * 150) + 10);
     setConnectingMining(false);
-    toast.success("Mining account connected! Referral data synced.");
-  };
-
-  const handleDisconnectMining = () => {
-    setMiningConnected(false);
-    setReferralCount(0);
-    toast.info("Mining account disconnected.");
+    toast.success("Mining account connected. Referral data synced.");
   };
 
   const handleSubmitLinks = async () => {
-    const filledUrls = submissionUrls.filter(u => u.trim());
-    if (filledUrls.length === 0) {
-      toast.error("Please add at least one link");
-      return;
-    }
-
+    const filled = submissionUrls.filter(u => u.trim());
+    if (!filled.length) { toast.error("Add at least one link"); return; }
     setSubmitting(true);
-
-    // Delete old submissions first, then re-insert
-    await supabase
-      .from("ambassador_submissions")
-      .delete()
-      .eq("arxon_account_id", arxonId.trim());
-
-    const newSubmissions = submissionUrls
+    await supabase.from("ambassador_submissions").delete().eq("arxon_account_id", arxonId.trim());
+    const rows = submissionUrls
       .map((url, i) => ({ url: url.trim(), note: submissionNotes[i]?.trim() || "" }))
-      .filter(s => s.url);
-
-    const { error } = await supabase.from("ambassador_submissions").insert(
-      newSubmissions.map(s => ({
+      .filter(s => s.url)
+      .map(s => ({
         arxon_account_id: arxonId.trim(),
         submission_url: s.url,
         submission_type: s.url.toLowerCase().includes("space") ? "space" : "post",
         notes: s.note || null,
-      }))
-    );
-
-    if (error) {
-      toast.error("Failed to submit links. Please try again.");
-    } else {
-      toast.success("Links submitted successfully!");
-      lookupPortal();
-    }
+      }));
+    const { error } = await supabase.from("ambassador_submissions").insert(rows);
+    if (error) toast.error("Submission failed. Try again.");
+    else { toast.success("Links submitted."); lookupPortal(); }
     setSubmitting(false);
   };
-
-  const inputClass = "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[#52525b] focus:outline-none focus:border-[#7c93c3]/40 transition-colors";
 
   const postCount = portalData?.submissions.filter((s: any) => s.submission_type === "post").length || 0;
   const spaceCount = portalData?.submissions.filter((s: any) => s.submission_type === "space").length || 0;
 
-  return (
-    <div className="min-h-screen bg-[#09090b] relative overflow-hidden">
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#7c93c3]/[0.04] blur-[120px]" />
-        <div className="absolute top-[60%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#5a7bbf]/[0.03] blur-[100px]" />
-        <div className="absolute bottom-[10%] left-[30%] w-[400px] h-[400px] rounded-full bg-[#7c93c3]/[0.025] blur-[80px]" />
-      </div>
+  /* ── Layout wrapper ── */
+  const Wrap = ({ children }: { children: React.ReactNode }) => (
+    <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <div className="absolute inset-0"><Grid size={64} opacity={0.018} /></div>
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 30%,rgba(124,147,195,0.04) 0%,transparent 60%)" }} />
       <div className="relative z-10">
         <Navbar />
-        <div className="pt-28 pb-20 px-6">
-          <div className="max-w-[800px] mx-auto">
-            <motion.button
-              onClick={() => navigate("/ambassadors")}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-[#7c93c3] text-sm font-semibold mb-8 hover:gap-3 transition-all"
-            >
-              <ArrowLeft size={16} /> Back to Ambassador Program
-            </motion.button>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-10"
-            >
-              <h1 className="text-2xl md:text-4xl font-bold text-white mb-3">
-                Ambassador Trial <span className="text-[#7c93c3]">Portal</span>
-              </h1>
-              <p className="text-[#a1a1aa] text-sm">
-                Access your personal dashboard to track progress and submit content
-              </p>
-            </motion.div>
-
-            <AnimatePresence mode="wait">
-              {!portalData && !notFound && (
-                <motion.div
-                  key="login"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="max-w-[500px] mx-auto"
-                >
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8 text-center">
-                    <motion.div
-                      animate={{ rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 4, repeat: Infinity }}
-                      className="w-16 h-16 rounded-2xl bg-[#7c93c3]/10 border border-[#7c93c3]/20 flex items-center justify-center mx-auto mb-6"
-                    >
-                      <User size={28} className="text-[#7c93c3]" />
-                    </motion.div>
-                    <h3 className="text-white font-semibold text-lg mb-2">Enter Your Arxon Account ID</h3>
-                    <p className="text-[#a1a1aa] text-xs mb-6">
-                      Only users who have applied for the ambassador program can access this portal.
-                      Haven't applied yet? <button onClick={() => navigate("/ambassadors/apply")} className="text-[#7c93c3] font-semibold hover:underline">Apply here</button>
-                    </p>
-                    <div className="flex gap-3">
-                      <input
-                        className={inputClass}
-                        placeholder="Enter your Arxon Account ID"
-                        value={arxonId}
-                        onChange={e => setArxonId(e.target.value)}
-                        onKeyDown={e => e.key === "Enter" && lookupPortal()}
-                      />
-                      <motion.button
-                        onClick={lookupPortal}
-                        disabled={loading}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        className="bg-[#7c93c3] text-white font-bold px-6 py-3 rounded-xl text-sm shrink-0 disabled:opacity-50"
-                      >
-                        {loading ? "..." : "Access"}
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {notFound && (
-                <motion.div
-                  key="notfound"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="max-w-[500px] mx-auto text-center"
-                >
-                  <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-8">
-                    <AlertCircle size={48} className="text-[#52525b] mx-auto mb-4" />
-                    <p className="text-white font-semibold mb-2">No Application Found</p>
-                    <p className="text-[#a1a1aa] text-sm mb-6">
-                      You haven't submitted an ambassador application yet. Apply first to access the portal.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <motion.button
-                        onClick={() => navigate("/ambassadors/apply")}
-                        whileHover={{ scale: 1.03 }}
-                        className="bg-[#7c93c3] text-white font-bold px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2"
-                      >
-                        Apply Now <ArrowRight size={14} />
-                      </motion.button>
-                      <button onClick={() => { setNotFound(false); setArxonId(""); }} className="text-[#7c93c3] text-sm font-semibold py-3">
-                        Try Again
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {portalData && (
-                <motion.div
-                  key="portal"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="space-y-6"
-                >
-                  {/* Profile Header */}
-                  <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 md:p-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7c93c3]/30 to-[#5a7bbf]/20 border border-[#7c93c3]/20 flex items-center justify-center text-2xl font-bold text-[#7c93c3]">
-                        {portalData.application.full_name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-white font-bold text-xl">{portalData.application.full_name}</h3>
-                        <p className="text-[#a1a1aa] text-sm">{portalData.application.x_handle}</p>
-                        <p className="text-[#52525b] text-xs mt-1">ID: {portalData.application.arxon_account_id}</p>
-                      </div>
-                      <span className="px-4 py-1.5 rounded-full text-xs font-bold border capitalize text-[#7c93c3] bg-[#7c93c3]/10 border-[#7c93c3]/20">
-                        Active Trial
-                      </span>
-                    </div>
-
-                    {portalData.application.status === "approved" && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="bg-green-400/5 border border-green-400/15 rounded-xl p-4 mb-6"
-                      >
-                        <div className="flex items-start gap-3">
-                          <Award size={18} className="text-green-400 mt-0.5" />
-                          <div>
-                            <p className="text-green-400 text-sm font-semibold">🎉 Congratulations! You are an Official Arxon Ambassador!</p>
-                            <p className="text-green-400/70 text-xs mt-1">You'll receive your share of the reward pool at TGE.</p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Connect Mining App */}
-                    <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 mb-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          {miningConnected ? (
-                            <Wifi size={18} className="text-green-400" />
-                          ) : (
-                            <WifiOff size={18} className="text-[#52525b]" />
-                          )}
-                          <div>
-                            <p className="text-white text-sm font-semibold">Arxon Mining App</p>
-                            <p className="text-[#52525b] text-xs">
-                              {miningConnected 
-                                ? `Connected, ${referralCount} referrals synced` 
-                                : "Connect to sync referral data automatically"}
-                            </p>
-                          </div>
-                        </div>
-                        {miningConnected ? (
-                          <button
-                            onClick={handleDisconnectMining}
-                            className="px-4 py-2 rounded-lg bg-red-400/10 text-red-400 text-xs font-semibold hover:bg-red-400/20 transition-colors"
-                          >
-                            Disconnect
-                          </button>
-                        ) : (
-                          <motion.button
-                            onClick={handleConnectMining}
-                            disabled={connectingMining}
-                            whileHover={{ scale: 1.03 }}
-                            className="relative overflow-hidden px-4 py-2 rounded-lg bg-[#7c93c3]/15 text-[#7c93c3] text-xs font-semibold hover:bg-[#7c93c3]/25 transition-colors disabled:opacity-50"
-                          >
-                            {connectingMining ? "Connecting..." : "Connect App"}
-                          </motion.button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {[
-                        { label: "Posts", value: postCount, target: "8+", icon: MessageSquare },
-                        { label: "Spaces", value: spaceCount, target: "2+", icon: Users },
-                        { label: "Referrals", value: miningConnected ? referralCount : "N/A", target: "100+", icon: Globe },
-                        { label: "Total Submissions", value: portalData.submissions.length, target: "8", icon: FileText },
-                      ].map((stat, i) => (
-                        <motion.div
-                          key={stat.label}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.1 }}
-                          className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 text-center"
-                        >
-                          <stat.icon size={16} className="text-[#7c93c3] mx-auto mb-2" />
-                          <p className="text-white font-bold text-lg">{stat.value}</p>
-                          <p className="text-[#52525b] text-xs">{stat.label} (goal: {stat.target})</p>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Requirements Checklist */}
-                  <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6">
-                    <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
-                      <CheckCircle2 size={16} className="text-[#7c93c3]" />
-                      Requirements Checklist
-                    </h4>
-                    <div className="space-y-3">
-                      {[
-                        { label: "8+ quality tweets/threads posted", check: postCount >= 8, icon: MessageSquare },
-                        { label: "2+ Twitter Spaces hosted", check: spaceCount >= 2, icon: Users },
-                        { label: "100+ referrals via your link", check: miningConnected && referralCount >= 100, icon: Globe },
-                        { label: "#ArxonAmbassador hashtag usage", check: portalData.submissions.length > 0, icon: Hash },
-                        { label: "1-2 video content (bonus)", check: false, icon: Video },
-                      ].map((req, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.05 }}
-                          className={`flex items-center gap-3 p-3 rounded-xl border transition-colors ${
-                            req.check ? "bg-green-400/5 border-green-400/10" : "bg-white/[0.01] border-white/[0.04]"
-                          }`}
-                        >
-                          <CheckCircle2 size={16} className={req.check ? "text-green-400" : "text-[#3f3f46]"} />
-                          <req.icon size={14} className={req.check ? "text-green-400/60" : "text-[#52525b]"} />
-                          <span className={`text-sm ${req.check ? "text-white/80" : "text-[#52525b]"}`}>{req.label}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Submission Links */}
-                  <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6">
-                    <h4 className="text-white font-semibold mb-1">Submit Your Best Content</h4>
-                    <p className="text-[#a1a1aa] text-xs mb-5">Add your post or Spaces links (include "space" in notes for Spaces). Click "Add More" to add extra fields.</p>
-                    
-                    <div className="space-y-3">
-                      {submissionUrls.map((url, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.02 }}
-                          className="flex gap-2"
-                        >
-                          <div className="flex items-center justify-center w-7 text-[#52525b] text-xs shrink-0 font-mono">{i + 1}</div>
-                          <input
-                            className={`${inputClass} flex-1`}
-                            placeholder={`Post/Space URL ${i + 1}`}
-                            value={url}
-                            onChange={e => {
-                              const arr = [...submissionUrls];
-                              arr[i] = e.target.value;
-                              setSubmissionUrls(arr);
-                            }}
-                          />
-                          <input
-                            className={`${inputClass} w-24 sm:w-32`}
-                            placeholder="Notes"
-                            value={submissionNotes[i]}
-                            onChange={e => {
-                              const arr = [...submissionNotes];
-                              arr[i] = e.target.value;
-                              setSubmissionNotes(arr);
-                            }}
-                          />
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    <motion.button
-                      onClick={addMoreFields}
-                      whileHover={{ scale: 1.02 }}
-                      className="mt-3 flex items-center gap-2 text-[#7c93c3] text-xs font-semibold hover:text-[#a8b8d8] transition-colors"
-                    >
-                      <Plus size={14} /> Add More Fields
-                    </motion.button>
-
-                    <motion.button
-                      onClick={handleSubmitLinks}
-                      disabled={submitting}
-                      whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(124,147,195,0.3)" }}
-                      whileTap={{ scale: 0.98 }}
-                      className="mt-5 w-full relative overflow-hidden bg-[#7c93c3] text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
-                        animate={{ x: ["-200%", "200%"] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }}
-                      />
-                      <span className="relative z-10 flex items-center gap-2">
-                        {submitting ? "Submitting..." : <>Submit Links <Link2 size={14} /></>}
-                      </span>
-                    </motion.button>
-                  </div>
-
-                  <button onClick={() => { setPortalData(null); setArxonId(""); }} className="text-[#7c93c3] text-sm font-semibold flex items-center gap-2">
-                    <ArrowLeft size={14} /> Sign out of Portal
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+        <div className="pt-28 pb-20 px-6">{children}</div>
         <Footer />
       </div>
     </div>
+  );
+
+  /* ── LOGIN SCREEN ── */
+  if (!portalData) return (
+    <Wrap>
+      <div className="max-w-[820px] mx-auto">
+        <motion.button onClick={() => navigate("/ambassadors")}
+          initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-10 transition-colors">
+          <ArrowLeft size={12} /> BACK TO AMBASSADOR PROGRAM
+        </motion.button>
+
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-6 bg-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">PORTAL_ACCESS.auth</span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Ambassador Portal</h1>
+          <p className="text-white/35 font-mono text-xs">Track progress · submit content · manage your ambassador node</p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-[1fr_320px] gap-5 items-start">
+          {/* Login card */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="relative bg-[#0a0a0d] border border-white/[0.06] rounded-2xl overflow-hidden">
+            <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+            <div className="flex items-center gap-2 px-6 py-3.5 border-b border-white/[0.05]">
+              <Lock size={11} className="text-[#7c93c3]/40" />
+              <span className="font-mono text-[9px] text-white/25">portal.auth</span>
+              <div className="flex-1" />
+              <Pill label="SECURE" variant="blue" />
+            </div>
+            <div className="p-8">
+              <div className="w-12 h-12 rounded-xl bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center mb-6">
+                <Database size={20} className="text-[#7c93c3]" />
+              </div>
+              <h3 className="text-white font-bold text-lg mb-1">Access Your Node</h3>
+              <p className="text-white/40 text-sm mb-6">
+                Enter your Arxon Account ID to access your personal ambassador dashboard.{" "}
+                <button onClick={() => navigate("/ambassador-apply")} className="text-[#7c93c3]/70 hover:text-[#7c93c3] transition-colors">Haven't applied?</button>
+              </p>
+
+              <div className="flex gap-3 mb-4">
+                <input className={`${inputCls} flex-1`} placeholder="ARXON_ACCOUNT_ID"
+                  value={arxonId} onChange={e => setArxonId(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && lookupPortal()} />
+                <motion.button onClick={lookupPortal} disabled={loading || !arxonId.trim()}
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  className="relative overflow-hidden px-5 py-3 rounded-lg font-mono text-sm font-bold text-[#09090b] disabled:opacity-40 disabled:pointer-events-none shrink-0"
+                  style={{ background: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}>
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    {loading ? <Activity size={14} className="animate-spin" /> : <><ChevronRight size={14} /> GO</>}
+                  </span>
+                </motion.button>
+              </div>
+
+              <AnimatePresence>
+                {notFound && (
+                  <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="flex items-center gap-2.5 px-4 py-3 bg-red-400/[0.04] border border-red-400/15 rounded-lg">
+                    <AlertCircle size={13} className="text-red-400/70 shrink-0" />
+                    <p className="font-mono text-[10px] text-red-400/60">
+                      No application found for this ID.{" "}
+                      <button onClick={() => navigate("/ambassador-apply")} className="text-red-400/80 hover:text-red-400 underline">Apply now →</button>
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Info sidebar */}
+          <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-3">
+            {[
+              { icon: Shield, title: "Secure Access", desc: "Read-only with your Account ID. No password required." },
+              { icon: Server, title: "Track Progress", desc: "View submissions, referral count, and requirements status." },
+              { icon: Award, title: "Submit Content", desc: "Push your best 8 content pieces for evaluation." },
+            ].map((item, i) => (
+              <div key={i} className="relative bg-[#0a0a0d] border border-white/[0.05] rounded-xl p-4 overflow-hidden">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center shrink-0 mt-0.5">
+                    <item.icon size={14} className="text-[#7c93c3]/60" />
+                  </div>
+                  <div>
+                    <div className="text-white/75 font-semibold text-sm mb-0.5">{item.title}</div>
+                    <div className="text-white/35 text-xs">{item.desc}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </Wrap>
+  );
+
+  /* ── PORTAL DASHBOARD ── */
+  const isApproved = portalData.application.status === "approved";
+
+  return (
+    <Wrap>
+      <div className="max-w-[860px] mx-auto">
+        <motion.button onClick={() => { setPortalData(null); setArxonId(""); }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-8 transition-colors">
+          <ArrowLeft size={12} /> SIGN OUT OF PORTAL
+        </motion.button>
+
+        {/* System bar */}
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#0a0a0d] border border-white/[0.05] rounded-lg mb-6 font-mono text-[9px]">
+          <Terminal size={10} className="text-[#7c93c3]/40" />
+          <span className="text-white/20">ARXON://AMBASSADOR_PORTAL</span>
+          <span className="text-[#7c93c3]/25">/</span>
+          <span className="text-[#7c93c3]/50">{portalData.application.arxon_account_id}</span>
+          <div className="flex-1" />
+          <Pill label={isApproved ? "AMBASSADOR" : "ACTIVE_TRIAL"} variant={isApproved ? "green" : "blue"} />
+        </motion.div>
+
+        {/* Approved banner */}
+        <AnimatePresence>
+          {isApproved && (
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 px-5 py-4 bg-emerald-400/[0.04] border border-emerald-400/15 rounded-xl mb-5">
+              <Award size={16} className="text-emerald-400 shrink-0" />
+              <div>
+                <div className="text-emerald-400 font-semibold text-sm">Congratulations — Official Arxon Ambassador</div>
+                <div className="text-emerald-400/60 font-mono text-[10px] mt-0.5">ARX reward allocation confirmed · vest starts at TGE</div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Profile card */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+          className="relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl overflow-hidden mb-4">
+          <Corner pos="tl" /><Corner pos="tr" />
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.04] bg-white/[0.01]">
+            <Cpu size={10} className="text-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-white/20">NODE_IDENTITY</span>
+          </div>
+          <div className="p-5 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-[#7c93c3]/12 border border-[#7c93c3]/18 flex items-center justify-center font-mono text-lg font-bold text-[#7c93c3] shrink-0">
+              {portalData.application.full_name.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-white font-bold text-base">{portalData.application.full_name}</h3>
+              <p className="text-[#7c93c3]/60 font-mono text-xs">{portalData.application.x_handle}</p>
+              <p className="text-white/20 font-mono text-[9px] mt-0.5">ID: {portalData.application.arxon_account_id}</p>
+            </div>
+            <div className="hidden sm:flex items-center gap-2">
+              {miningConnected
+                ? <button onClick={() => { setMiningConnected(false); setReferralCount(0); toast.info("Disconnected."); }}
+                    className="font-mono text-[9px] text-red-400/60 bg-red-400/8 border border-red-400/15 px-3 py-1.5 rounded hover:bg-red-400/14 transition-colors">
+                    DISCONNECT
+                  </button>
+                : <motion.button onClick={handleConnectMining} disabled={connectingMining}
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    className="font-mono text-[9px] text-[#7c93c3]/70 bg-[#7c93c3]/8 border border-[#7c93c3]/18 px-3 py-1.5 rounded hover:bg-[#7c93c3]/14 transition-colors disabled:opacity-40 flex items-center gap-1.5">
+                    {connectingMining ? <><Activity size={9} className="animate-spin" /> SYNCING</> : <><Wifi size={9} /> SYNC MINING APP</>}
+                  </motion.button>
+              }
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stats grid */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          <StatCard icon={MessageSquare} label="POSTS" value={postCount} target="8+" met={postCount >= 8} />
+          <StatCard icon={Users} label="SPACES" value={spaceCount} target="2+" met={spaceCount >= 2} />
+          <StatCard icon={Globe} label="REFERRALS" value={miningConnected ? referralCount : "—"} target="100+" met={miningConnected && referralCount >= 100} />
+          <StatCard icon={Link2} label="SUBMISSIONS" value={portalData.submissions.length} target="8" met={portalData.submissions.length >= 8} />
+        </motion.div>
+
+        {/* Requirements */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+          className="relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl overflow-hidden mb-4">
+          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.04]">
+            <CheckCircle2 size={11} className="text-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-white/20">REQUIREMENTS_CHECKLIST</span>
+            <div className="flex-1" />
+            <span className="font-mono text-[9px] text-white/15">
+              {[postCount >= 8, spaceCount >= 2, miningConnected && referralCount >= 100, portalData.submissions.length > 0].filter(Boolean).length} / 4 MET
+            </span>
+          </div>
+          <div className="p-5 space-y-2">
+            <ReqRow icon={MessageSquare} label="8+ quality tweets / threads posted" met={postCount >= 8} />
+            <ReqRow icon={Users} label="2+ Twitter Spaces co-hosted" met={spaceCount >= 2} />
+            <ReqRow icon={Globe} label="100+ verified referrals via mining app" met={miningConnected && referralCount >= 100} />
+            <ReqRow icon={Hash} label="#ArxonAmbassador hashtag on all content" met={portalData.submissions.length > 0} />
+            <ReqRow icon={Video} label="1-2 video pieces (priority scoring weight)" met={false} bonus />
+          </div>
+        </motion.div>
+
+        {/* Submission panel */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+          className="relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl overflow-hidden">
+          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+          <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.04]">
+            <Link2 size={11} className="text-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-white/20">CONTENT_SUBMISSIONS</span>
+            <div className="flex-1" />
+            <span className="font-mono text-[9px] text-white/15">MAX 8 ITEMS · include "space" in notes for Spaces</span>
+          </div>
+          <div className="p-5">
+            <div className="space-y-2 mb-4">
+              {submissionUrls.map((url, i) => (
+                <motion.div key={i} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.025 }}
+                  className="flex items-center gap-2">
+                  <span className="font-mono text-[9px] text-white/18 w-6 shrink-0 text-right">{String(i + 1).padStart(2, "0")}</span>
+                  <input className={`${inputCls} flex-1`} placeholder={`Post / Space URL ${i + 1}`}
+                    value={url} onChange={e => { const a = [...submissionUrls]; a[i] = e.target.value; setSubmissionUrls(a); }} />
+                  <input className={`${inputCls} w-24 shrink-0`} placeholder="Notes"
+                    value={submissionNotes[i]} onChange={e => { const a = [...submissionNotes]; a[i] = e.target.value; setSubmissionNotes(a); }} />
+                </motion.div>
+              ))}
+            </div>
+
+            <button onClick={() => { setSubmissionUrls(p => [...p, ""]); setSubmissionNotes(p => [...p, ""]); }}
+              className="flex items-center gap-1.5 font-mono text-[10px] text-[#7c93c3]/50 hover:text-[#7c93c3]/80 transition-colors mb-5">
+              <Plus size={11} /> ADD MORE FIELDS
+            </button>
+
+            <motion.button onClick={handleSubmitLinks} disabled={submitting}
+              whileHover={{ scale: 1.01, boxShadow: "0 0 30px rgba(124,147,195,0.2)" }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full relative overflow-hidden flex items-center justify-center gap-2 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] disabled:opacity-50"
+              style={{ background: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}>
+              <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/18 to-transparent"
+                animate={{ x: ["-200%", "200%"] }} transition={{ duration: 2.5, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }} />
+              <span className="relative z-10 flex items-center gap-2">
+                {submitting ? <><Activity size={13} className="animate-spin" /> SUBMITTING...</> : <><Link2 size={13} /> SUBMIT LINKS <ArrowRight size={13} /></>}
+              </span>
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
+    </Wrap>
   );
 };
 
