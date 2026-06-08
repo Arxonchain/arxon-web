@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/toaster";
+﻿import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -49,6 +49,9 @@ const App = () => (
           <Route path="/investor-form" element={<InvestorForm />} />
           <Route path="/investor-admin" element={<InvestorAdmin />} />
           <Route path="/ambassadors" element={<Ambassadors />} />
+          <Route path="/ambassadors/apply" element={<AmbassadorApply />} />
+          <Route path="/ambassadors/portal" element={<AmbassadorPortal />} />
+          <Route path="/ambassadors/admin" element={<AmbassadorAdmin />} />
           <Route path="/ambassador-apply" element={<AmbassadorApply />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
           <Route path="/ambassador-admin" element={<AmbassadorAdmin />} />
