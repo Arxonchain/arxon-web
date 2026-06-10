@@ -239,25 +239,28 @@ const BarChart = () => (
 );
 
 const GlobalMining = () => (
-  <div className="min-h-screen bg-[#060810]">
+  <div className="min-h-screen bg-[#09090b] overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
     <Navbar />
-    <div className="pt-20 pb-12 px-4 md:px-6 max-w-[960px] mx-auto">
+    <div className="relative z-10 pt-28 pb-16 px-4 md:px-6 max-w-[960px] mx-auto">
       <BackButton />
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="mb-10"
       >
-        <div className="inline-flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.08] rounded-full px-3 py-1 mb-3">
-          <Globe size={12} className="text-[#7D93C4]" />
-          <span className="text-[10px] text-white/50 font-medium tracking-widest uppercase">Global Mining Network</span>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-px w-6 bg-[#7c93c3]/40" />
+          <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">GLOBAL_MINING_NETWORK.live</span>
+          <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent max-w-[80px]" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-emerald-400/20 bg-emerald-400/8 font-mono text-[9px] text-emerald-400/80"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"/>LIVE</span>
         </div>
-        <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
-          Where <span className="text-[#7D93C4]">Arxon</span> Miners Operate
+        <h1 className="text-[clamp(24px,4vw,44px)] font-bold text-white mb-2">
+          Where <span className="text-[#7c93c3]">Arxon</span> Miners Operate
         </h1>
-        <p className="text-white/35 text-xs md:text-sm max-w-md mx-auto">
-          Real-time overview of our decentralized mining network across 18 countries
+        <p className="text-white/35 text-sm max-w-md font-mono">
+          Decentralized mining network · 18 countries · real-time data
         </p>
       </motion.div>
 
@@ -265,8 +268,12 @@ const GlobalMining = () => (
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15 }}
-        className="rounded-xl border border-white/[0.06] bg-[#080a14] overflow-hidden mb-6"
+        className="rounded-xl border border-[#7c93c3]/15 bg-[#080a14] overflow-hidden mb-4"
       >
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.05]">
+          <Globe size={10} className="text-[#7c93c3]/40" />
+          <span className="font-mono text-[9px] text-white/20">WORLD_MAP / MINER_DISTRIBUTION</span>
+        </div>
         <DottedWorldMap />
       </motion.div>
 
@@ -274,16 +281,18 @@ const GlobalMining = () => (
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="rounded-xl border border-white/[0.06] bg-[#080a14] p-4 md:p-6"
+        className="rounded-xl border border-white/[0.06] bg-[#0a0a0d] overflow-hidden"
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.05]">
           <div className="flex items-center gap-2">
-            <TrendingUp size={14} className="text-[#7D93C4]" />
-            <span className="text-white/70 font-semibold text-xs tracking-widest uppercase">Top Mining Countries</span>
+            <TrendingUp size={11} className="text-[#7c93c3]/50" />
+            <span className="font-mono text-[9px] text-white/25 tracking-widest">TOP_MINING_COUNTRIES</span>
           </div>
-          <span className="text-white/20 text-[10px] tracking-wider uppercase">By % of Total Miners</span>
+          <span className="font-mono text-[8px] text-white/15">BY % OF TOTAL MINERS</span>
         </div>
-        <BarChart />
+        <div className="p-4 md:p-6">
+          <BarChart />
+        </div>
       </motion.div>
     </div>
     <Footer />
