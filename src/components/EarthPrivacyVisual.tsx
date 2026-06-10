@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import arxonLogo from "@/assets/arxon-icon.svg";
+import arxonLogo from "@/assets/arxon-logo-wide.svg";
 
 const BRAND_BLUE = "#7D93C4";
 const BRAND_BLUE_HSL = "hsl(220, 40%, 63%)";
