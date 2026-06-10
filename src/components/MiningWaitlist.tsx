@@ -91,14 +91,14 @@ const MiningWaitlist = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="rounded-xl border border-white/[0.06] overflow-hidden bg-[#0f0f13]"
+          className="relative rounded-xl border border-[#7c93c3]/14 overflow-hidden bg-[#0a0a0d]"
         >
           <div className="grid grid-cols-1 lg:grid-cols-5">
             {/* Left panel */}
             <div className="lg:col-span-2 p-8 md:p-10 flex flex-col justify-between border-r border-white/[0.04]">
               <div>
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-9 h-9 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center">
                     <Pickaxe size={16} className="text-[#7c93c3]" />
                   </div>
                   <span className="text-[#7c93c3] text-[11px] font-black uppercase tracking-[0.15em]">
@@ -132,13 +132,13 @@ const MiningWaitlist = () => {
                   onClick={() => navigate("/mining-choice")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-shimmer group flex items-center justify-center gap-2 w-full bg-[#7c93c3] text-white text-sm font-bold py-3 rounded-lg hover:bg-[#6b82b2] transition-all shadow-[0_0_30px_rgba(124,147,195,0.15)]"
+                  className="group flex items-center justify-center gap-2 w-full font-mono text-sm font-bold py-3 rounded-xl text-[#09090b] transition-all" style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}
                 >
                   Start Mining
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </a>
                 <p className="text-center text-[#3f3f46] text-[11px] mt-3 tracking-wide font-medium">
-                  web · android · ios
+                  web   android   ios
                 </p>
               </div>
             </div>
