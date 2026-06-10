@@ -174,7 +174,7 @@ const Hero = () => {
             <Terminal size={10} className="text-[#7c93c3]/40" />
             <span>ARXON</span><span className="text-[#7c93c3]/25">/</span>
             <span>PROTOCOLS</span><span className="text-[#7c93c3]/25">/</span>
-            <span className="text-[#7c93c3]/50">AMBASSADOR CAMPAIGN</span>
+            <span className="text-[#7c93c3]/50">AMBASSADOR_NODE</span>
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent" />
           <span className="font-mono text-[9px] text-white/15">{ts}</span>
@@ -187,20 +187,20 @@ const Hero = () => {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
               className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#7c93c3]/20 bg-[#7c93c3]/5 rounded font-mono text-[9px] text-[#7c93c3]/80 tracking-widest uppercase mb-6">
               <Radio size={8} className="animate-pulse" />
-              Arxon Ambassador Campaign v1.0 · 30-Day Campaign · $100K ARX Allocation
+              Protocol v1.0 · 30-Day Campaign · $100K ARX Allocation
             </motion.div>
 
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="text-[clamp(38px,5.5vw,68px)] font-bold leading-[1.04] tracking-tight text-white mb-6">
-              ARXON<br />
+              Ambassador<br />
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#7c93c3,#a8b8d8 50%,#7c93c3)" }}>
-                Ambassador Program
+                Node Program
               </span>
             </motion.h1>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
               className="text-white/45 text-[15px] leading-relaxed max-w-[500px] mb-10">
-              Get deployed as Arxon Blockchain representative in your country and community. 30 days of verified output. 
+              Deploy yourself as a signal node in the Arxon network. 30 days of verified output. 
               Quality over vanity metrics. Share the $100,000 ARX reward pool at TGE.
             </motion.p>
 
@@ -211,6 +211,7 @@ const Hero = () => {
               {[
                 { label: "REWARD_POOL", val: "$100K", sub: "ARX Token" },
                 { label: "DURATION", val: "30D", sub: "Challenge" },
+                { label: "VEST_PERIOD", val: "12MO", sub: "Post-TGE" },
               ].map((m, i) => (
                 <div key={i} className="flex-1 px-5 py-4 border-r border-white/[0.06] last:border-0">
                   <div className="font-mono text-[9px] text-white/20 mb-1 tracking-widest">{m.label}</div>
@@ -254,8 +255,8 @@ const Hero = () => {
               className="absolute -bottom-4 -left-4 z-20 bg-[#0c0c10] border border-emerald-400/20 rounded-lg px-4 py-3 shadow-xl flex items-center gap-2.5">
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <div>
-                <div className="font-mono text-[9px] text-white font-semibold">CAMPAIGN STATUS</div>
-                <div className="font-mono text-[9px] text-emerald-400">ACCEPTING APPLICATIONS</div>
+                <div className="font-mono text-[9px] text-white font-semibold">NODE_STATUS</div>
+                <div className="font-mono text-[9px] text-emerald-400">ACCEPTING_APPLICATIONS</div>
               </div>
             </motion.div>
 
@@ -265,7 +266,7 @@ const Hero = () => {
                 <div className="flex gap-1.5">
                   {["bg-white/8","bg-white/8","bg-white/8"].map((c,i) => <div key={i} className={`w-2.5 h-2.5 rounded-full ${c}`} />)}
                 </div>
-                <span className="font-mono text-[9px] text-white/25 ml-2">arxon://ambassador Challenge.sh</span>
+                <span className="font-mono text-[9px] text-white/25 ml-2">arxon://ambassador_protocol.sh</span>
                 <div className="flex-1" />
                 <Activity size={9} className="text-[#7c93c3]/40 animate-pulse" />
               </div>
@@ -275,10 +276,11 @@ const Hero = () => {
                 <TypeLine text="  ↳ Verifying ARX TGE contract binding..." delay={1.5} />
                 <TypeLine text="  ↳ Loading node eligibility criteria..." delay={2.1} />
                 <TypeLine text="" delay={2.6} />
-                <TypeLine text="[PASS] POOL SIZE          = 100,000 ARX" delay={2.9} color="text-emerald-400/60" />
-                <TypeLine text="[PASS] CAMPAIGN DURATION  = 30 DAYS" delay={3.3} color="text-emerald-400/60" />
-                <TypeLine text="[PASS] SELECTION MODE     = QUALITY FIRST" delay={4.1} color="text-emerald-400/60" />
-                <TypeLine text="[PASS] CHAIN              = ARXONCHAIN" delay={4.5} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] POOL_SIZE          = 100,000 ARX" delay={2.9} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] CAMPAIGN_DURATION  = 30 DAYS" delay={3.3} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] VEST_SCHEDULE      = 12 MONTHS" delay={3.7} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] SELECTION_MODE     = QUALITY_FIRST" delay={4.1} color="text-emerald-400/60" />
+                <TypeLine text="[PASS] CHAIN              = ARXON_MAINNET" delay={4.5} color="text-emerald-400/60" />
                 <TypeLine text="" delay={4.9} />
                 <TypeLine text="[INFO] Min requirements: 8 posts + 100 referrals" delay={5.2} />
                 <TypeLine text="[INFO] Video content earns priority scoring" delay={5.6} />
@@ -304,8 +306,8 @@ const modules = [
     id: "MOD-001", icon: TrendingUp, label: "REWARD_NODE",
     title: "ARX Reward Pool",
     spec: "$100,000 · TGE-linked · 12mo vest",
-    desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE.",
-    tags: ["ARX_TOKEN","TGE_LINKED","QUALITY_SCORED"],
+    desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE and vested linearly over 12 months.",
+    tags: ["ARX_TOKEN","TGE_LINKED","12MO_VEST","QUALITY_SCORED"],
     status: "green" as const,
   },
   {
@@ -337,7 +339,7 @@ const BenefitsSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-14">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-8 bg-[#7c93c3]/40" />
-            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">Campaign modules.config</span>
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">node_modules.config</span>
           </div>
           <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
             What You <span className="text-[#7c93c3]">Deploy Into</span>
@@ -389,19 +391,19 @@ const BenefitsSection = () => {
    PROTOCOL / HOW IT WORKS
 ═══════════════════════════════════════════════ */
 const steps = [
-  { seq: "01", cmd: "PARTICIPATE IN MINING", title: "Create Arxon Mining Account", desc: "Initialize your identity at arxonchain.xyz. Your mining account ID becomes your ambassador credential and referral tracking key.", params: ["NETWORK=ARXON","ACCOUNT TYPE=MINING"] },
-  { seq: "02", cmd: "SUBMIT APPLICATION", title: "Fill Your Application Form", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
-  { seq: "03", cmd: "PARTICIPATE IN THE 30D CHALLENGE", title: "Execute the 30-Day Ambassador Challenge", desc: "Post quality content, host Spaces, drive referrals, and tag #ArxonAmbassador. Every action builds your scoring index.", params: ["DURATION=30 DAYS","MODE=QUALITY FIRST","TAG=#ArxonAmbassador"] },
-  { seq: "04", cmd: "PUSH DELIVERABLES", title: "Submit Your Best Work", desc: "Access your personal portal and push up to 8 top-performing content pieces to the evaluation queue.", params: ["MAX_ITEMS=8","PORTAL_REQUIRED=TRUE","DEADLINE=END_OF_CAMPAIGN"] },
-  { seq: "05", cmd: "CLAIM ALLOCATION", title: "Selection & Reward Allocation", desc: "Top performers are minted as official Arxon Ambassadors. ARX allocations distribute at TGE.", params: ["TOKEN=ARX","TRIGGER=TGE EVENT"] },
+  { seq: "01", cmd: "REGISTER_NODE", title: "Create Arxon Mining Account", desc: "Initialize your identity at arxonchain.xyz. Your mining account ID becomes your ambassador credential and referral tracking key.", params: ["NETWORK=ARXON","ACCOUNT_TYPE=MINING"] },
+  { seq: "02", cmd: "SUBMIT_APPLICATION", title: "Deploy Your Application", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
+  { seq: "03", cmd: "RUN_30D_CHALLENGE", title: "Execute the 30-Day Protocol", desc: "Post quality content, host Spaces, drive referrals, and tag #ArxonAmbassador. Every action builds your scoring index.", params: ["DURATION=30_DAYS","MODE=QUALITY_FIRST","TAG=#ArxonAmbassador"] },
+  { seq: "04", cmd: "PUSH_DELIVERABLES", title: "Submit Your Best Work", desc: "Access your personal portal and push up to 8 top-performing content pieces to the evaluation queue.", params: ["MAX_ITEMS=8","PORTAL_REQUIRED=TRUE","DEADLINE=END_OF_CAMPAIGN"] },
+  { seq: "05", cmd: "CLAIM_ALLOCATION", title: "Selection & Reward Allocation", desc: "Top performers are minted as official Arxon Ambassadors. ARX allocations distribute at TGE, vested linearly over 12 months.", params: ["TOKEN=ARX","VEST=12_MONTHS","TRIGGER=TGE_EVENT"] },
 ];
 
 const requirements = [
-  { icon: MessageSquare, cmd: "POST CONTENT", req: "Minimum 8 quality tweets/threads about Arxon", type: "REQUIRED" },
-  { icon: Users, cmd: "HOST SPACES", req: "2+ Twitter Spaces co-hosted with @ARXONarx", type: "REQUIRED" },
-  { icon: Globe, cmd: "DRIVE REFERRALS", req: "100+ verified new users via your referral link", type: "REQUIRED" },
-  { icon: Hash, cmd: "TAG PROTOCOL", req: "#ArxonAmbassador on all content + @ARXONarx mentions", type: "REQUIRED" },
-  { icon: Video, cmd: "CREATE VIDEO", req: "1-2 video pieces, unlocks priority scoring weight", type: "BONUS" },
+  { icon: MessageSquare, cmd: "POST_CONTENT", req: "Minimum 8 quality tweets/threads about Arxon", type: "REQUIRED" },
+  { icon: Users, cmd: "HOST_SPACES", req: "2+ Twitter Spaces co-hosted with @ARXONarx", type: "REQUIRED" },
+  { icon: Globe, cmd: "DRIVE_REFERRALS", req: "100+ verified new users via your referral link", type: "REQUIRED" },
+  { icon: Hash, cmd: "TAG_PROTOCOL", req: "#ArxonAmbassador on all content + @ARXONarx mentions", type: "REQUIRED" },
+  { icon: Video, cmd: "CREATE_VIDEO", req: "1-2 video pieces — unlocks priority scoring weight", type: "BONUS" },
 ];
 
 const ProtocolSection = () => {
@@ -419,10 +421,10 @@ const ProtocolSection = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-14">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-8 bg-[#7c93c3]/40" />
-            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">Campaign.execution</span>
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest uppercase">protocol.execution</span>
           </div>
           <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
-            Campaign <span className="text-[#7c93c3]">Execution</span>
+            Execution <span className="text-[#7c93c3]">Protocol</span>
           </h2>
           <p className="font-mono text-xs text-white/25">5 sequential operations · all required for selection eligibility</p>
         </motion.div>
