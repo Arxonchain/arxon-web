@@ -2,198 +2,110 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Wallet, Sparkles, Vote, Package, ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-type UseCase = {
-  icon: React.ElementType;
-  title: string;
-  year: string;
-  description: string;
-  features: string[];
-};
+type UseCase = { icon: React.ElementType; id: string; title: string; year: string; description: string; features: string[] };
 
 const useCases: UseCase[] = [
-  {
-    icon: Wallet,
-    title: "Private Payments",
-    year: "2026",
-    description: "Handle as low as $5 to $1B+ transactions with complete privacy. Perfect for businesses, corporations, and individuals.",
-    features: ["QR code payments like Venmo", "Digital receipts (ZKP-based)", "Real-time dashboards", "Dispute resolution system"],
-  },
-  {
-    icon: Sparkles,
-    title: "Token & NFTs Creation",
-    year: "2026",
-    description: "Launch memecoins, NFTs and custom tokens with anonymous sales tracking to prevent rug pulls.",
-    features: ["One-click token creation", "Anonymous sales monitoring", "Market panic prevention", "Public trend dashboards"],
-  },
-  {
-    icon: Vote,
-    title: "Onchain Voting",
-    year: "2026",
-    description: "Enable individual, organisations, local to national elections with complete voter's privacy and one-vote-per-person verification.",
-    features: ["Hashed ID verification", "Anonymous vote casting", "Tamper-proof results", "Audit-ready receipts"],
-  },
-  {
-    icon: Package,
-    title: "Supply Chain",
-    year: "2026",
-    description: "Track private shipments worth billions, sharing data only with authorized parties.",
-    features: ["End-to-end tracking", "Selective data sharing", "Multi-billion $ capacity", "Enterprise integration"],
-  },
+  { id:"UC-001", icon:Wallet, title:"Private Payments", year:"2026", description:"Handle as low as $5 to $1B+ transactions with complete privacy. Perfect for businesses, corporations, and individuals.", features:["QR code payments like Venmo","Digital receipts (ZKP-based)","Real-time dashboards","Dispute resolution system"] },
+  { id:"UC-002", icon:Sparkles, title:"Token & NFTs Creation", year:"2026", description:"Launch memecoins, NFTs and custom tokens with anonymous sales tracking to prevent rug pulls.", features:["One-click token creation","Anonymous sales monitoring","Market panic prevention","Public trend dashboards"] },
+  { id:"UC-003", icon:Vote, title:"Onchain Voting", year:"2026", description:"Enable individual, organisations, local to national elections with complete voter's privacy and one-vote-per-person verification.", features:["Hashed ID verification","Anonymous vote casting","Tamper-proof results","Audit-ready receipts"] },
+  { id:"UC-004", icon:Package, title:"Supply Chain", year:"2026", description:"Track private shipments worth billions, sharing data only with authorized parties.", features:["End-to-end tracking","Selective data sharing","Multi-billion $ capacity","Enterprise integration"] },
 ];
 
-const UseCaseCard = ({ uc, i, inView }: { uc: UseCase; i: number; inView: boolean }) => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={inView ? { opacity: 1 } : {}}
-    transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
-    className="bg-[#09090b] p-8 md:p-10 hover:bg-[#0f0f13] transition-colors duration-300 group"
-  >
-    <div className="flex items-start justify-between mb-6">
-      <div className="w-10 h-10 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center group-hover:border-[#7c93c3]/20 transition-colors">
-        <uc.icon size={18} strokeWidth={1.5} className="text-[#52525b] group-hover:text-[#7c93c3] transition-colors" />
-      </div>
-      <span className="text-[#3f3f46] text-[11px] tracking-wide font-bold">{uc.year}</span>
-    </div>
-    <h3 className="text-white text-lg md:text-xl font-bold mb-2 flex items-center gap-2">
-      {uc.title}
-      <ArrowUpRight size={14} className="text-[#3f3f46] group-hover:text-[#7c93c3] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-    </h3>
-    <p className="text-[#52525b] text-[13px] leading-relaxed mb-6 font-light">{uc.description}</p>
-    <ul className="space-y-1.5">
-      {uc.features.map((f, j) => (
-        <li key={j} className="text-[#3f3f46] text-[12px] flex items-center gap-2 group-hover:text-[#52525b] transition-colors font-medium">
-          <span className="w-1 h-1 rounded-full bg-[#3f3f46] group-hover:bg-[#7c93c3]/50 transition-colors" />
-          {f}
-        </li>
-      ))}
-    </ul>
-  </motion.div>
-);
-
-const MobileUseCaseCarousel = ({ inView }: { inView: boolean }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const totalPages = Math.ceil(useCases.length / 2);
-
-  const goTo = (dir: -1 | 1) => {
-    const next = Math.max(0, Math.min(totalPages - 1, activeIndex + dir));
-    setActiveIndex(next);
-    if (scrollRef.current) {
-      const card = scrollRef.current.children[next * 2] as HTMLElement;
-      card?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-    }
-  };
-
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const container = scrollRef.current;
-    const scrollLeft = container.scrollLeft;
-    const cardWidth = (container.children[0] as HTMLElement)?.offsetWidth || 1;
-    const gap = 12;
-    setActiveIndex(Math.round(scrollLeft / ((cardWidth + gap) * 2)));
-  };
-
-  return (
-    <div className="md:hidden relative">
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      >
-        {useCases.map((uc, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.4, delay: i * 0.03 }}
-            className="flex-shrink-0 w-[calc(50%-6px)] snap-start rounded-xl border border-white/[0.06] bg-[#0f0f13] p-5 group"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center">
-                <uc.icon size={14} strokeWidth={1.5} className="text-[#7c93c3]" />
-              </div>
-              <span className="text-[#3f3f46] text-[10px] tracking-wide font-bold">{uc.year}</span>
-            </div>
-            <h3 className="text-white text-[14px] font-bold mb-1.5">{uc.title}</h3>
-            <p className="text-[#52525b] text-[11px] leading-relaxed mb-3 font-light line-clamp-3">{uc.description}</p>
-            <ul className="space-y-1">
-              {uc.features.slice(0, 3).map((f, j) => (
-                <li key={j} className="text-[#3f3f46] text-[10px] flex items-center gap-1.5 font-medium">
-                  <span className="w-1 h-1 rounded-full bg-[#7c93c3]/50" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-center gap-4 mt-4">
-        <button
-          onClick={() => goTo(-1)}
-          disabled={activeIndex === 0}
-          className="w-9 h-9 rounded-full border border-white/[0.08] flex items-center justify-center text-white/60 hover:text-white hover:border-white/20 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        <div className="flex gap-1.5">
-          {Array.from({ length: totalPages }).map((_, i) => (
-            <div
-              key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? "bg-[#7c93c3] w-4" : "bg-white/20"}`}
-            />
-          ))}
-        </div>
-        <button
-          onClick={() => goTo(1)}
-          disabled={activeIndex === totalPages - 1}
-          className="w-9 h-9 rounded-full border border-white/[0.08] flex items-center justify-center text-white/60 hover:text-white hover:border-white/20 transition-all disabled:opacity-20 disabled:cursor-not-allowed"
-        >
-          <ChevronRight size={16} />
-        </button>
-      </div>
-    </div>
-  );
+const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
+  const c={tl:"top-0 left-0 border-t border-l",tr:"top-0 right-0 border-t border-r",bl:"bottom-0 left-0 border-b border-l",br:"bottom-0 right-0 border-b border-r"}[pos];
+  return <div className={`absolute ${c} w-3 h-3 border-[#7c93c3]/25`} />;
 };
 
 const UseCases = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const goTo = (dir: -1|1) => {
+    const next = Math.max(0,Math.min(useCases.length-1,activeIndex+dir));
+    setActiveIndex(next);
+    const card = scrollRef.current?.children[next] as HTMLElement;
+    card?.scrollIntoView({ behavior:"smooth", block:"nearest", inline:"center" });
+  };
 
   return (
-    <section className="relative bg-[#09090b] py-24 md:py-32" ref={ref}>
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+    <section className="relative bg-[#080810] py-24 md:py-32" ref={ref}>
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/10 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/8 to-transparent" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.015]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"80px 80px"}} />
 
       <div className="max-w-[1200px] mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-[44px] leading-[1.1] tracking-[-0.03em] text-white font-extralight">
-            Everything in{" "}
-            <span className="text-[#7c93c3] font-bold">your control</span>
+        <motion.div initial={{opacity:0,y:24}} animate={inView?{opacity:1,y:0}:{}} className="mb-14">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-6 bg-[#7c93c3]/40" />
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">use_cases.registry</span>
+          </div>
+          <h2 className="text-[clamp(28px,4vw,44px)] font-bold text-white mb-2">
+            Built for <span className="text-[#7c93c3]">real-world scale</span>
           </h2>
-          <p className="mt-5 text-[#71717a] text-base max-w-[520px] mx-auto font-light">
-            All the features you need to transact privately, create tokens, vote securely,
-            and manage supply chains, without the friction.
-          </p>
+          <p className="font-mono text-xs text-white/25">4 modules · all shipping 2026</p>
         </motion.div>
 
-        {/* Desktop: 2-column grid */}
-        <div className="hidden md:grid grid-cols-2 gap-px bg-white/[0.04] rounded-xl overflow-hidden border border-white/[0.06]">
-          {useCases.map((uc, i) => (
-            <UseCaseCard key={i} uc={uc} i={i} inView={inView} />
+        {/* Desktop 4-col grid */}
+        <div className="hidden md:grid grid-cols-4 gap-px bg-white/[0.04] rounded-xl overflow-hidden border border-white/[0.06]">
+          {useCases.map((uc,i) => (
+            <motion.div key={i} initial={{opacity:0}} animate={inView?{opacity:1}:{}} transition={{delay:0.1+i*0.08}}
+              className="relative bg-[#09090b] p-8 hover:bg-[#0c0c10] transition-colors duration-300 group overflow-hidden">
+              <Corner pos="tl"/>
+              <div className="flex items-start justify-between mb-6">
+                <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center group-hover:bg-[#7c93c3]/14 transition-colors">
+                  <uc.icon size={16} className="text-[#7c93c3]/60 group-hover:text-[#7c93c3] transition-colors" />
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <span className="font-mono text-[8px] text-white/15">{uc.id}</span>
+                  <span className="font-mono text-[8px] text-[#7c93c3]/40">{uc.year}</span>
+                </div>
+              </div>
+              <h3 className="text-white text-[15px] font-bold mb-2 flex items-center gap-1">
+                {uc.title}
+                <ArrowUpRight size={12} className="text-white/20 group-hover:text-[#7c93c3] transition-colors" />
+              </h3>
+              <p className="text-white/35 text-[12px] leading-relaxed mb-5">{uc.description}</p>
+              <ul className="space-y-1.5">
+                {uc.features.map((f,j) => (
+                  <li key={j} className="text-white/25 text-[11px] flex items-center gap-2 group-hover:text-white/40 transition-colors">
+                    <span className="w-1 h-1 rounded-full bg-[#7c93c3]/30 shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           ))}
         </div>
 
-        {/* Mobile: horizontal carousel */}
-        <MobileUseCaseCarousel inView={inView} />
+        {/* Mobile carousel */}
+        <div className="md:hidden">
+          <div ref={scrollRef} className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4">
+            {useCases.map((uc,i) => (
+              <div key={i} className="snap-center shrink-0 w-[calc(85vw-32px)] relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl p-6">
+                <Corner pos="tl"/>
+                <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center mb-5">
+                  <uc.icon size={16} className="text-[#7c93c3]/60" />
+                </div>
+                <div className="font-mono text-[8px] text-[#7c93c3]/40 mb-1">{uc.id}</div>
+                <h3 className="text-white font-bold mb-2">{uc.title}</h3>
+                <p className="text-white/35 text-xs leading-relaxed mb-4">{uc.description}</p>
+                <ul className="space-y-1">
+                  {uc.features.map((f,j)=><li key={j} className="text-white/25 text-[11px] flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-[#7c93c3]/30" />{f}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 mt-4 justify-center">
+            <button onClick={()=>goTo(-1)} className="w-8 h-8 rounded-lg border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/80 transition-all"><ChevronLeft size={14}/></button>
+            <div className="flex gap-1.5">
+              {useCases.map((_,i)=><div key={i} className={`h-1 rounded-full transition-all ${i===activeIndex?"w-6 bg-[#7c93c3]":"w-1.5 bg-white/15"}`}/>)}
+            </div>
+            <button onClick={()=>goTo(1)} className="w-8 h-8 rounded-lg border border-white/[0.06] flex items-center justify-center text-white/40 hover:text-white/80 transition-all"><ChevronRight size={14}/></button>
+          </div>
+        </div>
       </div>
     </section>
   );
 };
-
 export default UseCases;
