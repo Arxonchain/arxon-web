@@ -1,241 +1,138 @@
 import { motion } from "framer-motion";
-import { Download, Shield, Globe, Vote, Code, Coins, FileText, ArrowRight, Users, Lock, Eye, Zap, Terminal, Database, CheckCircle2, Clock, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Globe, Smartphone, ArrowRight, Download, ArrowLeft, Zap, Shield, Clock, CheckCircle2 } from "lucide-react";
+import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import arxonLogo from "@/assets/arxon-logo-wide.svg";
-import { useNavigate } from "react-router-dom";
 
-const sv = { hidden:{opacity:0,y:24}, visible:{opacity:1,y:0,transition:{duration:0.6}} };
+const AndroidIcon = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+    <path d="M17.523 15.341 14.63 10.5l2.893-4.841a.5.5 0 0 0-.863-.505L13.77 9.993a5.978 5.978 0 0 0-3.54 0L7.34 5.154a.5.5 0 0 0-.863.505L9.37 10.5l-2.893 4.841a.5.5 0 0 0 .863.505l2.517-4.196A6.012 6.012 0 0 0 12 12a6.012 6.012 0 0 0 2.143-.35l2.517 4.196a.5.5 0 0 0 .863-.505zM12 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm-3 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+  </svg>
+);
+
+const steps = [
+  { num:"01", cmd:"DOWNLOAD_APK", title:"Download the APK", desc:"Tap the download button and save the file to your Android device." },
+  { num:"02", cmd:"ALLOW_SOURCES", title:"Allow Unknown Sources", desc:'Go to Settings → Security → enable "Install from Unknown Sources" or "Install Unknown Apps".' },
+  { num:"03", cmd:"INSTALL_APP", title:"Open & Install", desc:"Open the downloaded APK from your notifications or file manager and tap Install." },
+  { num:"04", cmd:"CREATE_ACCOUNT", title:"Create Your Account", desc:"Launch the Arxon app, create your account and start earning ARX tokens immediately." },
+];
 
 const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
   const c={tl:"top-0 left-0 border-t border-l",tr:"top-0 right-0 border-t border-r",bl:"bottom-0 left-0 border-b border-l",br:"bottom-0 right-0 border-b border-r"}[pos];
-  return <div className={`absolute ${c} w-4 h-4 border-[#7c93c3]/30`}/>;
+  return <div className={`absolute ${c} w-4 h-4 border-[#a8c3f0]/30`} />;
 };
 
-const SectionHead = ({ icon:Icon, id, label, title }: { icon:any; id:string; label:string; title:string }) => (
-  <div className="flex items-center gap-3 mb-6">
-    <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center shrink-0">
-      <Icon size={16} className="text-[#7c93c3]"/>
-    </div>
-    <div>
-      <div className="font-mono text-[8px] text-[#7c93c3]/40 tracking-widest mb-0.5">{id}</div>
-      <h2 className="text-xl font-bold text-white">{title}</h2>
-    </div>
-  </div>
-);
-
-const Card = ({ children, className="" }: { children:React.ReactNode; className?:string }) => (
-  <div className={`relative p-5 rounded-xl bg-[#0a0a0d] border border-white/[0.06] overflow-hidden hover:border-[#7c93c3]/18 transition-colors ${className}`}>
-    <Corner pos="tl"/>
-    {children}
-  </div>
-);
-
-const Litepaper = () => {
+const MiningChoice = () => {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-[#09090b]">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.016]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}}/>
+    <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
+      <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 0%,rgba(124,147,195,0.06) 0%,transparent 60%)"}} />
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative pt-28 pb-16 px-6 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 30%,rgba(124,147,195,0.06) 0%,transparent 65%)"}}/>
-        <div className="max-w-3xl mx-auto relative z-10">
+      <div className="relative z-10 pt-28 pb-20 px-6">
+        <div className="max-w-[1100px] mx-auto">
           <motion.button onClick={()=>navigate(-1)} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}}
-            className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-10 transition-colors">
+            className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/60 hover:text-[#a8c3f0] mb-10 transition-colors">
             <ArrowLeft size={12}/>BACK
           </motion.button>
-          <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="text-center">
-            <motion.div initial={{scale:0.8,opacity:0}} animate={{scale:1,opacity:1}} transition={{duration:0.5}}
-              className="w-16 h-16 rounded-2xl bg-[#7c93c3]/10 border border-[#7c93c3]/20 flex items-center justify-center mx-auto mb-6">
-              <img src={arxonLogo} alt="Arxon" className="w-10"/>
-            </motion.div>
-            <div className="flex items-center justify-center gap-2 mb-5">
-              <div className="h-px w-8 bg-[#7c93c3]/30"/>
-              <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">LITEPAPER_2026 · INFORMATIONAL_ONLY</span>
-              <div className="h-px w-8 bg-[#7c93c3]/30"/>
+
+          <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="mb-12 text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="h-px w-6 bg-[#a8c3f0]/40"/>
+              <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">MINING_BOOTSTRAP.init</span>
+              <div className="h-px w-6 bg-[#a8c3f0]/40"/>
             </div>
-            <h1 className="text-[clamp(28px,5vw,52px)] font-bold text-white mb-4 leading-tight">
-              Sovereign Privacy Blockchain<br/>
-              <span className="text-[#7c93c3]">for the Unbanked World</span>
+            <h1 className="text-[clamp(28px,4vw,52px)] font-bold text-white mb-3">
+              Start Mining <span className="text-[#a8c3f0]">$ARX</span>
             </h1>
-            <p className="text-white/40 text-sm italic mb-8">"Financial sovereignty is not a privilege. It is a right."</p>
-            <motion.a href="/Arxon_Litepaper_2026.pdf" download whileHover={{scale:1.02}} whileTap={{scale:0.97}}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-mono text-sm font-bold text-[#09090b]"
-              style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}>
-              <Download size={14}/> DOWNLOAD LITEPAPER
-            </motion.a>
+            <p className="text-white/55 text-sm max-w-[480px] mx-auto">Mine ARX points from your phone or browser. No expensive hardware required.</p>
+          </motion.div>
+
+          {/* Two options */}
+          <div className="grid md:grid-cols-2 gap-5 mb-16">
+            {/* APK Download */}
+            <motion.div initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{delay:0.1}}
+              className="relative bg-[#0a0a0d] border border-white/[0.10] rounded-2xl overflow-hidden hover:border-[#a8c3f0]/25 transition-all duration-500 group">
+              <Corner pos="tl"/><Corner pos="tr"/><Corner pos="bl"/><Corner pos="br"/>
+              <div className="flex items-center gap-2 px-6 py-3.5 border-b border-white/[0.09]">
+                <AndroidIcon />
+                <span className="font-mono text-[9px] text-white/65 tracking-widest ml-1">ANDROID_APK</span>
+                <div className="flex-1"/>
+                <span className="font-mono text-[8px] text-emerald-400/60 bg-emerald-400/8 border border-emerald-400/15 px-2 py-0.5 rounded">AVAILABLE</span>
+              </div>
+              <div className="p-8">
+                <div className="w-14 h-14 rounded-xl bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 flex items-center justify-center mb-6 group-hover:bg-[#a8c3f0]/14 transition-colors">
+                  <Smartphone size={24} className="text-[#a8c3f0]"/>
+                </div>
+                <h2 className="text-white text-xl font-bold mb-2">Android App</h2>
+                <p className="text-white/60 text-sm mb-6">Download the official Arxon mining app for Android. Mine ARX-P points directly from your mobile device.</p>
+                <motion.a href="/Arxon-Mining-App.apk" download
+                  whileHover={{scale:1.02,boxShadow:"0 0 30px rgba(124,147,195,0.25)"}} whileTap={{scale:0.97}}
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-mono text-sm font-bold text-[#09090b] mb-4"
+                  style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}>
+                  <Download size={14}/> DOWNLOAD APK
+                </motion.a>
+                <div className="flex items-start gap-2 px-3 py-2.5 bg-amber-400/[0.04] border border-amber-400/12 rounded-lg">
+                  <Shield size={11} className="text-amber-400/60 shrink-0 mt-0.5"/>
+                  <p className="font-mono text-[9px] text-amber-400/50 leading-relaxed">Direct APK — allow unknown sources in settings to install</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Web / iOS */}
+            <motion.div initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{delay:0.15}}
+              className="relative bg-[#0a0a0d] border border-white/[0.10] rounded-2xl overflow-hidden group">
+              <Corner pos="tl"/><Corner pos="tr"/><Corner pos="bl"/><Corner pos="br"/>
+              <div className="flex items-center gap-2 px-6 py-3.5 border-b border-white/[0.09]">
+                <Globe size={12} className="text-white/50"/>
+                <span className="font-mono text-[9px] text-white/65 tracking-widest ml-1">WEB_&_IOS</span>
+                <div className="flex-1"/>
+                <span className="font-mono text-[8px] text-[#a8c3f0]/60 bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 px-2 py-0.5 rounded">COMING_SOON</span>
+              </div>
+              <div className="p-8">
+                <div className="w-14 h-14 rounded-xl bg-white/[0.03] border border-white/[0.10] flex items-center justify-center mb-6">
+                  <Globe size={24} className="text-white/65"/>
+                </div>
+                <h2 className="text-white text-xl font-bold mb-2">Web & iOS</h2>
+                <p className="text-white/60 text-sm mb-6">Mine directly from any web browser or iOS device. Full cross-platform support launching soon.</p>
+                <div className="w-full py-3.5 rounded-xl font-mono text-sm font-bold text-white/60 border border-white/[0.10] flex items-center justify-center gap-2 cursor-not-allowed mb-4">
+                  <Clock size={14}/> COMING JAN 2026
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2.5 bg-[#a8c3f0]/[0.04] border border-[#a8c3f0]/12 rounded-lg">
+                  <Zap size={11} className="text-[#a8c3f0]/60 shrink-0"/>
+                  <p className="font-mono text-[9px] text-[#a8c3f0]/50">Join the waitlist to be first notified</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Install guide */}
+          <motion.div initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}}
+            className="relative bg-[#0a0a0d] border border-white/[0.10] rounded-2xl overflow-hidden">
+            <Corner pos="tl"/><Corner pos="tr"/>
+            <div className="flex items-center gap-2 px-6 py-3.5 border-b border-white/[0.09]">
+              <span className="font-mono text-[9px] text-white/60 tracking-widest">INSTALL_GUIDE.sh</span>
+            </div>
+            <div className="p-8 grid md:grid-cols-4 gap-5">
+              {steps.map((s,i)=>(
+                <div key={i} className="group">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 flex items-center justify-center font-mono text-xs font-bold text-[#a8c3f0]">{s.num}</div>
+                    <div className="flex-1 h-px bg-[#a8c3f0]/10" />
+                  </div>
+                  <div className="font-mono text-[8px] text-white/38 mb-1.5 tracking-widest">{s.cmd}</div>
+                  <h4 className="text-white text-sm font-bold mb-1.5">{s.title}</h4>
+                  <p className="text-white/55 text-xs leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
-      </section>
-
-      <div className="max-w-3xl mx-auto h-px bg-gradient-to-r from-transparent via-[#7c93c3]/10 to-transparent"/>
-
-      <div className="max-w-3xl mx-auto px-6 py-16 space-y-20">
-
-        {/* The Problem */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
-          <SectionHead icon={Globe} id="SECTION_01" label="THE_PROBLEM" title="The Problem"/>
-          <p className="text-white/45 leading-relaxed mb-6 text-sm">
-            The global financial system was not built for everyone. Despite two generations of cryptocurrency innovation, over 1.4 billion adults worldwide remain without access to basic financial services. Blockchain promised to change this. In practice, the benefits have mostly flowed to those who were already financially included.
-          </p>
-          <div className="space-y-3">
-            {[
-              {icon:Users, id:"P-001", title:"Financial Exclusion", desc:"Hundreds of millions in Africa, Asia, and Latin America conduct their entire financial lives in cash. Without bank accounts, they cannot save securely, access credit, or participate in the digital economy."},
-              {icon:Eye, id:"P-002", title:"Financial Surveillance", desc:"Public blockchains solve financial exclusion but introduce total transparency. Your wallet balance, every transaction, and every person you've ever paid is permanently visible to anyone on earth."},
-              {icon:Coins, id:"P-003", title:"The Cost of Sending Money Home", desc:"The Nigerian diaspora alone sends over $20 billion home yearly. At current fees of 6-8%, over $1.5 billion is extracted from the world's poorest families every single year."},
-            ].map((item,i)=>(
-              <motion.div key={item.title} initial={{opacity:0,x:-16}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{delay:i*0.1}}>
-                <Card>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                      <item.icon size={13} className="text-[#7c93c3]/70"/>
-                    </div>
-                    <span className="font-mono text-[8px] text-white/20">{item.id}</span>
-                    <h3 className="text-white font-semibold text-sm">{item.title}</h3>
-                  </div>
-                  <p className="text-white/40 text-sm leading-relaxed pl-9">{item.desc}</p>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* What We've Built */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
-          <SectionHead icon={CheckCircle2} id="SECTION_02" label="WHAT_WE_BUILT" title="What We've Already Built"/>
-          <div className="space-y-2">
-            {[
-              {id:"B-001", title:"A Live Sovereign Blockchain", desc:"Running BABE/GRANDPA consensus with a new block every six seconds in multi-node testnet configuration."},
-              {id:"B-002", title:"Unique Chain ID & ARX Token", desc:"Fixed supply with its own unique identity, no inflation."},
-              {id:"B-003", title:"Full Ethereum Compatibility", desc:"Any smart contract written for Ethereum deploys on Arxon without changes. MetaMask connects out of the box."},
-              {id:"B-004", title:"Selective Privacy System", desc:"Four independent privacy flags working in any combination, eight distinct privacy modes."},
-              {id:"B-005", title:"Private Transaction Receipts", desc:"Tamper-proof records with single-use disclosure codes for third-party verification."},
-              {id:"B-006", title:"ARX-P Mining System", desc:"14k+ community of real miners earning points before mainnet, convertible to ARX tokens at launch."},
-            ].map((item,i)=>(
-              <motion.div key={i} initial={{opacity:0,y:8}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.06}}
-                className="flex items-start gap-3 py-3.5 px-4 border border-white/[0.04] rounded-xl bg-[#0a0a0d] hover:border-[#7c93c3]/15 transition-colors group">
-                <div className="w-6 h-6 rounded-md bg-emerald-400/10 border border-emerald-400/15 flex items-center justify-center shrink-0 mt-0.5">
-                  <CheckCircle2 size={11} className="text-emerald-400"/>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-mono text-[8px] text-white/18">{item.id}</span>
-                    <h3 className="text-white font-semibold text-sm group-hover:text-[#7c93c3]/90 transition-colors">{item.title}</h3>
-                  </div>
-                  <p className="text-white/40 text-xs leading-relaxed">{item.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* What We're Building */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
-          <SectionHead icon={Code} id="SECTION_03" label="WHAT_WE_BUILD" title="What We Are Building"/>
-          <div className="space-y-4">
-            {[
-              {icon:Lock, title:"Zero-Knowledge Cryptographic Privacy", desc:"Halo2 zero-knowledge proofs make hidden information impossible to reveal, even with complete access to the blockchain's raw data. Halo2 requires no trusted setup — the security is mathematical, not ceremonial."},
-              {icon:Vote, title:"On-Chain Private Voting", desc:"A voting system where coercion is cryptographically impossible. Voters prove eligibility without revealing identity. Results are tallied through Layer-2 ZK batch proofs — one billion votes across 10,000 batches settles on-chain in seconds."},
-            ].map((item,i)=>(
-              <Card key={i}>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                    <item.icon size={13} className="text-[#7c93c3]"/>
-                  </div>
-                  <h3 className="text-white font-semibold text-sm">{item.title}</h3>
-                </div>
-                <p className="text-white/40 text-sm leading-relaxed pl-9">{item.desc}</p>
-              </Card>
-            ))}
-            <Card>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                  <Code size={13} className="text-[#7c93c3]"/>
-                </div>
-                <h3 className="text-white font-semibold text-sm">Developer Ecosystem</h3>
-              </div>
-              <ul className="pl-9 space-y-2">
-                {["Privacy-preserving DeFi — trading, lending with confidential amounts","Private remittance applications for diaspora markets","Confidential payroll systems with private salary information","ZK voting applications for communities, DAOs, and governments","Private NFT marketplaces and confidential identity systems"].map((item,i)=>(
-                  <li key={i} className="flex items-start gap-2 text-white/40 text-sm">
-                    <span className="w-1 h-1 rounded-full bg-[#7c93c3]/50 mt-2 shrink-0"/>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          </div>
-        </motion.section>
-
-        {/* Roadmap */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
-          <SectionHead icon={ArrowRight} id="SECTION_04" label="ROADMAP" title="Roadmap"/>
-          <div className="space-y-4">
-            {[
-              { status:"COMPLETE", variant:"green", items:["Sovereign Layer-1 blockchain in multi-node testnet","ARX native token with fixed supply","Full EVM compatibility, MetaMask, Solidity, all Ethereum tooling","Selective privacy system, four independent per-transaction flags","Private Transaction Receipt system with disclosure codes","ARX-P mining system, 14k+ community","On-chain ARX claim pallet for unlimited miners"] },
-              { status:"IN BUILDING PROCESS", variant:"amber", items:["Public testnet launch, anyone can connect and transact","Block explorer, browse all Arxon transactions publicly","Testnet faucet for developers","Validator expansion","Anti-rug protection registry","Developer documentation and SDK release","MetaMask official chain registration","Halo2 zero-knowledge proof integration","Cryptographic enforcement of all four privacy flags","ZK voting Phase 1 — private on-chain votes","Privacy-preserving DeFi primitives","Third-party ZK circuit security audit"] },
-              { status:"AHEAD — ECOSYSTEM", variant:"blue", items:["ZK voting Phase 2, national-scale batch proof elections","Remittance corridor integrations for Nigeria and diaspora","Mobile wallet with built-in privacy controls","Cross-chain bridges to major ecosystems","Mainnet launch with ARX-P conversion"] },
-            ].map((phase,i)=>{
-              const v = {green:{border:"border-emerald-400/15",bg:"bg-emerald-400/[0.03]",text:"text-emerald-400",dot:"bg-emerald-400"},amber:{border:"border-amber-400/15",bg:"bg-amber-400/[0.03]",text:"text-amber-400",dot:"bg-amber-400"},blue:{border:"border-[#7c93c3]/18",bg:"bg-[#7c93c3]/[0.02]",text:"text-[#7c93c3]",dot:"bg-[#7c93c3]"}}[phase.variant];
-              return (
-                <motion.div key={i} initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1}}
-                  className={`relative p-5 rounded-xl border ${v.border} ${v.bg} overflow-hidden`}>
-                  <Corner pos="tl"/>
-                  <span className={`font-mono text-[9px] font-bold ${v.text} tracking-widest`}>{phase.status}</span>
-                  <ul className="mt-4 space-y-2">
-                    {phase.items.map((item,j)=>(
-                      <li key={j} className="text-white/40 text-sm flex items-start gap-2">
-                        <span className={`mt-2 w-1 h-1 rounded-full shrink-0 ${v.dot}`}/>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.section>
-
-        {/* Why Arxon */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
-          <SectionHead icon={Shield} id="SECTION_05" label="WHY_ARXON" title="Why Arxon"/>
-          <div className="space-y-3">
-            {[
-              {title:"The problem is real and the users are real", desc:"Financial exclusion affects hundreds of millions right now. The diaspora paying 7% fees to send money home is real. The voter who fears coercion is real. Arxon is built for these people."},
-              {title:"The technology is original", desc:"Selective transaction privacy does not exist on any other production blockchain. This is not an incremental improvement — it is a new capability."},
-            ].map((item,i)=>(
-              <Card key={i}>
-                <h3 className="text-white font-semibold text-sm mb-2">{item.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
-              </Card>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Closing */}
-        <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}
-          className="relative bg-[#0a0a0d] border border-[#7c93c3]/18 rounded-2xl overflow-hidden p-12 text-center">
-          <Corner pos="tl"/><Corner pos="tr"/><Corner pos="bl"/><Corner pos="br"/>
-          <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at center,rgba(124,147,195,0.04) 0%,transparent 65%)"}}/>
-          <div className="relative z-10">
-            <p className="text-white/45 leading-relaxed mb-5 text-sm max-w-xl mx-auto">
-              Bitcoin proved money without banks was possible. Ethereum proved programmable money was possible. Arxon is proving that private, accessible, fair money is possible — and building it for the people who need it most.
-            </p>
-            <p className="text-[#7c93c3] font-semibold text-lg mb-8 italic">"Arxon is Built For the World."</p>
-            <motion.a href="/Arxon_Litepaper_2026.pdf" download whileHover={{scale:1.02,boxShadow:"0 0 30px rgba(124,147,195,0.2)"}} whileTap={{scale:0.97}}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-mono text-sm font-bold text-[#09090b]"
-              style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}>
-              <Download size={15}/> DOWNLOAD FULL LITEPAPER
-            </motion.a>
-            <p className="text-white/20 text-xs mt-8 max-w-md mx-auto font-mono">
-              DISCLAIMER: This litepaper is for informational purposes only. It does not constitute financial advice or an offer of any kind. Arxon is in active development.
-            </p>
-          </div>
-        </motion.section>
       </div>
       <Footer />
     </div>
   );
 };
-export default Litepaper;
+export default MiningChoice;
