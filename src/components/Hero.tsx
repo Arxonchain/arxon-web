@@ -75,7 +75,7 @@ const Hero = () => {
           <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-2 mb-6">
             <Terminal size={9} className="text-[#7c93c3]/40" />
-            <span className="font-mono text-[9px] text-white/20 tracking-widest">ARXON_CHAIN / MAINNET / PRIVACY_PROTOCOL</span>
+            <span className="font-mono text-[9px] text-white/20 tracking-widest">ARXONCHAIN / PRIVACY_PROTOCOL</span>
             <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent max-w-[120px]" />
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-400/20 bg-emerald-400/8">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
