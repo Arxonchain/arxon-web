@@ -3,26 +3,30 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Redesigned pages
 import Index from "./pages/Index";
 import FAQ from "./pages/FAQ";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Waitlist from "./pages/Waitlist";
-import WaitlistAdmin from "./pages/WaitlistAdmin";
-import InvestorForm from "./pages/InvestorForm";
-import InvestorAdmin from "./pages/InvestorAdmin";
 import LearnMore from "./pages/LearnMore";
 import Partners from "./pages/Partners";
 import NotFound from "./pages/NotFound";
 import GlobalMining from "./pages/GlobalMining";
 import Litepaper from "./pages/Litepaper";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
 import MiningChoice from "./pages/MiningChoice";
 import Ambassadors from "./pages/Ambassadors";
 import AmbassadorApply from "./pages/AmbassadorApply";
 import AmbassadorPortal from "./pages/AmbassadorPortal";
+
+// Admin/utility pages (unchanged — imported from same paths)
+import WaitlistAdmin from "./pages/WaitlistAdmin";
+import InvestorForm from "./pages/InvestorForm";
+import InvestorAdmin from "./pages/InvestorAdmin";
 import AmbassadorAdmin from "./pages/AmbassadorAdmin";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 

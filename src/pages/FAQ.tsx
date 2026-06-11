@@ -1,117 +1,74 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Link } from "react-router-dom";
-import BackButton from "@/components/BackButton";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Terminal, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const faqs = [
+  { q:"What is Arxon?", a:"Arxon is a privacy-first Layer-1 blockchain that lets you send money, vote, and create tokens all with one-tap privacy. It's fast (instant), cheap (less than $0.01), and built for real people." },
+  { q:"When does mining start?", a:"JAN 2026. GPU/CPU mining via a simple web app. No expensive rigs. Open source." },
+  { q:"What is the $ARX token used for?", a:"$ARX powers everything: pay fees (or earn them via staking), vote in governance, create memecoins/NFTs, and earn rewards via mining/staking." },
+  { q:"How does privacy work?", a:"Every transaction has a privacy toggle. Turn it on → amount hidden from public, only you + receiver see details, wallet balance fully shielded, auto-receipt attached (uneditable)." },
+  { q:"When is the private voting dApp coming?", a:"The voting dApp is in development, launching after the mining phase. Follow community channels for updates." },
+  { q:"Is Arxon open source?", a:"Yes. Arxon is committed to transparency and the codebase will be open for community review and contribution." },
+  { q:"When is TGE?", a:"TGE timeline will be announced as we progress through the mining phase. Ambassador and waitlist members will be first to know." },
+  { q:"How do I join the waitlist?", a:"Join directly from the homepage or at arxon.io/waitlist. You'll need to follow @ARXONarx on X to participate." },
+];
+
+const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
+  const c={tl:"top-0 left-0 border-t border-l",tr:"top-0 right-0 border-t border-r",bl:"bottom-0 left-0 border-b border-l",br:"bottom-0 right-0 border-b border-r"}[pos];
+  return <div className={`absolute ${c} w-3 h-3 border-[#7c93c3]/25`} />;
+};
 
 const FAQ = () => {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<number|null>(null);
+
   return (
-    <div className="min-h-screen py-12 px-6">
-      <BackButton />
-      <div className="container mx-auto max-w-4xl pt-8">
-        
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-8 text-center">Frequently Asked Questions</h1>
-        
-        <Accordion type="single" collapsible className="w-full space-y-4">
-          <AccordionItem value="item-1" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">What is Arxon?</AccordionTrigger>
-            <AccordionContent>
-              <p>Arxon is a <strong>privacy-first Layer-1 blockchain</strong> that lets you send money, vote, and create tokens all with <strong>one-tap privacy</strong>. It's fast (transction is instant), cheap (less than $0.01), and built for real people.</p>
-            </AccordionContent>
-          </AccordionItem>
+    <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
+      <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 20%,rgba(124,147,195,0.04) 0%,transparent 60%)"}} />
+      <Navbar />
+      <div className="relative z-10 pt-28 pb-20 px-6 max-w-[860px] mx-auto">
+        <motion.button onClick={()=>navigate(-1)} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}}
+          className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-10 transition-colors">
+          <ArrowLeft size={12}/>BACK
+        </motion.button>
 
-          <AccordionItem value="item-2" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">When does mining start?</AccordionTrigger>
-            <AccordionContent>
-              <p><strong>JAN 2026</strong>, GPU/CPU mining via a simple web app. No expensive rigs. Open source.</p>
-            </AccordionContent>
-          </AccordionItem>
+        <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px w-6 bg-[#7c93c3]/40"/>
+            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">faq.registry · {faqs.length} ENTRIES</span>
+          </div>
+          <h1 className="text-[clamp(28px,4vw,44px)] font-bold text-white">Frequently Asked <span className="text-[#7c93c3]">Questions</span></h1>
+        </motion.div>
 
-          <AccordionItem value="item-3" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">What is the $ARX token used for?</AccordionTrigger>
-            <AccordionContent>
-              <p>$ARX powers everything:</p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Pay fees (or earn them via staking)</li>
-                <li>Vote in governance</li>
-                <li>Create memecoins/NFTs</li>
-                <li>Earn rewards (mining/staking)</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-4" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">How does privacy work?</AccordionTrigger>
-            <AccordionContent>
-              <p>Every transaction has a <strong>privacy toggle</strong>. Turn it on →</p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Amount hidden from public</li>
-                <li>Only you + receiver see details</li>
-                <li>Wallet balance fully shielded</li>
-                <li>Auto-receipt attached (uneditable)</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-5" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">When is the private voting dApp coming?</AccordionTrigger>
-            <AccordionContent>
-              <p><strong>2026</strong>, Alpha pilots with local communities.</p>
-              <p className="mt-2">NATIONAL ELECTION INTEGRATION by <strong>2026-2027</strong>.</p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-8" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">Is Arxon open source?</AccordionTrigger>
-            <AccordionContent>
-              <p><strong>100% open source</strong> on <a href="https://github.com/arxonchain" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a>.</p>
-              <p className="mt-2">Full audit before TGE.</p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-9" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">Can I invest in the seed round?</AccordionTrigger>
-            <AccordionContent>
-              <p>Yes! Reach out to us to learn more:</p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>Email us at <a href="mailto:arxonchain@yahoo.com" className="text-primary hover:underline">arxonchain@yahoo.com</a></li>
-                <li><Link to="/investor-form" className="text-primary hover:underline">Apply for Pre-Seed Investment</Link></li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-11" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">Is Arxon secure?</AccordionTrigger>
-            <AccordionContent>
-              <p>Yes:</p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li><strong>Rust core</strong> (no crashes)</li>
-                <li><strong>ZKPs</strong> for privacy</li>
-                <li><strong>CertiK audit</strong> pre-TGE</li>
-                <li><strong>Bug bounty</strong> program</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="item-12" className="border rounded-lg px-6">
-            <AccordionTrigger className="text-left">How do I stay updated?</AccordionTrigger>
-            <AccordionContent>
-              <p>Join:</p>
-              <ul className="list-disc list-inside mt-2 space-y-1">
-                <li><a href="https://t.me/ArxonOfficial" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Telegram</a></li>
-                <li><a href="https://twitter.com/ARXONarx" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Twitter</a></li>
-                 <li><a href="https://twitter.com/ARXONarx" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Discord</a></li>
-                <li>Turn on notifications 🔔</li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <div className="space-y-2">
+          {faqs.map((faq,i)=>(
+            <motion.div key={i} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.04}}>
+              <div className={`relative bg-[#0a0a0d] border rounded-xl overflow-hidden transition-all duration-300 ${open===i?"border-[#7c93c3]/25":"border-white/[0.06] hover:border-[#7c93c3]/15"}`}>
+                <Corner pos="tl"/>
+                <button onClick={()=>setOpen(open===i?null:i)} className="w-full flex items-center gap-4 px-5 py-4 text-left">
+                  <span className="font-mono text-[9px] text-[#7c93c3]/35 shrink-0">{String(i+1).padStart(2,"0")}</span>
+                  <span className={`flex-1 text-sm font-semibold transition-colors ${open===i?"text-white":"text-white/60"}`}>{faq.q}</span>
+                  <div className={`shrink-0 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${open===i?"border-[#7c93c3]/30 bg-[#7c93c3]/10 text-[#7c93c3]":"border-white/[0.06] text-white/25"}`}>
+                    {open===i?<ChevronUp size={11}/>:<ChevronDown size={11}/>}
+                  </div>
+                </button>
+                {open===i&&(
+                  <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}
+                    className="px-5 pb-5 pl-[52px]">
+                    <p className="text-white/40 text-sm leading-relaxed">{faq.a}</p>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };
-
 export default FAQ;

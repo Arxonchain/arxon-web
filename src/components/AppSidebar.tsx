@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Home, User, Settings, Users } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import arxonIcon from "@/assets/arxon-icon.svg";
+import arxonIcon from "@/assets/arxon-logo-wide.svg";
 
 import {
   Sidebar,
