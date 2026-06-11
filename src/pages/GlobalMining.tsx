@@ -215,9 +215,9 @@ const BarChart = () => (
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: i * 0.03, duration: 0.4 }}
-        className="flex items-center gap-2.5 py-1.5 px-1.5 rounded hover:bg-white/[0.02] transition-colors group"
+        className="flex items-center gap-2.5 py-1.5 px-1.5 rounded hover:bg-white/[0.03] transition-colors group"
       >
-        <span className="text-white/25 w-5 text-right font-mono text-[10px] tabular-nums">{i + 1}</span>
+        <span className="text-white/65 w-5 text-right font-mono text-[10px] tabular-nums">{i + 1}</span>
         <span className="text-sm w-6 text-center leading-none">{c.flag}</span>
         <span className="text-white/70 w-28 truncate text-xs font-medium group-hover:text-white/90 transition-colors">{c.name}</span>
         <div className="flex-1 h-[18px] bg-white/[0.03] rounded-full overflow-hidden">
@@ -251,15 +251,15 @@ const GlobalMining = () => (
         className="mb-10"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="h-px w-6 bg-[#7c93c3]/40" />
-          <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">GLOBAL_MINING_NETWORK.live</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent max-w-[80px]" />
+          <div className="h-px w-6 bg-[#a8c3f0]/40" />
+          <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">GLOBAL_MINING_NETWORK.live</span>
+          <div className="flex-1 h-px bg-gradient-to-r from-[#a8c3f0]/15 to-transparent max-w-[80px]" />
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-emerald-400/20 bg-emerald-400/8 font-mono text-[9px] text-emerald-400/80"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"/>LIVE</span>
         </div>
         <h1 className="text-[clamp(24px,4vw,44px)] font-bold text-white mb-2">
-          Where <span className="text-[#7c93c3]">Arxon</span> Miners Operate
+          Where <span className="text-[#a8c3f0]">Arxon</span> Miners Operate
         </h1>
-        <p className="text-white/35 text-sm max-w-md font-mono">
+        <p className="text-white/55 text-sm max-w-md font-mono">
           Decentralized mining network · 18 countries · real-time data
         </p>
       </motion.div>
@@ -268,11 +268,11 @@ const GlobalMining = () => (
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.15 }}
-        className="rounded-xl border border-[#7c93c3]/15 bg-[#080a14] overflow-hidden mb-4"
+        className="rounded-xl border border-[#a8c3f0]/15 bg-[#080a14] overflow-hidden mb-4"
       >
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.05]">
-          <Globe size={10} className="text-[#7c93c3]/40" />
-          <span className="font-mono text-[9px] text-white/20">WORLD_MAP / MINER_DISTRIBUTION</span>
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.09]">
+          <Globe size={10} className="text-[#a8c3f0]/40" />
+          <span className="font-mono text-[9px] text-white/60">WORLD_MAP / MINER_DISTRIBUTION</span>
         </div>
         <DottedWorldMap />
       </motion.div>
@@ -281,14 +281,14 @@ const GlobalMining = () => (
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="rounded-xl border border-white/[0.06] bg-[#0a0a0d] overflow-hidden"
+        className="rounded-xl border border-white/[0.10] bg-[#0a0a0d] overflow-hidden"
       >
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.05]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.09]">
           <div className="flex items-center gap-2">
-            <TrendingUp size={11} className="text-[#7c93c3]/50" />
-            <span className="font-mono text-[9px] text-white/25 tracking-widest">TOP_MINING_COUNTRIES</span>
+            <TrendingUp size={11} className="text-[#a8c3f0]/50" />
+            <span className="font-mono text-[9px] text-white/65 tracking-widest">TOP_MINING_COUNTRIES</span>
           </div>
-          <span className="font-mono text-[8px] text-white/15">BY % OF TOTAL MINERS</span>
+          <span className="font-mono text-[8px] text-white/55">BY % OF TOTAL MINERS</span>
         </div>
         <div className="p-4 md:p-6">
           <BarChart />
