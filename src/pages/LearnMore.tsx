@@ -26,10 +26,10 @@ const LearnMore = () => {
           </motion.button>
           <div className="flex items-center gap-3 mb-3">
             <div className="h-px w-6 bg-[#a8c3f0]/40"/>
-            <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">ARXON / PROTOCOL_DOCS</span>
+            <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">ARXON / PROTOCOL DOCS</span>
           </div>
           <h1 className="text-[clamp(28px,4vw,48px)] font-bold text-white mb-2">What Arxon is <span className="text-[#a8c3f0]">Building</span></h1>
-          <p className="text-white/55 text-sm max-w-[480px]">The full technical picture — features, use cases, roadmap, and consensus architecture.</p>
+          <p className="text-white/55 text-sm max-w-[480px]">The full technical picture, features, use cases, roadmap, and consensus architecture.</p>
         </div>
 
         <FeaturesGrid />
@@ -49,7 +49,7 @@ const LearnMore = () => {
               <div className="relative z-10">
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <div className="h-px w-12 bg-[#a8c3f0]/25"/>
-                  <span className="font-mono text-[9px] text-[#a8c3f0]/45 tracking-widest">PARTNERSHIP_CHANNEL.open</span>
+                  <span className="font-mono text-[9px] text-[#a8c3f0]/45 tracking-widest">PARTNERSHIP CHANNEL.open</span>
                   <div className="h-px w-12 bg-[#a8c3f0]/25"/>
                 </div>
                 <h2 className="text-[clamp(24px,3.5vw,40px)] font-bold text-white mb-4">
