@@ -75,7 +75,7 @@ const Hero = () => {
           <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-2 mb-6">
             <Terminal size={9} className="text-[#a8c3f0]/40" />
-            <span className="font-mono text-[9px] text-white/60 tracking-widest">ARXON_CHAIN / MAINNET / PRIVACY_PROTOCOL</span>
+            <span className="font-mono text-[9px] text-white/60 tracking-widest">ARXONCHAIN / PRIVACY PROTOCOL</span>
             <div className="flex-1 h-px bg-gradient-to-r from-[#a8c3f0]/15 to-transparent max-w-[120px]" />
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-400/20 bg-emerald-400/8">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -116,7 +116,7 @@ const Hero = () => {
             <div className="h-8 w-px bg-white/[0.06]" />
             <div className="flex items-center gap-1.5">
               <Activity size={10} className="text-[#a8c3f0]/50 animate-pulse" />
-              <span className="font-mono text-[9px] text-white/65">NETWORK_ACTIVE</span>
+              <span className="font-mono text-[9px] text-white/65">NETWORK ACTIVE</span>
             </div>
           </motion.div>
         </div>
