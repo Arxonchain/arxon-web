@@ -56,16 +56,16 @@ const Hero = () => {
           style={{ background: "radial-gradient(ellipse,rgba(124,147,195,0.055) 0%,transparent 65%)" }} />
         {/* Circuit traces */}
         <svg className="absolute top-20 left-0 w-40 h-40 opacity-[0.15] pointer-events-none" viewBox="0 0 160 160" fill="none">
-          <path d="M0 10h20l8 8h36" stroke="#7c93c3" strokeWidth="0.5"/>
-          <path d="M0 26h10l8 8h28" stroke="#7c93c3" strokeWidth="0.5"/>
-          <path d="M10 0v20l8 8v36" stroke="#7c93c3" strokeWidth="0.5"/>
-          <rect x="60" y="14" width="5" height="5" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M0 10h20l8 8h36" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M0 26h10l8 8h28" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M10 0v20l8 8v36" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <rect x="60" y="14" width="5" height="5" stroke="#a8c3f0" strokeWidth="0.5"/>
           <rect x="30" y="12" width="3" height="3" fill="rgba(124,147,195,0.3)"/>
         </svg>
         <svg className="absolute top-20 right-0 w-40 h-40 opacity-[0.15] pointer-events-none" viewBox="0 0 160 160" fill="none">
-          <path d="M160 10h-20l-8 8h-36" stroke="#7c93c3" strokeWidth="0.5"/>
-          <path d="M160 26h-10l-8 8h-28" stroke="#7c93c3" strokeWidth="0.5"/>
-          <path d="M150 0v20l-8 8v36" stroke="#7c93c3" strokeWidth="0.5"/>
+          <path d="M160 10h-20l-8 8h-36" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M160 26h-10l-8 8h-28" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M150 0v20l-8 8v36" stroke="#a8c3f0" strokeWidth="0.5"/>
         </svg>
       </div>
 
@@ -74,9 +74,9 @@ const Hero = () => {
           {/* System path */}
           <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-2 mb-6">
-            <Terminal size={9} className="text-[#7c93c3]/40" />
-            <span className="font-mono text-[9px] text-white/20 tracking-widest">ARXONCHAIN / PRIVACY_PROTOCOL</span>
-            <div className="flex-1 h-px bg-gradient-to-r from-[#7c93c3]/15 to-transparent max-w-[120px]" />
+            <Terminal size={9} className="text-[#a8c3f0]/40" />
+            <span className="font-mono text-[9px] text-white/60 tracking-widest">ARXON_CHAIN / MAINNET / PRIVACY_PROTOCOL</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#a8c3f0]/15 to-transparent max-w-[120px]" />
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-emerald-400/20 bg-emerald-400/8">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="font-mono text-[9px] text-emerald-400/80 tracking-wider">LIVE</span>
@@ -96,7 +96,7 @@ const Hero = () => {
 
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-6 text-white/40 text-base md:text-[17px] leading-relaxed max-w-[440px]">
+            className="mt-6 text-white/60 text-base md:text-[17px] leading-relaxed max-w-[440px]">
             The future of private, fast, and secure transactions. Deliver payments with complete privacy at scale.
           </motion.p>
 
@@ -110,13 +110,13 @@ const Hero = () => {
             ].map((m, i) => (
               <div key={i} className="flex flex-col">
                 <span className="font-mono text-base font-bold text-white">{m.val}</span>
-                <span className="font-mono text-[9px] text-white/25 tracking-widest">{m.label}</span>
+                <span className="font-mono text-[9px] text-white/65 tracking-widest">{m.label}</span>
               </div>
             ))}
             <div className="h-8 w-px bg-white/[0.06]" />
             <div className="flex items-center gap-1.5">
-              <Activity size={10} className="text-[#7c93c3]/50 animate-pulse" />
-              <span className="font-mono text-[9px] text-white/25">NETWORK_ACTIVE</span>
+              <Activity size={10} className="text-[#a8c3f0]/50 animate-pulse" />
+              <span className="font-mono text-[9px] text-white/65">NETWORK_ACTIVE</span>
             </div>
           </motion.div>
         </div>
