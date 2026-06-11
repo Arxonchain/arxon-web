@@ -69,7 +69,7 @@ const AnimatedStat = ({ value, numericValue, prefix = "", suffix = "", label, de
         initial={{ scaleX: 0, opacity: 0 }}
         animate={inView ? { scaleX: 1, opacity: 1 } : {}}
         transition={{ duration: 0.6, delay: delay + 0.4 }}
-        className="h-[2px] w-12 bg-gradient-to-r from-transparent via-[#7c93c3]/50 to-transparent my-3 origin-center"
+        className="h-[2px] w-12 bg-gradient-to-r from-transparent via-[#a8c3f0]/50 to-transparent my-3 origin-center"
       />
 
       <motion.span
@@ -106,7 +106,7 @@ const StatsBar = () => {
         initial={{ scaleX: 0 }}
         animate={inView ? { scaleX: 1 } : {}}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#7c93c3]/30 to-transparent origin-center"
+        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#a8c3f0]/30 to-transparent origin-center"
       />
 
       {/* Radial glow */}
@@ -123,7 +123,7 @@ const StatsBar = () => {
       {[...Array(6)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 rounded-full bg-[#7c93c3]/20"
+          className="absolute w-1 h-1 rounded-full bg-[#a8c3f0]/20"
           style={{
             left: `${15 + i * 15}%`,
             top: `${20 + (i % 3) * 25}%`,
