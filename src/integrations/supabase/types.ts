@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           approved_at: string | null
           arxon_account_id: string
+          country: string | null
           created_at: string
           estimated_new_users: number
           follower_count: number
@@ -32,6 +33,7 @@ export type Database = {
         Insert: {
           approved_at?: string | null
           arxon_account_id: string
+          country?: string | null
           created_at?: string
           estimated_new_users?: number
           follower_count?: number
@@ -46,6 +48,7 @@ export type Database = {
         Update: {
           approved_at?: string | null
           arxon_account_id?: string
+          country?: string | null
           created_at?: string
           estimated_new_users?: number
           follower_count?: number
