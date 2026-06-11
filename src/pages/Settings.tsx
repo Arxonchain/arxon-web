@@ -20,35 +20,35 @@ const Settings = () => (
       <div className="absolute inset-0 pointer-events-none opacity-[0.014]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}}/>
       <AppSidebar />
       <main className="flex-1 relative z-10">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-white/[0.06] bg-[#09090b]/95 backdrop-blur px-6">
-          <SidebarTrigger className="text-white/40 hover:text-white/70"/>
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-white/[0.10] bg-[#09090b]/95 backdrop-blur px-6">
+          <SidebarTrigger className="text-white/60 hover:text-white/70"/>
           <div className="h-4 w-px bg-white/[0.06]"/>
-          <Terminal size={11} className="text-[#7c93c3]/40"/>
-          <span className="font-mono text-[10px] text-white/25 tracking-widest">SYSTEM_SETTINGS</span>
+          <Terminal size={11} className="text-[#a8c3f0]/40"/>
+          <span className="font-mono text-[10px] text-white/65 tracking-widest">SYSTEM_SETTINGS</span>
         </header>
         <div className="p-6 space-y-4">
           <div className="max-w-2xl mx-auto space-y-4">
             {sections.map((sec,si)=>(
-              <div key={si} className="relative bg-[#0a0a0d] border border-white/[0.06] rounded-xl overflow-hidden">
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#7c93c3]/20"/>
-                <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.04]">
-                  <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                    <sec.icon size={13} className="text-[#7c93c3]/60"/>
+              <div key={si} className="relative bg-[#0a0a0d] border border-white/[0.10] rounded-xl overflow-hidden">
+                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#a8c3f0]/20"/>
+                <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.08]">
+                  <div className="w-7 h-7 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center">
+                    <sec.icon size={13} className="text-[#a8c3f0]/60"/>
                   </div>
                   <div>
-                    <div className="font-mono text-[8px] text-[#7c93c3]/35 tracking-widest">{sec.id}</div>
+                    <div className="font-mono text-[8px] text-[#a8c3f0]/35 tracking-widest">{sec.id}</div>
                     <div className="text-white/80 text-sm font-semibold leading-tight">{sec.title}</div>
                   </div>
-                  <span className="ml-auto font-mono text-[8px] text-white/15">{sec.desc}</span>
+                  <span className="ml-auto font-mono text-[8px] text-white/55">{sec.desc}</span>
                 </div>
                 <div className="p-4 space-y-1">
                   {sec.items.map((item,ii)=>(
-                    <div key={ii} className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-white/[0.01] transition-colors">
+                    <div key={ii} className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-white/[0.03] transition-colors">
                       <div>
                         <div className="text-white/70 text-sm font-medium">{item.label}</div>
-                        <div className="font-mono text-[9px] text-white/25">{item.sub}</div>
+                        <div className="font-mono text-[9px] text-white/65">{item.sub}</div>
                       </div>
-                      <Switch id={item.id} defaultChecked={item.def} className="data-[state=checked]:bg-[#7c93c3]"/>
+                      <Switch id={item.id} defaultChecked={item.def} className="data-[state=checked]:bg-[#a8c3f0]"/>
                     </div>
                   ))}
                 </div>
