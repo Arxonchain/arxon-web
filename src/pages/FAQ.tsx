@@ -18,7 +18,7 @@ const faqs = [
 
 const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
   const c={tl:"top-0 left-0 border-t border-l",tr:"top-0 right-0 border-t border-r",bl:"bottom-0 left-0 border-b border-l",br:"bottom-0 right-0 border-b border-r"}[pos];
-  return <div className={`absolute ${c} w-3 h-3 border-[#7c93c3]/25`} />;
+  return <div className={`absolute ${c} w-3 h-3 border-[#a8c3f0]/25`} />;
 };
 
 const FAQ = () => {
@@ -32,34 +32,34 @@ const FAQ = () => {
       <Navbar />
       <div className="relative z-10 pt-28 pb-20 px-6 max-w-[860px] mx-auto">
         <motion.button onClick={()=>navigate(-1)} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}}
-          className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-10 transition-colors">
+          className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/60 hover:text-[#a8c3f0] mb-10 transition-colors">
           <ArrowLeft size={12}/>BACK
         </motion.button>
 
         <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="mb-12">
           <div className="flex items-center gap-3 mb-4">
-            <div className="h-px w-6 bg-[#7c93c3]/40"/>
-            <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">faq.registry · {faqs.length} ENTRIES</span>
+            <div className="h-px w-6 bg-[#a8c3f0]/40"/>
+            <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">faq.registry · {faqs.length} ENTRIES</span>
           </div>
-          <h1 className="text-[clamp(28px,4vw,44px)] font-bold text-white">Frequently Asked <span className="text-[#7c93c3]">Questions</span></h1>
+          <h1 className="text-[clamp(28px,4vw,44px)] font-bold text-white">Frequently Asked <span className="text-[#a8c3f0]">Questions</span></h1>
         </motion.div>
 
         <div className="space-y-2">
           {faqs.map((faq,i)=>(
             <motion.div key={i} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} transition={{delay:i*0.04}}>
-              <div className={`relative bg-[#0a0a0d] border rounded-xl overflow-hidden transition-all duration-300 ${open===i?"border-[#7c93c3]/25":"border-white/[0.06] hover:border-[#7c93c3]/15"}`}>
+              <div className={`relative bg-[#0a0a0d] border rounded-xl overflow-hidden transition-all duration-300 ${open===i?"border-[#a8c3f0]/25":"border-white/[0.10] hover:border-[#a8c3f0]/15"}`}>
                 <Corner pos="tl"/>
                 <button onClick={()=>setOpen(open===i?null:i)} className="w-full flex items-center gap-4 px-5 py-4 text-left">
-                  <span className="font-mono text-[9px] text-[#7c93c3]/35 shrink-0">{String(i+1).padStart(2,"0")}</span>
+                  <span className="font-mono text-[9px] text-[#a8c3f0]/35 shrink-0">{String(i+1).padStart(2,"0")}</span>
                   <span className={`flex-1 text-sm font-semibold transition-colors ${open===i?"text-white":"text-white/60"}`}>{faq.q}</span>
-                  <div className={`shrink-0 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${open===i?"border-[#7c93c3]/30 bg-[#7c93c3]/10 text-[#7c93c3]":"border-white/[0.06] text-white/25"}`}>
+                  <div className={`shrink-0 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${open===i?"border-[#a8c3f0]/30 bg-[#a8c3f0]/10 text-[#a8c3f0]":"border-white/[0.10] text-white/65"}`}>
                     {open===i?<ChevronUp size={11}/>:<ChevronDown size={11}/>}
                   </div>
                 </button>
                 {open===i&&(
                   <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}
                     className="px-5 pb-5 pl-[52px]">
-                    <p className="text-white/40 text-sm leading-relaxed">{faq.a}</p>
+                    <p className="text-white/60 text-sm leading-relaxed">{faq.a}</p>
                   </motion.div>
                 )}
               </div>
