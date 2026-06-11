@@ -238,7 +238,7 @@ const AmbassadorAdmin = () => {
                         </span>
                       </div>
                       <p className="text-[#a1a1aa] text-xs mt-1">
-                        {app.x_handle} · ID: {app.arxon_account_id} · {app.follower_count} followers · {appSubs.length} submissions
+                        {app.x_handle} · {app.country || "—"} · ID: {app.arxon_account_id} · {app.follower_count} followers · {appSubs.length} submissions
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -319,7 +319,9 @@ const AmbassadorAdmin = () => {
                                         <td className="p-3 text-[#a1a1aa]">{j + 1}</td>
                                         <td className="p-3">
                                           <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                                            sub.submission_type === "space" ? "bg-purple-400/10 text-purple-400" : "bg-blue-400/10 text-blue-400"
+                                            sub.submission_type === "space" ? "bg-purple-400/10 text-purple-400" :
+                                            sub.submission_type === "video" ? "bg-amber-400/10 text-amber-400" :
+                                            "bg-blue-400/10 text-blue-400"
                                           }`}>
                                             {sub.submission_type}
                                           </span>
