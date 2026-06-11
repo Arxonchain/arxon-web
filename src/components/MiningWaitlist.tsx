@@ -62,7 +62,7 @@ const MiningWaitlist = () => {
           {/* Miners counter */}
           <div ref={counter.ref}>
             <div className="flex items-baseline gap-3">
-              <Users size={20} className="text-[#7c93c3] self-center" />
+              <Users size={20} className="text-[#a8c3f0] self-center" />
               <span className="text-[56px] md:text-[80px] lg:text-[96px] font-black text-white tracking-[-0.04em] leading-none">
                 {counter.display}
               </span>
@@ -75,7 +75,7 @@ const MiningWaitlist = () => {
           {/* Countries counter */}
           <div ref={countriesCounter.ref}>
             <div className="flex items-baseline gap-3">
-              <Earth size={20} className="text-[#7c93c3] self-center" />
+              <Earth size={20} className="text-[#a8c3f0] self-center" />
               <span className="text-[56px] md:text-[80px] lg:text-[96px] font-black text-white tracking-[-0.04em] leading-none">
                 {countriesCounter.display}
               </span>
@@ -91,17 +91,17 @@ const MiningWaitlist = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative rounded-xl border border-[#7c93c3]/14 overflow-hidden bg-[#0a0a0d]"
+          className="relative rounded-xl border border-[#a8c3f0]/14 overflow-hidden bg-[#0a0a0d]"
         >
           <div className="grid grid-cols-1 lg:grid-cols-5">
             {/* Left panel */}
-            <div className="lg:col-span-2 p-8 md:p-10 flex flex-col justify-between border-r border-white/[0.04]">
+            <div className="lg:col-span-2 p-8 md:p-10 flex flex-col justify-between border-r border-white/[0.08]">
               <div>
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center">
-                    <Pickaxe size={16} className="text-[#7c93c3]" />
+                  <div className="w-9 h-9 rounded-lg bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 flex items-center justify-center">
+                    <Pickaxe size={16} className="text-[#a8c3f0]" />
                   </div>
-                  <span className="text-[#7c93c3] text-[11px] font-black uppercase tracking-[0.15em]">
+                  <span className="text-[#a8c3f0] text-[11px] font-black uppercase tracking-[0.15em]">
                     Now Live
                   </span>
                 </div>
@@ -132,7 +132,7 @@ const MiningWaitlist = () => {
                   onClick={() => navigate("/mining-choice")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center gap-2 w-full font-mono text-sm font-bold py-3 rounded-xl text-[#09090b] transition-all" style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}
+                  className="group flex items-center justify-center gap-2 w-full font-mono text-sm font-bold py-3 rounded-xl text-[#09090b] transition-all" style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}
                 >
                   Start Mining
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -200,9 +200,9 @@ const MiningWaitlist = () => {
         >
           <button
             onClick={() => navigate("/learn-more")}
-            className="btn-shimmer group relative text-white text-sm font-bold transition-all border border-[#7c93c3]/40 px-7 py-3.5 rounded-lg hover:border-[#7c93c3]/70 flex items-center gap-3 shadow-[0_0_25px_rgba(124,147,195,0.12)] bg-[#7c93c3]/10 hover:bg-[#7c93c3]/20"
+            className="btn-shimmer group relative text-white text-sm font-bold transition-all border border-[#a8c3f0]/40 px-7 py-3.5 rounded-lg hover:border-[#a8c3f0]/70 flex items-center gap-3 shadow-[0_0_25px_rgba(124,147,195,0.12)] bg-[#a8c3f0]/10 hover:bg-[#a8c3f0]/20"
           >
-            <Sparkles size={14} className="text-[#7c93c3]" />
+            <Sparkles size={14} className="text-[#a8c3f0]" />
             Learn more about Arxon
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
           </button>
@@ -210,7 +210,7 @@ const MiningWaitlist = () => {
             animate={{ x: [0, -8, 0] }}
             transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <MousePointerClick size={22} className="text-[#7c93c3]" />
+            <MousePointerClick size={22} className="text-[#a8c3f0]" />
           </motion.div>
         </motion.div>
       </div>
