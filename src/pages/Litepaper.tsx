@@ -9,23 +9,23 @@ const sv = { hidden:{opacity:0,y:24}, visible:{opacity:1,y:0,transition:{duratio
 
 const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
   const c={tl:"top-0 left-0 border-t border-l",tr:"top-0 right-0 border-t border-r",bl:"bottom-0 left-0 border-b border-l",br:"bottom-0 right-0 border-b border-r"}[pos];
-  return <div className={`absolute ${c} w-4 h-4 border-[#7c93c3]/30`}/>;
+  return <div className={`absolute ${c} w-4 h-4 border-[#a8c3f0]/30`}/>;
 };
 
 const SectionHead = ({ icon:Icon, id, label, title }: { icon:any; id:string; label:string; title:string }) => (
   <div className="flex items-center gap-3 mb-6">
-    <div className="w-9 h-9 rounded-lg bg-[#7c93c3]/8 border border-[#7c93c3]/15 flex items-center justify-center shrink-0">
-      <Icon size={16} className="text-[#7c93c3]"/>
+    <div className="w-9 h-9 rounded-lg bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 flex items-center justify-center shrink-0">
+      <Icon size={16} className="text-[#a8c3f0]"/>
     </div>
     <div>
-      <div className="font-mono text-[8px] text-[#7c93c3]/40 tracking-widest mb-0.5">{id}</div>
+      <div className="font-mono text-[8px] text-[#a8c3f0]/40 tracking-widest mb-0.5">{id}</div>
       <h2 className="text-xl font-bold text-white">{title}</h2>
     </div>
   </div>
 );
 
 const Card = ({ children, className="" }: { children:React.ReactNode; className?:string }) => (
-  <div className={`relative p-5 rounded-xl bg-[#0a0a0d] border border-white/[0.06] overflow-hidden hover:border-[#7c93c3]/18 transition-colors ${className}`}>
+  <div className={`relative p-5 rounded-xl bg-[#0a0a0d] border border-white/[0.10] overflow-hidden hover:border-[#a8c3f0]/18 transition-colors ${className}`}>
     <Corner pos="tl"/>
     {children}
   </div>
@@ -43,41 +43,41 @@ const Litepaper = () => {
         <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 30%,rgba(124,147,195,0.06) 0%,transparent 65%)"}}/>
         <div className="max-w-3xl mx-auto relative z-10">
           <motion.button onClick={()=>navigate(-1)} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}}
-            className="flex items-center gap-2 font-mono text-xs text-[#7c93c3]/60 hover:text-[#7c93c3] mb-10 transition-colors">
+            className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/60 hover:text-[#a8c3f0] mb-10 transition-colors">
             <ArrowLeft size={12}/>BACK
           </motion.button>
           <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="text-center">
             <motion.div initial={{scale:0.8,opacity:0}} animate={{scale:1,opacity:1}} transition={{duration:0.5}}
-              className="w-16 h-16 rounded-2xl bg-[#7c93c3]/10 border border-[#7c93c3]/20 flex items-center justify-center mx-auto mb-6">
+              className="w-16 h-16 rounded-2xl bg-[#a8c3f0]/10 border border-[#a8c3f0]/20 flex items-center justify-center mx-auto mb-6">
               <img src={arxonLogo} alt="Arxon" className="w-10"/>
             </motion.div>
             <div className="flex items-center justify-center gap-2 mb-5">
-              <div className="h-px w-8 bg-[#7c93c3]/30"/>
-              <span className="font-mono text-[9px] text-[#7c93c3]/50 tracking-widest">LITEPAPER_2026 · INFORMATIONAL_ONLY</span>
-              <div className="h-px w-8 bg-[#7c93c3]/30"/>
+              <div className="h-px w-8 bg-[#a8c3f0]/30"/>
+              <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">LITEPAPER_2026 · INFORMATIONAL_ONLY</span>
+              <div className="h-px w-8 bg-[#a8c3f0]/30"/>
             </div>
             <h1 className="text-[clamp(28px,5vw,52px)] font-bold text-white mb-4 leading-tight">
               Sovereign Privacy Blockchain<br/>
-              <span className="text-[#7c93c3]">for the Unbanked World</span>
+              <span className="text-[#a8c3f0]">for the Unbanked World</span>
             </h1>
-            <p className="text-white/40 text-sm italic mb-8">"Financial sovereignty is not a privilege. It is a right."</p>
+            <p className="text-white/60 text-sm italic mb-8">"Financial sovereignty is not a privilege. It is a right."</p>
             <motion.a href="/Arxon_Litepaper_2026.pdf" download whileHover={{scale:1.02}} whileTap={{scale:0.97}}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-mono text-sm font-bold text-[#09090b]"
-              style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}>
+              style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}>
               <Download size={14}/> DOWNLOAD LITEPAPER
             </motion.a>
           </motion.div>
         </div>
       </section>
 
-      <div className="max-w-3xl mx-auto h-px bg-gradient-to-r from-transparent via-[#7c93c3]/10 to-transparent"/>
+      <div className="max-w-3xl mx-auto h-px bg-gradient-to-r from-transparent via-[#a8c3f0]/10 to-transparent"/>
 
       <div className="max-w-3xl mx-auto px-6 py-16 space-y-20">
 
         {/* The Problem */}
         <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}>
           <SectionHead icon={Globe} id="SECTION_01" label="THE_PROBLEM" title="The Problem"/>
-          <p className="text-white/45 leading-relaxed mb-6 text-sm">
+          <p className="text-white/65 leading-relaxed mb-6 text-sm">
             The global financial system was not built for everyone. Despite two generations of cryptocurrency innovation, over 1.4 billion adults worldwide remain without access to basic financial services. Blockchain promised to change this. In practice, the benefits have mostly flowed to those who were already financially included.
           </p>
           <div className="space-y-3">
@@ -89,13 +89,13 @@ const Litepaper = () => {
               <motion.div key={item.title} initial={{opacity:0,x:-16}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{delay:i*0.1}}>
                 <Card>
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                      <item.icon size={13} className="text-[#7c93c3]/70"/>
+                    <div className="w-7 h-7 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center">
+                      <item.icon size={13} className="text-[#a8c3f0]/70"/>
                     </div>
-                    <span className="font-mono text-[8px] text-white/20">{item.id}</span>
+                    <span className="font-mono text-[8px] text-white/60">{item.id}</span>
                     <h3 className="text-white font-semibold text-sm">{item.title}</h3>
                   </div>
-                  <p className="text-white/40 text-sm leading-relaxed pl-9">{item.desc}</p>
+                  <p className="text-white/60 text-sm leading-relaxed pl-9">{item.desc}</p>
                 </Card>
               </motion.div>
             ))}
@@ -115,16 +115,16 @@ const Litepaper = () => {
               {id:"B-006", title:"ARX-P Mining System", desc:"14k+ community of real miners earning points before mainnet, convertible to ARX tokens at launch."},
             ].map((item,i)=>(
               <motion.div key={i} initial={{opacity:0,y:8}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.06}}
-                className="flex items-start gap-3 py-3.5 px-4 border border-white/[0.04] rounded-xl bg-[#0a0a0d] hover:border-[#7c93c3]/15 transition-colors group">
+                className="flex items-start gap-3 py-3.5 px-4 border border-white/[0.08] rounded-xl bg-[#0a0a0d] hover:border-[#a8c3f0]/15 transition-colors group">
                 <div className="w-6 h-6 rounded-md bg-emerald-400/10 border border-emerald-400/15 flex items-center justify-center shrink-0 mt-0.5">
                   <CheckCircle2 size={11} className="text-emerald-400"/>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-mono text-[8px] text-white/18">{item.id}</span>
-                    <h3 className="text-white font-semibold text-sm group-hover:text-[#7c93c3]/90 transition-colors">{item.title}</h3>
+                    <span className="font-mono text-[8px] text-white/38">{item.id}</span>
+                    <h3 className="text-white font-semibold text-sm group-hover:text-[#a8c3f0]/90 transition-colors">{item.title}</h3>
                   </div>
-                  <p className="text-white/40 text-xs leading-relaxed">{item.desc}</p>
+                  <p className="text-white/60 text-xs leading-relaxed">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -141,25 +141,25 @@ const Litepaper = () => {
             ].map((item,i)=>(
               <Card key={i}>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                    <item.icon size={13} className="text-[#7c93c3]"/>
+                  <div className="w-7 h-7 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center">
+                    <item.icon size={13} className="text-[#a8c3f0]"/>
                   </div>
                   <h3 className="text-white font-semibold text-sm">{item.title}</h3>
                 </div>
-                <p className="text-white/40 text-sm leading-relaxed pl-9">{item.desc}</p>
+                <p className="text-white/60 text-sm leading-relaxed pl-9">{item.desc}</p>
               </Card>
             ))}
             <Card>
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-md bg-[#7c93c3]/8 border border-[#7c93c3]/12 flex items-center justify-center">
-                  <Code size={13} className="text-[#7c93c3]"/>
+                <div className="w-7 h-7 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center">
+                  <Code size={13} className="text-[#a8c3f0]"/>
                 </div>
                 <h3 className="text-white font-semibold text-sm">Developer Ecosystem</h3>
               </div>
               <ul className="pl-9 space-y-2">
                 {["Privacy-preserving DeFi — trading, lending with confidential amounts","Private remittance applications for diaspora markets","Confidential payroll systems with private salary information","ZK voting applications for communities, DAOs, and governments","Private NFT marketplaces and confidential identity systems"].map((item,i)=>(
-                  <li key={i} className="flex items-start gap-2 text-white/40 text-sm">
-                    <span className="w-1 h-1 rounded-full bg-[#7c93c3]/50 mt-2 shrink-0"/>
+                  <li key={i} className="flex items-start gap-2 text-white/60 text-sm">
+                    <span className="w-1 h-1 rounded-full bg-[#a8c3f0]/50 mt-2 shrink-0"/>
                     {item}
                   </li>
                 ))}
@@ -177,7 +177,7 @@ const Litepaper = () => {
               { status:"IN BUILDING PROCESS", variant:"amber", items:["Public testnet launch, anyone can connect and transact","Block explorer, browse all Arxon transactions publicly","Testnet faucet for developers","Validator expansion","Anti-rug protection registry","Developer documentation and SDK release","MetaMask official chain registration","Halo2 zero-knowledge proof integration","Cryptographic enforcement of all four privacy flags","ZK voting Phase 1 — private on-chain votes","Privacy-preserving DeFi primitives","Third-party ZK circuit security audit"] },
               { status:"AHEAD — ECOSYSTEM", variant:"blue", items:["ZK voting Phase 2, national-scale batch proof elections","Remittance corridor integrations for Nigeria and diaspora","Mobile wallet with built-in privacy controls","Cross-chain bridges to major ecosystems","Mainnet launch with ARX-P conversion"] },
             ].map((phase,i)=>{
-              const v = {green:{border:"border-emerald-400/15",bg:"bg-emerald-400/[0.03]",text:"text-emerald-400",dot:"bg-emerald-400"},amber:{border:"border-amber-400/15",bg:"bg-amber-400/[0.03]",text:"text-amber-400",dot:"bg-amber-400"},blue:{border:"border-[#7c93c3]/18",bg:"bg-[#7c93c3]/[0.02]",text:"text-[#7c93c3]",dot:"bg-[#7c93c3]"}}[phase.variant];
+              const v = {green:{border:"border-emerald-400/15",bg:"bg-emerald-400/[0.03]",text:"text-emerald-400",dot:"bg-emerald-400"},amber:{border:"border-amber-400/15",bg:"bg-amber-400/[0.03]",text:"text-amber-400",dot:"bg-amber-400"},blue:{border:"border-[#a8c3f0]/18",bg:"bg-[#a8c3f0]/[0.02]",text:"text-[#a8c3f0]",dot:"bg-[#a8c3f0]"}}[phase.variant];
               return (
                 <motion.div key={i} initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.1}}
                   className={`relative p-5 rounded-xl border ${v.border} ${v.bg} overflow-hidden`}>
@@ -185,7 +185,7 @@ const Litepaper = () => {
                   <span className={`font-mono text-[9px] font-bold ${v.text} tracking-widest`}>{phase.status}</span>
                   <ul className="mt-4 space-y-2">
                     {phase.items.map((item,j)=>(
-                      <li key={j} className="text-white/40 text-sm flex items-start gap-2">
+                      <li key={j} className="text-white/60 text-sm flex items-start gap-2">
                         <span className={`mt-2 w-1 h-1 rounded-full shrink-0 ${v.dot}`}/>
                         {item}
                       </li>
@@ -207,7 +207,7 @@ const Litepaper = () => {
             ].map((item,i)=>(
               <Card key={i}>
                 <h3 className="text-white font-semibold text-sm mb-2">{item.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{item.desc}</p>
+                <p className="text-white/60 text-sm leading-relaxed">{item.desc}</p>
               </Card>
             ))}
           </div>
@@ -215,20 +215,20 @@ const Litepaper = () => {
 
         {/* Closing */}
         <motion.section variants={sv} initial="hidden" whileInView="visible" viewport={{once:true}}
-          className="relative bg-[#0a0a0d] border border-[#7c93c3]/18 rounded-2xl overflow-hidden p-12 text-center">
+          className="relative bg-[#0a0a0d] border border-[#a8c3f0]/18 rounded-2xl overflow-hidden p-12 text-center">
           <Corner pos="tl"/><Corner pos="tr"/><Corner pos="bl"/><Corner pos="br"/>
           <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at center,rgba(124,147,195,0.04) 0%,transparent 65%)"}}/>
           <div className="relative z-10">
-            <p className="text-white/45 leading-relaxed mb-5 text-sm max-w-xl mx-auto">
+            <p className="text-white/65 leading-relaxed mb-5 text-sm max-w-xl mx-auto">
               Bitcoin proved money without banks was possible. Ethereum proved programmable money was possible. Arxon is proving that private, accessible, fair money is possible — and building it for the people who need it most.
             </p>
-            <p className="text-[#7c93c3] font-semibold text-lg mb-8 italic">"Arxon is Built For the World."</p>
+            <p className="text-[#a8c3f0] font-semibold text-lg mb-8 italic">"Arxon is Built For the World."</p>
             <motion.a href="/Arxon_Litepaper_2026.pdf" download whileHover={{scale:1.02,boxShadow:"0 0 30px rgba(124,147,195,0.2)"}} whileTap={{scale:0.97}}
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-mono text-sm font-bold text-[#09090b]"
-              style={{background:"linear-gradient(135deg,#7c93c3,#a8b8d8)"}}>
+              style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}>
               <Download size={15}/> DOWNLOAD FULL LITEPAPER
             </motion.a>
-            <p className="text-white/20 text-xs mt-8 max-w-md mx-auto font-mono">
+            <p className="text-white/60 text-xs mt-8 max-w-md mx-auto font-mono">
               DISCLAIMER: This litepaper is for informational purposes only. It does not constitute financial advice or an offer of any kind. Arxon is in active development.
             </p>
           </div>
