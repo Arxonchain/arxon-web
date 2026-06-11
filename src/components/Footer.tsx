@@ -19,7 +19,7 @@ const Footer = () => (
 
       <div className="flex items-center gap-1 font-mono text-[9px] text-white/55">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="tracking-widest">NETWORK_ONLINE</span>
+        <span className="tracking-widest">NETWORK ONLINE</span>
       </div>
 
       <div className="flex items-center gap-5">
