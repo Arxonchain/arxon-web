@@ -211,7 +211,7 @@ const AmbassadorApply = () => {
                 {/* Section: Arxon Account */}
                 <div>
                   <div className="flex items-center gap-3 mb-5">
-                    <span className="font-mono text-[9px] text-white/65 tracking-widest">02 / NODE_CREDENTIALS</span>
+                    <span className="font-mono text-[9px] text-white/65 tracking-widest">02 / CREDENTIALS</span>
                     <div className="flex-1 h-px bg-white/[0.08]" />
                   </div>
                   <Field label="Arxon Account ID" id="arxon_id" required note="From mining app">
@@ -222,7 +222,7 @@ const AmbassadorApply = () => {
                 {/* Section: Content Links */}
                 <div>
                   <div className="flex items-center gap-3 mb-5">
-                    <span className="font-mono text-[9px] text-white/65 tracking-widest">03 / CONTENT_PROOF</span>
+                    <span className="font-mono text-[9px] text-white/65 tracking-widest">03 / PREVIOUS WORK PROOF(CONTENT LINKS)</span>
                     <div className="flex-1 h-px bg-white/[0.08]" />
                     <span className="font-mono text-[9px] text-white/55">MIN 3 REQUIRED</span>
                   </div>
