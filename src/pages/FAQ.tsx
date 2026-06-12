@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const faqs = [
   { q:"What is Arxon?", a:"Arxon is a privacy-first Layer-1 blockchain that lets you send money, vote, and create tokens all with one-tap privacy. It's fast (instant), cheap (less than $0.01), and built for real people." },
-  { q:"When does mining start?", a:"JAN 2026. GPU/CPU mining via a simple web app. No expensive rigs. Open source." },
+  { q:"When does mining start?", a:"JAN 2 2026. Mobile mining via a simple web app & mobile app. No expensive rigs. Open source." },
   { q:"What is the $ARX token used for?", a:"$ARX powers everything: pay fees (or earn them via staking), vote in governance, create memecoins/NFTs, and earn rewards via mining/staking." },
   { q:"How does privacy work?", a:"Every transaction has a privacy toggle. Turn it on → amount hidden from public, only you + receiver see details, wallet balance fully shielded, auto-receipt attached (uneditable)." },
   { q:"When is the private voting dApp coming?", a:"The voting dApp is in development, launching after the mining phase. Follow community channels for updates." },
