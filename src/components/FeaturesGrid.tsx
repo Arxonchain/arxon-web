@@ -49,7 +49,7 @@ const FeaturesGrid = () => {
         <motion.div initial={{opacity:0,y:24}} animate={inView?{opacity:1,y:0}:{}} className="mb-14">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-6 bg-[#a8c3f0]/40" />
-            <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">PROTOCOL_FEATURES.index</span>
+            <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest">PROTOCOL FEATURES.index</span>
           </div>
           <h2 className="text-[clamp(28px,4vw,44px)] leading-tight tracking-tight text-white font-bold">
             Reach users, not <span className="text-[#a8c3f0]">middlemen</span>
