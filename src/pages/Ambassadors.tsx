@@ -14,7 +14,7 @@ import {
 /* ════════════════════════════════════════
    COUNTDOWN — target: June 15 2025 14:00 UTC
 ════════════════════════════════════════ */
-const LAUNCH_UTC = Date.UTC(2025, 5, 15, 14, 0, 0);
+const LAUNCH_UTC = Date.UTC(2026, 5, 15, 14, 0, 0);
 
 function useCountdown() {
   const calc = () => {
