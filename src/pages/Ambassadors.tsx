@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
@@ -8,72 +8,92 @@ import {
   Activity, Radio, Database, Lock, GitBranch, Hash,
   Users, Globe, Video, MessageSquare, Award, ArrowRight,
   Signal, Server, Code2, Layers, TrendingUp,
-  AlertCircle, CheckCircle2, Clock, ExternalLink, ArrowUpRight
+  AlertCircle, CheckCircle2, Clock, ExternalLink, ArrowUpRight, Unlock
 } from "lucide-react";
+
+/* ════════════════════════════════════════
+   COUNTDOWN — target: June 15 2025 14:00 UTC
+════════════════════════════════════════ */
+const LAUNCH_UTC = Date.UTC(2025, 5, 15, 14, 0, 0);
+
+function useCountdown() {
+  const calc = () => {
+    const diff = LAUNCH_UTC - Date.now();
+    if (diff <= 0) return { total: 0, hours: 0, minutes: 0, seconds: 0, launched: true };
+    const s = Math.floor(diff / 1000);
+    return { total: diff, hours: Math.floor(s / 3600), minutes: Math.floor((s % 3600) / 60), seconds: s % 60, launched: false };
+  };
+  const [state, setState] = useState(calc);
+  useEffect(() => {
+    if (state.launched) return;
+    const id = setInterval(() => { const n = calc(); setState(n); if (n.launched) clearInterval(id); }, 1000);
+    return () => clearInterval(id);
+  }, [state.launched]);
+  return state;
+}
+
+/* ─── Digit block ─── */
+const DigitBlock = ({ value, label }: { value: number; label: string }) => {
+  const display = String(value).padStart(2, "0");
+  return (
+    <div className="flex flex-col items-center gap-2.5">
+      <div className="relative w-[96px] h-[84px] bg-[#090910] border border-[#a8c3f0]/20 rounded-xl overflow-hidden flex items-center justify-center"
+        style={{ boxShadow: "0 0 30px rgba(168,195,240,0.07), inset 0 1px 0 rgba(168,195,240,0.07)" }}>
+        {/* Scanlines */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(168,195,240,0.012) 3px,rgba(168,195,240,0.012) 4px)" }} />
+        {/* Mid line */}
+        <div className="absolute left-0 right-0 top-1/2 h-px bg-[#a8c3f0]/8" />
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#a8c3f0]/35 rounded-tl-xl" />
+        <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-[#a8c3f0]/35 rounded-tr-xl" />
+        <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[#a8c3f0]/35 rounded-bl-xl" />
+        <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[#a8c3f0]/35 rounded-br-xl" />
+        <AnimatePresence mode="wait">
+          <motion.span key={display}
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.16, ease: "easeOut" }}
+            className="font-mono text-[42px] font-bold text-white relative z-10 tabular-nums leading-none"
+            style={{ textShadow: "0 0 24px rgba(168,195,240,0.5)" }}>
+            {display}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+      <span className="font-mono text-[9px] tracking-[0.2em] text-[#a8c3f0]/55 uppercase">{label}</span>
+    </div>
+  );
+};
+
+const Sep = () => (
+  <div className="flex flex-col gap-3 pb-7">
+    <div className="w-1.5 h-1.5 rounded-full bg-[#a8c3f0]/40" style={{ boxShadow: "0 0 8px rgba(168,195,240,0.7)" }} />
+    <div className="w-1.5 h-1.5 rounded-full bg-[#a8c3f0]/40" style={{ boxShadow: "0 0 8px rgba(168,195,240,0.7)" }} />
+  </div>
+);
 
 /* ─── Canvas Grid Background ─── */
 const CircuitBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
+    const canvas = canvasRef.current; if (!canvas) return;
+    const ctx = canvas.getContext("2d"); if (!ctx) return;
     let W = 0, H = 0, raf: number;
-
     type Node = { x: number; y: number; pulse: number; speed: number };
     const nodes: Node[] = [];
-
     const resize = () => {
-      W = canvas.width = canvas.offsetWidth;
-      H = canvas.height = canvas.offsetHeight;
+      W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight;
       nodes.length = 0;
-      for (let i = 0; i < 50; i++) {
-        nodes.push({
-          x: Math.random() * W, y: Math.random() * H,
-          pulse: Math.random() * Math.PI * 2,
-          speed: 0.008 + Math.random() * 0.008,
-        });
-      }
+      for (let i = 0; i < 50; i++) nodes.push({ x: Math.random() * W, y: Math.random() * H, pulse: Math.random() * Math.PI * 2, speed: 0.008 + Math.random() * 0.008 });
     };
-    resize();
-    window.addEventListener("resize", resize);
-
-    let frame = 0;
+    resize(); window.addEventListener("resize", resize);
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
-      frame++;
-      nodes.forEach(n => {
-        n.x += (Math.random() - 0.5) * 0.15;
-        n.y += (Math.random() - 0.5) * 0.15;
-        n.x = Math.max(0, Math.min(W, n.x));
-        n.y = Math.max(0, Math.min(H, n.y));
-        n.pulse += n.speed;
-      });
-      // Draw edges
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 140) {
-            const a = (1 - d / 140) * 0.06;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.strokeStyle = `rgba(124,147,195,${a})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
+      nodes.forEach(n => { n.x += (Math.random() - 0.5) * 0.15; n.y += (Math.random() - 0.5) * 0.15; n.x = Math.max(0, Math.min(W, n.x)); n.y = Math.max(0, Math.min(H, n.y)); n.pulse += n.speed; });
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+        if (d < 140) { const a = (1 - d / 140) * 0.06; ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.strokeStyle = `rgba(124,147,195,${a})`; ctx.lineWidth = 0.5; ctx.stroke(); }
       }
-      // Draw nodes
-      nodes.forEach((n) => {
-        const p = Math.sin(n.pulse) * 0.5 + 0.5;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, 1.5 + p, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(124,147,195,${0.15 + p * 0.25})`;
-        ctx.fill();
-      });
+      nodes.forEach(n => { const p = Math.sin(n.pulse) * 0.5 + 0.5; ctx.beginPath(); ctx.arc(n.x, n.y, 1.5 + p, 0, Math.PI * 2); ctx.fillStyle = `rgba(124,147,195,${0.15 + p * 0.25})`; ctx.fill(); });
       raf = requestAnimationFrame(draw);
     };
     draw();
@@ -82,59 +102,123 @@ const CircuitBackground = () => {
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 };
 
-/* ─── Scanline ─── */
 const Scanline = () => (
-  <motion.div
-    className="absolute inset-x-0 h-px pointer-events-none z-10"
+  <motion.div className="absolute inset-x-0 h-px pointer-events-none z-10"
     style={{ background: "linear-gradient(90deg,transparent,rgba(124,147,195,0.12),transparent)" }}
-    animate={{ top: ["0%", "100%"] }}
-    transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-  />
+    animate={{ top: ["0%", "100%"] }} transition={{ duration: 10, repeat: Infinity, ease: "linear" }} />
 );
 
-/* ─── Terminal type-in ─── */
 const TypeLine = ({ text, delay = 0, color = "text-[#a8c3f0]/60" }: { text: string; delay?: number; color?: string }) => {
   const [show, setShow] = useState(false);
   useEffect(() => { const t = setTimeout(() => setShow(true), delay * 1000); return () => clearTimeout(t); }, [delay]);
   if (!show) return null;
-  return (
-    <motion.p initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={`font-mono text-[11px] leading-relaxed ${color}`}>
-      {text}
-    </motion.p>
-  );
+  return <motion.p initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={`font-mono text-[11px] leading-relaxed ${color}`}>{text}</motion.p>;
 };
 
-/* ─── Status pill ─── */
 const Pill = ({ label, variant = "blue" }: { label: string; variant?: "blue" | "green" | "amber" }) => {
   const v = { blue: "text-[#a8c3f0] bg-[#a8c3f0]/8 border-[#a8c3f0]/20", green: "text-emerald-400 bg-emerald-400/8 border-emerald-400/20", amber: "text-amber-400 bg-amber-400/8 border-amber-400/20" }[variant];
   const dot = { blue: "bg-[#a8c3f0]", green: "bg-emerald-400", amber: "bg-amber-400" }[variant];
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border font-mono text-[10px] font-semibold tracking-wider ${v}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${dot} animate-pulse`} />
-      {label}
+      <span className={`w-1.5 h-1.5 rounded-full ${dot} animate-pulse`} />{label}
     </span>
   );
 };
 
-/* ─── Grid overlay ─── */
 const Grid = ({ size = 60, opacity = 0.025 }) => (
-  <div className="absolute inset-0 pointer-events-none" style={{
-    backgroundImage: `linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)`,
-    backgroundSize: `${size}px ${size}px`, opacity,
-  }} />
+  <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: `linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)`, backgroundSize: `${size}px ${size}px`, opacity }} />
 );
 
-/* ─── Corner chrome ─── */
 const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
   const cls = { tl: "top-0 left-0", tr: "top-0 right-0", bl: "bottom-0 left-0", br: "bottom-0 right-0" }[pos];
   const bord = { tl: "border-t border-l rounded-tl-sm", tr: "border-t border-r rounded-tr-sm", bl: "border-b border-l rounded-bl-sm", br: "border-b border-r rounded-br-sm" }[pos];
   return <div className={`absolute ${cls} w-4 h-4 ${bord} border-[#a8c3f0]/30`} />;
 };
 
-/* ═══════════════════════════════════════════════
+/* ════════════════════════════════════════
+   COUNTDOWN SECTION (shown above hero content when locked)
+════════════════════════════════════════ */
+const CountdownSection = ({ hours, minutes, seconds }: { hours: number; minutes: number; seconds: number }) => {
+  const launchLocal = new Date(LAUNCH_UTC);
+  const localTimeStr = launchLocal.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const localDateStr = launchLocal.toLocaleDateString([], { weekday: "short", month: "long", day: "numeric" });
+  const tzLabel = Intl.DateTimeFormat().resolvedOptions().timeZone || "your timezone";
+  const totalSecs = hours * 3600 + minutes * 60 + seconds;
+  // Progress: assume max ~72h countdown window
+  const progress = Math.max(0, Math.min(100, (1 - totalSecs / (72 * 3600)) * 100));
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+      className="relative bg-[#09090e]/90 border border-[#a8c3f0]/18 rounded-2xl overflow-hidden backdrop-blur-sm"
+      style={{ boxShadow: "0 0 80px rgba(168,195,240,0.06)" }}>
+      <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+
+      {/* Header */}
+      <div className="flex items-center gap-2.5 px-6 py-3.5 border-b border-[#a8c3f0]/10 bg-[#a8c3f0]/[0.03]">
+        <Lock size={10} className="text-[#a8c3f0]/70" />
+        <span className="font-mono text-[9px] text-[#a8c3f0]/70 tracking-widest">AMBASSADOR_PROGRAM · APPLICATIONS_LOCKED</span>
+        <div className="flex-1" />
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span className="font-mono text-[9px] text-amber-400/80 tracking-wider">OPENING JUNE 15 · 14:00 UTC</span>
+        </div>
+      </div>
+
+      <div className="px-6 md:px-10 py-10">
+        {/* Label */}
+        <div className="text-center mb-8">
+          <p className="font-mono text-[10px] text-[#a8c3f0]/55 tracking-[0.25em] mb-3 uppercase">Applications Open In</p>
+          <p className="text-white/40 text-xs font-mono">
+            <Clock size={10} className="inline mr-1.5 text-[#a8c3f0]/50" />
+            That's{" "}
+            <span className="text-[#a8c3f0]/75 font-semibold">{localTimeStr} · {localDateStr}</span>
+            {" "}in your local time
+            <span className="text-white/25 ml-1">({tzLabel})</span>
+          </p>
+        </div>
+
+        {/* Digits */}
+        <div className="flex items-end justify-center gap-4 mb-10">
+          <DigitBlock value={hours} label="Hours" />
+          <Sep />
+          <DigitBlock value={minutes} label="Minutes" />
+          <Sep />
+          <DigitBlock value={seconds} label="Seconds" />
+        </div>
+
+        {/* Progress bar */}
+        <div className="relative h-[3px] bg-white/[0.05] rounded-full overflow-hidden mb-3 mx-auto max-w-[480px]">
+          <motion.div className="absolute left-0 top-0 h-full rounded-full"
+            style={{ background: "linear-gradient(90deg,#7c93c3,#a8c3f0,#c8d8f8)" }}
+            animate={{ width: `${progress}%` }} transition={{ duration: 1, ease: "linear" }} />
+          <motion.div className="absolute top-0 h-full w-16 rounded-full"
+            style={{ background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)", left: `${Math.max(0, progress - 6)}%` }}
+            animate={{ left: [`${Math.max(0, progress - 12)}%`, `${progress}%`] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }} />
+        </div>
+        <div className="flex justify-between font-mono text-[9px] text-white/20 max-w-[480px] mx-auto mb-6">
+          <span>NOW</span>
+          <span>JUNE 15 · 14:00 UTC</span>
+        </div>
+
+        {/* Info row */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2 border-t border-[#a8c3f0]/8">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={10} className="text-[#a8c3f0]/35" />
+            <p className="font-mono text-[9px] text-white/30">The countdown is universal — it stops for everyone at the same moment.</p>
+          </div>
+          <div className="hidden sm:block w-px h-4 bg-white/[0.06]" />
+          <p className="font-mono text-[9px] text-white/20">Apply & portal buttons appear automatically.</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ════════════════════════════════════════
    HERO
-═══════════════════════════════════════════════ */
-const Hero = () => {
+════════════════════════════════════════ */
+const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => {
   const navigate = useNavigate();
   const [ts, setTs] = useState("");
   useEffect(() => {
@@ -148,10 +232,8 @@ const Hero = () => {
         <CircuitBackground />
         <Scanline />
         <Grid size={64} opacity={0.022} />
-        {/* Radial bloom */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse,rgba(124,147,195,0.055) 0%,transparent 65%)" }} />
-        {/* Corner circuit traces */}
         <svg className="absolute top-20 left-0 w-48 h-48 opacity-20 pointer-events-none" viewBox="0 0 192 192" fill="none">
           <path d="M0 8h24l8 8h40" stroke="#a8c3f0" strokeWidth="0.5"/>
           <path d="M0 24h12l8 8h32" stroke="#a8c3f0" strokeWidth="0.5"/>
@@ -181,7 +263,7 @@ const Hero = () => {
           <Pill label="LIVE" variant="green" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-[1fr_440px] gap-12 items-center">
+        <div className="grid lg:grid-cols-[1fr_440px] gap-12 items-start">
           {/* Left */}
           <div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
@@ -219,31 +301,46 @@ const Hero = () => {
               ))}
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38 }}
-              className="flex flex-col sm:flex-row gap-3">
-              <motion.button
-                onClick={() => navigate("/ambassador-apply")}
-                whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }}
-                whileTap={{ scale: 0.97 }}
-                className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
-                style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
-                <span className="relative z-10 flex items-center gap-2"><Cpu size={13} /> APPLY NOW <ChevronRight size={13} /></span>
-              </motion.button>
-              <motion.button
-                onClick={() => navigate("/ambassador-portal")}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/40 transition-all">
-                <Terminal size={13} /> ACCESS PORTAL
-              </motion.button>
-            </motion.div>
+            {/* ── CTA BUTTONS — hidden until launched ── */}
+            <AnimatePresence>
+              {countdown.launched ? (
+                <motion.div
+                  key="buttons"
+                  initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="flex flex-col sm:flex-row gap-3">
+                  <motion.button
+                    onClick={() => navigate("/ambassador-apply")}
+                    whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                    style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
+                    <span className="relative z-10 flex items-center gap-2"><Cpu size={13} /> APPLY NOW <ChevronRight size={13} /></span>
+                  </motion.button>
+                  <motion.button
+                    onClick={() => navigate("/ambassador-portal")}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/40 transition-all">
+                    <Terminal size={13} /> ACCESS PORTAL
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.div key="locked-hint"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-amber-400/15 bg-amber-400/[0.04] w-fit">
+                  <Lock size={11} className="text-amber-400/60 shrink-0" />
+                  <span className="font-mono text-[10px] text-amber-400/60">Apply & Portal unlock when countdown ends</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Right: terminal */}
           <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
-            {/* Floating cards */}
             <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-5 -right-4 z-20 bg-[#0c0c10] border border-[#a8c3f0]/20 rounded-lg px-4 py-3 shadow-xl">
               <div className="font-mono text-[9px] text-white/65 mb-1">REWARD ALLOCATION</div>
@@ -254,11 +351,12 @@ const Hero = () => {
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <div>
                 <div className="font-mono text-[9px] text-white font-semibold">APPLICATIONS STATUS</div>
-                <div className="font-mono text-[9px] text-emerald-400">ACCEPTING APPLICATIONS</div>
+                <div className="font-mono text-[9px] text-emerald-400">
+                  {countdown.launched ? "ACCEPTING APPLICATIONS" : "OPENS JUNE 15 · 14:00 UTC"}
+                </div>
               </div>
             </motion.div>
 
-            {/* Terminal panel */}
             <div className="relative bg-[#0a0a0d] border border-[#a8c3f0]/15 rounded-xl overflow-hidden shadow-2xl">
               <div className="flex items-center gap-2 px-4 py-3 border-b border-[#a8c3f0]/10 bg-[#a8c3f0]/[0.02]">
                 <div className="flex gap-1.5">
@@ -279,7 +377,7 @@ const Hero = () => {
                 <TypeLine text="[PASS] SELECTION MODE     = QUALITY FIRST" delay={4.1} color="text-emerald-400/60" />
                 <TypeLine text="[PASS] CHAIN              = ARXON MAINNET" delay={4.5} color="text-emerald-400/60" />
                 <TypeLine text="" delay={4.9} />
-                <TypeLine text="[INFO] Min requirements: 8 posts + 40 referrals mininum" delay={5.2} />
+                <TypeLine text="[INFO] Min requirements: 8 posts + 40 referrals minimum" delay={5.2} />
                 <TypeLine text="[INFO] Video content earns priority scoring" delay={5.6} />
                 <TypeLine text="" delay={6.0} />
                 <TypeLine text="$ ready. awaiting applications_" delay={6.3} color="text-[#a8c3f0]/80" />
@@ -290,39 +388,46 @@ const Hero = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* ── COUNTDOWN BLOCK below hero content ── */}
+        <AnimatePresence>
+          {!countdown.launched && (
+            <motion.div exit={{ opacity: 0, y: -10 }} className="mt-12">
+              <CountdownSection hours={countdown.hours} minutes={countdown.minutes} seconds={countdown.seconds} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── UNLOCKED BANNER (appears when launched) ── */}
+        <AnimatePresence>
+          {countdown.launched && (
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 180, damping: 16 }}
+              className="mt-10 flex items-center gap-4 px-6 py-4 bg-emerald-400/[0.05] border border-emerald-400/22 rounded-xl">
+              <div className="w-10 h-10 rounded-xl bg-emerald-400/12 border border-emerald-400/20 flex items-center justify-center shrink-0">
+                <Unlock size={18} className="text-emerald-400" />
+              </div>
+              <div>
+                <div className="text-emerald-300 font-semibold text-sm">Ambassador Applications Are Now Open</div>
+                <div className="text-emerald-400/55 font-mono text-[10px] mt-0.5">Use the Apply Now button above · review takes 24–48h · $100K ARX pool</div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
 };
 
-/* ═══════════════════════════════════════════════
-   BENEFITS / INFRASTRUCTURE MODULES
-═══════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   BENEFITS
+════════════════════════════════════════ */
 const modules = [
-  {
-    id: "MOD-001", icon: TrendingUp, label: "TOKEN REWARDS",
-    title: "ARX Reward Pool",
-    spec: "$100,000 · TGE-linked",
-    desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE.",
-    tags: ["ARX TOKEN","TGE LINKED","QUALITY SCORED"],
-    status: "green" as const,
-  },
-  {
-    id: "MOD-002", icon: Shield, label: "CREDENTIAL REWARDS",
-    title: "Official Ambassador Badge",
-    spec: "Verified status · Early access · Core comms",
-    desc: "Earn verified Arxon Ambassador credentials. Unlocks early access to feature previews, protocol updates, and direct dev communication channels.",
-    tags: ["VERIFIED","EARLY ACCESS","CORE COMMS","PRIVILEGED"],
-    status: "blue" as const,
-  },
-  {
-    id: "MOD-003", icon: Network, label: "NETWORK ACCESS",
-    title: "Network Layer Access",
-    spec: "Private channels · Exclusive events · VIP privileges",
-    desc: "Private collaboration channels, exclusive ambassador-only events, and embedded network-level privileges unavailable to standard users.",
-    tags: ["PRIVATE CHANNELS","EXCLUSIVE EVENTS","NETWORK PRIV","VIP TIER"],
-    status: "blue" as const,
-  },
+  { id: "MOD-001", icon: TrendingUp, label: "TOKEN REWARDS", title: "ARX Reward Pool", spec: "$100,000 · TGE-linked", desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE.", tags: ["ARX TOKEN","TGE LINKED","QUALITY SCORED"], status: "green" as const },
+  { id: "MOD-002", icon: Shield, label: "CREDENTIAL REWARDS", title: "Official Ambassador Badge", spec: "Verified status · Early access · Core comms", desc: "Earn verified Arxon Ambassador credentials. Unlocks early access to feature previews, protocol updates, and direct dev communication channels.", tags: ["VERIFIED","EARLY ACCESS","CORE COMMS","PRIVILEGED"], status: "blue" as const },
+  { id: "MOD-003", icon: Network, label: "NETWORK ACCESS", title: "Network Layer Access", spec: "Private channels · Exclusive events · VIP privileges", desc: "Private collaboration channels, exclusive ambassador-only events, and embedded network-level privileges unavailable to standard users.", tags: ["PRIVATE CHANNELS","EXCLUSIVE EVENTS","NETWORK PRIV","VIP TIER"], status: "blue" as const },
 ];
 
 const BenefitsSection = () => {
@@ -338,18 +443,13 @@ const BenefitsSection = () => {
             <div className="h-px w-8 bg-[#a8c3f0]/40" />
             <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest uppercase">Campaign modules.config</span>
           </div>
-          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
-            What You <span className="text-[#a8c3f0]">Deploy Into</span>
-          </h2>
+          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">What You <span className="text-[#a8c3f0]">Deploy Into</span></h2>
           <p className="font-mono text-xs text-white/65">3 modules initialized · awaiting ambassador allocation</p>
         </motion.div>
-
         <div className="grid md:grid-cols-3 gap-4">
           {modules.map((m, i) => (
-            <motion.div key={m.id}
-              initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.1 }}
+            <motion.div key={m.id} initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.1 }}
               className="group relative bg-[#0a0a0d] border border-white/[0.10] rounded-xl overflow-hidden hover:border-[#a8c3f0]/30 transition-all duration-500">
-              {/* Header bar */}
               <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.08] bg-white/[0.03]">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[9px] text-white/60">{m.id}</span>
@@ -357,7 +457,6 @@ const BenefitsSection = () => {
                 </div>
                 <Pill label="ACTIVE" variant={m.status} />
               </div>
-
               <div className="p-5">
                 <motion.div whileHover={{ scale: 1.08, rotate: 4 }}
                   className="w-10 h-10 rounded-lg bg-[#a8c3f0]/8 border border-[#a8c3f0]/15 flex items-center justify-center mb-5 group-hover:bg-[#a8c3f0]/14 transition-colors">
@@ -367,12 +466,9 @@ const BenefitsSection = () => {
                 <p className="font-mono text-[9px] text-[#a8c3f0]/55 mb-3 tracking-wide">{m.spec}</p>
                 <p className="text-white/65 text-sm leading-relaxed mb-5">{m.desc}</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {m.tags.map(t => (
-                    <span key={t} className="font-mono text-[8px] text-white/60 bg-white/[0.04] border border-white/[0.09] px-2 py-1 rounded tracking-wider">{t}</span>
-                  ))}
+                  {m.tags.map(t => <span key={t} className="font-mono text-[8px] text-white/60 bg-white/[0.04] border border-white/[0.09] px-2 py-1 rounded tracking-wider">{t}</span>)}
                 </div>
               </div>
-              {/* Hover grid glow corner */}
               <div className="absolute bottom-0 right-0 w-16 h-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
                 <Grid size={8} opacity={0.08} />
               </div>
@@ -384,9 +480,9 @@ const BenefitsSection = () => {
   );
 };
 
-/* ═══════════════════════════════════════════════
-   PROTOCOL / HOW IT WORKS
-═══════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   PROTOCOL
+════════════════════════════════════════ */
 const steps = [
   { seq: "01", cmd: "PARTICIPATE IN MINING", title: "Create Arxon Mining Account", desc: "Initialize your identity at arxonchain.xyz. Your mining account ID becomes your ambassador credential and referral tracking key.", params: ["NETWORK=ARXON","ACCOUNT TYPE=MINING"] },
   { seq: "02", cmd: "SUBMIT APPLICATION", title: "Fill Your Application Form", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
@@ -397,41 +493,34 @@ const steps = [
 
 const requirements = [
   { icon: MessageSquare, cmd: "POST CONTENT", req: "Minimum 8 quality tweets/threads about Arxon", type: "REQUIRED" },
-  { icon: Users, cmd: "HOST SPACES", req: "Host/Co-host 2+ Twitter(X) Spaces about arxon while you tag the arxon acc (@arxoninfra)", type: "REQUIRED" },
-  { icon: Globe, cmd: "DRIVE_REFERRALS", req: "Refer mininmum of 40 verified new users via your referral link", type: "REQUIRED" },
+  { icon: Users, cmd: "HOST SPACES", req: "Host/Co-host 2+ Twitter(X) Spaces about Arxon while you tag the Arxon acc (@arxoninfra)", type: "REQUIRED" },
+  { icon: Globe, cmd: "DRIVE REFERRALS", req: "Refer minimum of 40 verified new users via your referral link", type: "REQUIRED" },
   { icon: Hash, cmd: "TAG PROTOCOL", req: "#ArxonAmbassador on all content + @arxoninfra mentions", type: "REQUIRED" },
-  { icon: Video, cmd: "CREATE VIDEO", req: "1-2 video pieces which unlocks priority scoring weight, (this is a bonus for anyone doing this) ", type: "BONUS" },
+  { icon: Video, cmd: "CREATE VIDEO", req: "1-2 video pieces which unlocks priority scoring weight (bonus for anyone doing this)", type: "BONUS" },
 ];
 
 const ProtocolSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [active, setActive] = useState(0);
-
   return (
     <section ref={ref} id="how-it-works" className="py-24 px-6 relative bg-[#080810]">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#a8c3f0]/12 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#a8c3f0]/12 to-transparent" />
       <Grid size={80} opacity={0.015} />
-
       <div className="max-w-[1120px] mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="mb-14">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-8 bg-[#a8c3f0]/40" />
             <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest uppercase">Campaign.Execution</span>
           </div>
-          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">
-            Campaign <span className="text-[#a8c3f0]">Execution</span>
-          </h2>
+          <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">Campaign <span className="text-[#a8c3f0]">Execution</span></h2>
           <p className="font-mono text-xs text-white/65">5 sequential operations · all required for selection eligibility</p>
         </motion.div>
-
-        {/* Steps + detail */}
         <div className="grid lg:grid-cols-[360px_1fr] gap-5 mb-16">
           <div className="space-y-2">
             {steps.map((s, i) => (
-              <motion.div key={s.seq}
-                initial={{ opacity: 0, x: -16 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: i * 0.08 }}
+              <motion.div key={s.seq} initial={{ opacity: 0, x: -16 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: i * 0.08 }}
                 onClick={() => setActive(i)}
                 className={`group cursor-pointer relative rounded-xl p-4 border transition-all duration-300 ${active === i ? "border-[#a8c3f0]/35 bg-[#a8c3f0]/[0.04]" : "border-white/[0.09] hover:border-[#a8c3f0]/18 bg-white/[0.03]"}`}>
                 <div className="flex items-start gap-3">
@@ -445,7 +534,6 @@ const ProtocolSection = () => {
               </motion.div>
             ))}
           </div>
-
           <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
             className="relative bg-[#0a0a0d] border border-[#a8c3f0]/18 rounded-xl overflow-hidden">
             <div className="flex items-center gap-2 px-5 py-3 border-b border-[#a8c3f0]/10 bg-[#a8c3f0]/[0.015]">
@@ -480,13 +568,10 @@ const ProtocolSection = () => {
           </div>
           <div className="bg-[#0a0a0d] border border-white/[0.09] rounded-xl overflow-hidden">
             <div className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-2.5 border-b border-white/[0.08] bg-white/[0.03]">
-              {["#","OP_CODE","REQUIREMENT","TYPE"].map(h => (
-                <span key={h} className="font-mono text-[8px] text-white/60 tracking-widest">{h}</span>
-              ))}
+              {["#","OP_CODE","REQUIREMENT","TYPE"].map(h => <span key={h} className="font-mono text-[8px] text-white/60 tracking-widest">{h}</span>)}
             </div>
             {requirements.map((r, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 + i * 0.06 }}
+              <motion.div key={i} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 + i * 0.06 }}
                 className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.03] transition-colors group items-center">
                 <span className="font-mono text-[9px] text-white/55">{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center gap-2">
@@ -500,7 +585,6 @@ const ProtocolSection = () => {
               </motion.div>
             ))}
           </div>
-
           <div className="mt-4 flex items-start gap-3 px-5 py-4 bg-[#a8c3f0]/[0.03] border border-[#a8c3f0]/12 rounded-xl">
             <AlertCircle size={13} className="text-[#a8c3f0]/60 shrink-0 mt-0.5" />
             <p className="font-mono text-[10px] text-white/55 leading-relaxed">
@@ -513,10 +597,10 @@ const ProtocolSection = () => {
   );
 };
 
-/* ═══════════════════════════════════════════════
+/* ════════════════════════════════════════
    CTA
-═══════════════════════════════════════════════ */
-const CTASection = () => {
+════════════════════════════════════════ */
+const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => {
   const navigate = useNavigate();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -532,7 +616,6 @@ const CTASection = () => {
             <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center,rgba(124,147,195,0.06) 0%,transparent 65%)" }} />
           </div>
           <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-
           <div className="relative z-10 px-8 md:px-16 py-14 text-center">
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-px w-12 bg-[#a8c3f0]/25" />
@@ -548,25 +631,40 @@ const CTASection = () => {
             <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">
               30 days · quality over quantity · $100K ARX pool for top performers
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                onClick={() => navigate("/ambassador-apply")}
-                whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }}
-                whileTap={{ scale: 0.97 }}
-                className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
-                style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
-                <span className="relative z-10 flex items-center gap-2"><Cpu size={15} /> APPLY NOW <ArrowRight size={15} /></span>
-              </motion.button>
-              <motion.button
-                onClick={() => navigate("/ambassador-portal")}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/28 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/45 transition-all">
-                <Terminal size={15} /> ACCESS PORTAL
-              </motion.button>
-            </div>
+
+            <AnimatePresence>
+              {countdown.launched ? (
+                <motion.div key="cta-buttons"
+                  initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
+                  className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <motion.button onClick={() => navigate("/ambassador-apply")}
+                    whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }} whileTap={{ scale: 0.97 }}
+                    className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                    style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
+                    <span className="relative z-10 flex items-center gap-2"><Cpu size={15} /> APPLY NOW <ArrowRight size={15} /></span>
+                  </motion.button>
+                  <motion.button onClick={() => navigate("/ambassador-portal")}
+                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                    className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/28 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/45 transition-all">
+                    <Terminal size={15} /> ACCESS PORTAL
+                  </motion.button>
+                </motion.div>
+              ) : (
+                <motion.div key="cta-locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="flex flex-col items-center gap-3">
+                  <div className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-amber-400/15 bg-amber-400/[0.04]">
+                    <Lock size={13} className="text-amber-400/60" />
+                    <span className="font-mono text-xs text-amber-400/60">
+                      Applications open June 15 · 14:00 UTC · {countdown.hours}h {countdown.minutes}m remaining
+                    </span>
+                  </div>
+                  <p className="font-mono text-[9px] text-white/25">Buttons appear automatically when countdown ends</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>
@@ -574,18 +672,21 @@ const CTASection = () => {
   );
 };
 
-/* ═══════════════════════════════════════════════
+/* ════════════════════════════════════════
    PAGE
-═══════════════════════════════════════════════ */
-const Ambassadors = () => (
-  <div className="min-h-screen bg-[#09090b] overflow-hidden">
-    <Navbar />
-    <Hero />
-    <BenefitsSection />
-    <ProtocolSection />
-    <CTASection />
-    <Footer />
-  </div>
-);
+════════════════════════════════════════ */
+const Ambassadors = () => {
+  const countdown = useCountdown();
+  return (
+    <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <Navbar />
+      <Hero countdown={countdown} />
+      <BenefitsSection />
+      <ProtocolSection />
+      <CTASection countdown={countdown} />
+      <Footer />
+    </div>
+  );
+};
 
 export default Ambassadors;
