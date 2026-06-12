@@ -145,6 +145,21 @@ const Investors = () => {
             </div>
           </motion.div>
 
+          {/* Move assets grid */}
+          <motion.div initial={{opacity:0,y:24}} animate={inView?{opacity:1,y:0}:{}} transition={{delay:0.45}}
+            className="mt-16 grid grid-cols-3 gap-4">
+            {[{img:move1,label:"PAYMENTS"},{img:move2,label:"VOTING"},{img:move3,label:"SUPPLY_CHAIN"}].map((m,i)=>(
+              <div key={i} className="relative rounded-xl overflow-hidden border border-white/[0.10] aspect-video group">
+                <img src={m.img} alt={m.label} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 scale-105 group-hover:scale-100 transition-transform" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] to-transparent" />
+                <div className="absolute bottom-3 left-3">
+                  <span className="font-mono text-[9px] text-[#a8c3f0]/70 tracking-widest">{m.label}</span>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* FAQ */}
       <section className="relative bg-[#080810] py-24" ref={faqRef}>
