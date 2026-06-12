@@ -41,7 +41,7 @@ const Investors = () => {
     { q:"How does privacy work?", a:"All transactions and data are encrypted by choice, ensuring complete confidentiality based on user's consent while maintaining the security benefits of blockchain technology." },
     { q:"When is the private voting dApp coming?", a:"The private voting dApp is currently in development and will be released following the mining phase. Stay tuned to our community channels for updates." },
     { q:"Is Arxon open source?", a:"Yes, Arxon is committed to transparency and will be open source. The codebase will be available for community review and contribution as we progress through development." },
-    { q:"Can I invest in the seed round?", a:"Yes, we're raising $2.5M in our pre-seed round. Email us at arxonchain@yahoo.com or apply directly through our investor form.", hasLink:true },
+    { q:"Can I invest in the seed round?", a:"Yes, we're raising $30M to $300M in our pre-seed round with a 4-year vesting schedule. Email us at arxonchain@yahoo.com or apply directly through our investor form.", hasLink:true },
     { q:"How do I stay updated?", a:"Join our community on Discord, follow us on X (Twitter), and join our Telegram channel. You can also join the waitlist to receive direct updates." },
   ];
 
@@ -144,6 +144,7 @@ const Investors = () => {
               </div>
             </div>
           </motion.div>
+
 
       {/* FAQ */}
       <section className="relative bg-[#080810] py-24" ref={faqRef}>
