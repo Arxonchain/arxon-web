@@ -134,7 +134,7 @@ const AmbassadorApply = () => {
           </motion.div>
           <div className="relative z-10">
             <div className="font-mono text-[9px] text-emerald-300 tracking-widest mb-3">APPLICATION_SUBMITTED</div>
-            <h2 className="text-2xl font-bold text-white mb-3">Node Registered</h2>
+            <h2 className="text-2xl font-bold text-white mb-3">Application Received</h2>
             <p className="text-white/60 text-sm leading-relaxed mb-8">
               Your application has been queued for review. Access your portal using your Arxon Account ID to submit content links during the 30-day challenge.
             </p>
