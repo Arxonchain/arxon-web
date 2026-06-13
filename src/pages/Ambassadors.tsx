@@ -13,19 +13,9 @@ import {
 const LAUNCH_UTC = Date.UTC(2026, 5, 15, 14, 0, 0);
 
 function useCountdown() {
-  const calc = () => {
-    const diff = LAUNCH_UTC - Date.now();
-    if (diff <= 0) return { total: 0, hours: 0, minutes: 0, seconds: 0, launched: true };
-    const s = Math.floor(diff / 1000);
-    return { total: diff, hours: Math.floor(s / 3600), minutes: Math.floor((s % 3600) / 60), seconds: s % 60, launched: false };
-  };
-  const [state, setState] = useState(calc);
-  useEffect(() => {
-    if (state.launched) return;
-    const id = setInterval(() => { const n = calc(); setState(n); if (n.launched) clearInterval(id); }, 1000);
-    return () => clearInterval(id);
-  }, [state.launched]);
-  return state;
+  // PREVIEW MODE: buttons always visible for development
+  // Restore original calc() before going live to production
+  return { total: 0, hours: 0, minutes: 0, seconds: 0, launched: true };
 }
 
 const DigitBlock = ({ value, label }: { value: number; label: string }) => {
