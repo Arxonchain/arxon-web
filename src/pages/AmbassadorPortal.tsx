@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -14,7 +14,11 @@ import { useNavigate } from "react-router-dom";
 
 type PortalData = { application: any; submissions: any[] };
 
-/* ─── Static UI (outside component to prevent remounts) ─── */
+/* ══════════════════════════════════════════════════════
+   ALL UI HELPERS DEFINED AT MODULE LEVEL
+   (never inside a component — prevents remount on typing)
+══════════════════════════════════════════════════════ */
+
 const Grid = ({ size = 60, opacity = 0.022 }: { size?: number; opacity?: number }) => (
   <div className="absolute inset-0 pointer-events-none" style={{
     backgroundImage: `linear-gradient(rgba(168,184,216,0.6) 1px,transparent 1px),linear-gradient(90deg,rgba(168,184,216,0.6) 1px,transparent 1px)`,
@@ -29,7 +33,12 @@ const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
 };
 
 const Pill = ({ label, variant = "blue" }: { label: string; variant?: "blue" | "green" | "amber" | "red" }) => {
-  const v = { blue: "text-[#a8c3f0] bg-[#a8c3f0]/12 border-[#a8c3f0]/30", green: "text-emerald-300 bg-emerald-400/12 border-emerald-400/30", amber: "text-amber-300 bg-amber-400/12 border-amber-400/30", red: "text-red-300 bg-red-400/12 border-red-400/30" }[variant];
+  const v = {
+    blue: "text-[#a8c3f0] bg-[#a8c3f0]/12 border-[#a8c3f0]/30",
+    green: "text-emerald-300 bg-emerald-400/12 border-emerald-400/30",
+    amber: "text-amber-300 bg-amber-400/12 border-amber-400/30",
+    red: "text-red-300 bg-red-400/12 border-red-400/30",
+  }[variant];
   const dot = { blue: "bg-[#a8c3f0]", green: "bg-emerald-400", amber: "bg-amber-400", red: "bg-red-400" }[variant];
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border font-mono text-[9px] font-semibold tracking-wider ${v}`}>
@@ -37,8 +46,6 @@ const Pill = ({ label, variant = "blue" }: { label: string; variant?: "blue" | "
     </span>
   );
 };
-
-const inputCls = "flex-1 min-w-0 bg-white/[0.05] border border-[#a8c3f0]/20 rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder:text-white/40 focus:outline-none focus:border-[#a8c3f0]/50 focus:bg-[#a8c3f0]/[0.06] transition-all";
 
 const StatCard = ({ icon: Icon, label, value, target, met }: { icon: any; label: string; value: any; target: string; met: boolean }) => (
   <div className={`relative bg-[#101018] border rounded-xl p-4 overflow-hidden transition-colors ${met ? "border-emerald-400/35" : "border-white/[0.1]"}`}>
@@ -65,100 +72,156 @@ const ReqRow = ({ icon: Icon, label, met, bonus }: { icon: any; label: string; m
   </div>
 );
 
-/* ════════════════════════════════════════
-   FIELD ROW with cancel + per-field submit
-════════════════════════════════════════ */
-const FieldRow = ({
-  index, value, onChange, onRemove, onSubmitSingle, placeholder, submittingIndex,
+/* ══════════════════════════════════════════════════════
+   UNCONTROLLED INPUT ROW
+   Uses a ref for value to avoid re-render on each keystroke.
+   Only calls onChange on blur (saves to parent state once done).
+   This completely eliminates the typing/remount bug.
+══════════════════════════════════════════════════════ */
+const InputRow = ({
+  index,
+  defaultValue,
+  placeholder,
+  onBlur,
+  onRemove,
+  onSubmitSingle,
+  submitting,
+  accentAmber = false,
 }: {
-  index: number; value: string; onChange: (v: string) => void; onRemove: () => void;
-  onSubmitSingle: () => void; placeholder: string; submittingIndex: boolean;
-}) => (
-  <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -10 }}
-    className="flex items-center gap-2">
-    <span className="font-mono text-[9px] text-white/50 w-6 shrink-0 text-right">{String(index + 1).padStart(2, "0")}</span>
-    <input
-      className={inputCls}
-      placeholder={placeholder}
-      value={value}
-      onChange={e => onChange(e.target.value)}
-    />
-    {/* Submit single */}
-    <button type="button" onClick={onSubmitSingle} disabled={!value.trim() || submittingIndex}
-      title="Submit this link"
-      className="shrink-0 flex items-center gap-1 px-3 py-2.5 rounded-lg font-mono text-[10px] font-bold bg-[#a8c3f0]/12 border border-[#a8c3f0]/25 text-[#a8c3f0] hover:bg-[#a8c3f0]/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
-      {submittingIndex ? <Activity size={10} className="animate-spin" /> : <Send size={10} />}
-    </button>
-    {/* Cancel / remove */}
-    <button type="button" onClick={onRemove} title="Remove this field"
-      className="shrink-0 flex items-center justify-center w-8 h-9 rounded-lg bg-red-400/[0.06] border border-red-400/20 text-red-400/60 hover:bg-red-400/12 hover:text-red-400 transition-colors">
-      <X size={12} />
-    </button>
-  </motion.div>
-);
+  index: number;
+  defaultValue: string;
+  placeholder: string;
+  onBlur: (val: string) => void;
+  onRemove: () => void;
+  onSubmitSingle: (val: string) => void;
+  submitting: boolean;
+  accentAmber?: boolean;
+}) => {
+  const ref = useRef<HTMLInputElement>(null);
 
-/* ════════════════════════════════════════
-   SUBMISSION SECTION COMPONENT
-════════════════════════════════════════ */
+  // Sync if defaultValue changes externally (e.g. on portal reload)
+  useEffect(() => {
+    if (ref.current && ref.current.value !== defaultValue) {
+      ref.current.value = defaultValue;
+    }
+  }, [defaultValue]);
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className={`font-mono text-[9px] w-6 shrink-0 text-right ${accentAmber ? "text-amber-400/40" : "text-white/50"}`}>
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <input
+        ref={ref}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        onBlur={e => onBlur(e.target.value)}
+        className={`flex-1 min-w-0 bg-white/[0.05] border rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder:text-white/40 focus:outline-none transition-all ${
+          accentAmber
+            ? "border-amber-400/20 focus:border-amber-400/45 focus:bg-amber-400/[0.06]"
+            : "border-[#a8c3f0]/20 focus:border-[#a8c3f0]/50 focus:bg-[#a8c3f0]/[0.06]"
+        }`}
+      />
+      {/* Submit single */}
+      <button
+        type="button"
+        title="Save this link"
+        onClick={() => onSubmitSingle(ref.current?.value || "")}
+        disabled={submitting}
+        className={`shrink-0 flex items-center gap-1 px-3 py-2.5 rounded-lg font-mono text-[10px] font-bold border transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+          accentAmber
+            ? "bg-amber-400/12 border-amber-400/25 text-amber-300 hover:bg-amber-400/22"
+            : "bg-[#a8c3f0]/12 border-[#a8c3f0]/25 text-[#a8c3f0] hover:bg-[#a8c3f0]/22"
+        }`}
+      >
+        {submitting ? <Activity size={10} className="animate-spin" /> : <Send size={10} />}
+      </button>
+      {/* Remove */}
+      <button
+        type="button"
+        title="Remove this field"
+        onClick={onRemove}
+        className="shrink-0 flex items-center justify-center w-8 h-9 rounded-lg bg-red-400/[0.06] border border-red-400/20 text-red-400/60 hover:bg-red-400/12 hover:text-red-400 transition-colors"
+      >
+        <X size={12} />
+      </button>
+    </div>
+  );
+};
+
+/* ══════════════════════════════════════════════════════
+   SUBMISSION SECTION
+══════════════════════════════════════════════════════ */
 const SubmissionSection = ({
-  title, subtitle, icon: Icon, type, urls, onUpdateUrl, onRemoveUrl, onAdd,
-  onSubmitSingle, onSubmitAll, submittingIdx, submittingAll, accent = "blue",
+  title, subtitle, icon: Icon, type, urls,
+  onUpdateUrl, onRemoveUrl, onAdd,
+  onSubmitSingle, onSubmitAll,
+  submittingIdx, submittingAll,
+  accentAmber = false,
 }: {
   title: string; subtitle: string; icon: any; type: string;
   urls: string[];
   onUpdateUrl: (i: number, v: string) => void;
   onRemoveUrl: (i: number) => void;
   onAdd: () => void;
-  onSubmitSingle: (i: number) => void;
+  onSubmitSingle: (i: number, val: string) => void;
   onSubmitAll: () => void;
   submittingIdx: number | null;
   submittingAll: boolean;
-  accent?: "blue" | "amber";
-}) => {
-  const accentCls = accent === "amber"
-    ? { border: "border-amber-400/25", header: "bg-amber-400/[0.04]", icon: "bg-amber-400/12 border-amber-400/25", iconText: "text-amber-300", title: "text-amber-300/80", dot: "bg-amber-400", btn: "bg-amber-400/12 border-amber-400/25 text-amber-300 hover:bg-amber-400/20" }
-    : { border: "border-white/[0.08]", header: "bg-white/[0.02]", icon: "bg-[#a8c3f0]/12 border-[#a8c3f0]/25", iconText: "text-[#a8c3f0]", title: "text-[#a8c3f0]/80", dot: "bg-[#a8c3f0]", btn: "bg-[#a8c3f0]/12 border-[#a8c3f0]/25 text-[#a8c3f0] hover:bg-[#a8c3f0]/20" };
-
-  return (
-    <div className={`relative bg-[#101018] border ${accentCls.border} rounded-xl overflow-hidden`}>
-      <div className={`flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.08] ${accentCls.header}`}>
-        <div className={`w-7 h-7 rounded-md ${accentCls.icon} flex items-center justify-center`}>
-          <Icon size={12} className={accentCls.iconText} />
-        </div>
-        <div>
-          <div className={`font-mono text-[10px] font-semibold tracking-widest ${accentCls.title}`}>{title}</div>
-          <div className="font-mono text-[9px] text-white/50">{subtitle}</div>
-        </div>
+  accentAmber?: boolean;
+}) => (
+  <div className={`relative bg-[#101018] border rounded-xl overflow-hidden ${accentAmber ? "border-amber-400/20" : "border-white/[0.08]"}`}>
+    <div className={`flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.08] ${accentAmber ? "bg-amber-400/[0.03]" : "bg-white/[0.02]"}`}>
+      <div className={`w-7 h-7 rounded-md flex items-center justify-center ${accentAmber ? "bg-amber-400/12 border border-amber-400/25" : "bg-[#a8c3f0]/12 border border-[#a8c3f0]/25"}`}>
+        <Icon size={12} className={accentAmber ? "text-amber-300" : "text-[#a8c3f0]"} />
       </div>
-      <div className="p-5 space-y-2">
-        <AnimatePresence>
-          {urls.map((url, i) => (
-            <FieldRow
-              key={`field-${type}-${i}`}
-              index={i}
-              value={url}
-              onChange={v => onUpdateUrl(i, v)}
-              onRemove={() => onRemoveUrl(i)}
-              onSubmitSingle={() => onSubmitSingle(i)}
-              placeholder={`${title.replace("_SUBMISSIONS", "").replace("_", " ")} URL ${i + 1}`}
-              submittingIndex={submittingIdx === i}
-            />
-          ))}
-        </AnimatePresence>
-        <div className="flex items-center justify-between pt-2">
-          <button type="button" onClick={onAdd}
-            className="flex items-center gap-1.5 font-mono text-[10px] text-[#a8c3f0]/70 hover:text-[#a8c3f0] transition-colors">
-            <Plus size={11} /> ADD FIELD
-          </button>
-          <button type="button" onClick={onSubmitAll} disabled={submittingAll || !urls.some(u => u.trim())}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-[10px] font-bold border transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${accentCls.btn}`}>
-            {submittingAll ? <><Activity size={10} className="animate-spin" /> SAVING...</> : <><Send size={10} /> SUBMIT SECTION</>}
-          </button>
-        </div>
+      <div>
+        <div className={`font-mono text-[10px] font-semibold tracking-widest ${accentAmber ? "text-amber-300/80" : "text-[#a8c3f0]/80"}`}>{title}</div>
+        <div className="font-mono text-[9px] text-white/45">{subtitle}</div>
       </div>
     </div>
-  );
-};
+    <div className="p-5 space-y-2">
+      {urls.map((url, i) => (
+        <InputRow
+          key={`${type}-${i}`}
+          index={i}
+          defaultValue={url}
+          placeholder={`${title.replace(/_SUBMISSIONS$/, "").replace(/_/g, " ")} URL ${i + 1}`}
+          onBlur={v => onUpdateUrl(i, v)}
+          onRemove={() => onRemoveUrl(i)}
+          onSubmitSingle={val => onSubmitSingle(i, val)}
+          submitting={submittingIdx === i}
+          accentAmber={accentAmber}
+        />
+      ))}
+      <div className="flex items-center justify-between pt-2">
+        <button type="button" onClick={onAdd}
+          className={`flex items-center gap-1.5 font-mono text-[10px] transition-colors ${accentAmber ? "text-amber-300/60 hover:text-amber-300/90" : "text-[#a8c3f0]/60 hover:text-[#a8c3f0]"}`}>
+          <Plus size={11} /> ADD FIELD
+        </button>
+        <button type="button" onClick={onSubmitAll} disabled={submittingAll || !urls.some(u => u.trim())}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-[10px] font-bold border transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+            accentAmber
+              ? "bg-amber-400/12 border-amber-400/25 text-amber-300 hover:bg-amber-400/22"
+              : "bg-[#a8c3f0]/12 border-[#a8c3f0]/25 text-[#a8c3f0] hover:bg-[#a8c3f0]/22"
+          }`}>
+          {submittingAll ? <><Activity size={10} className="animate-spin" /> SAVING...</> : <><Send size={10} /> SUBMIT SECTION</>}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+/* ════════════════════════════════════════
+   PAGE WRAPPER (module-level)
+════════════════════════════════════════ */
+const PageWrap = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-screen bg-[#0a0a0e] overflow-hidden">
+    <div className="absolute inset-0"><Grid size={64} opacity={0.025} /></div>
+    <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 30%,rgba(168,195,240,0.07) 0%,transparent 60%)" }} />
+    <div className="relative z-10"><Navbar /><div className="pt-28 pb-20 px-6">{children}</div><Footer /></div>
+  </div>
+);
 
 /* ════════════════════════════════════════
    MAIN COMPONENT
@@ -177,111 +240,153 @@ const AmbassadorPortal = () => {
   const [submittingSpaceSection, setSubmittingSpaceSection] = useState(false);
   const [submittingVideoSection, setSubmittingVideoSection] = useState(false);
 
-  /* Dynamic post 3 URL from admin settings */
-  const [adminPost3, setAdminPost3] = useState<string | null>(null);
-
   const [postUrls, setPostUrls] = useState<string[]>(["", "", ""]);
   const [spaceUrls, setSpaceUrls] = useState<string[]>(["", ""]);
   const [videoUrls, setVideoUrls] = useState<string[]>(["", ""]);
-
-  /* Actual referral count from Supabase */
   const [actualReferrals, setActualReferrals] = useState<number>(0);
+  const [adminPost3, setAdminPost3] = useState<string | null>(null);
 
   const REFERRAL_TARGET = 40;
 
-  /* Load admin-configured post 3 */
   useEffect(() => {
     supabase.from("ambassador_settings").select("value").eq("key", "retweet_post_3").maybeSingle()
       .then(({ data }) => { if (data?.value) setAdminPost3(data.value); });
   }, []);
 
-  const lookupPortal = useCallback(async () => {
-    if (!arxonId.trim()) return;
+  const lookupPortal = useCallback(async (id?: string) => {
+    const uid = (id ?? arxonId).trim();
+    if (!uid) return;
     setLoading(true); setNotFound(false); setPortalData(null);
-    const { data: app } = await supabase.from("ambassador_applications").select("*").eq("arxon_account_id", arxonId.trim()).maybeSingle();
+
+    const { data: app } = await supabase
+      .from("ambassador_applications").select("*")
+      .eq("arxon_account_id", uid).maybeSingle();
+
     if (!app) { setNotFound(true); setLoading(false); return; }
-    const { data: subs } = await supabase.from("ambassador_submissions").select("*").eq("arxon_account_id", arxonId.trim()).order("created_at", { ascending: true });
+
+    const { data: subs } = await supabase
+      .from("ambassador_submissions").select("*")
+      .eq("arxon_account_id", uid).order("created_at", { ascending: true });
+
     setPortalData({ application: app, submissions: subs || [] });
 
-    /* Fetch actual referral count */
-    const { count } = await supabase.from("referrals").select("*", { count: "exact", head: true }).eq("referrer_id", arxonId.trim());
+    /* Real referral count */
+    const { count } = await supabase
+      .from("referrals").select("*", { count: "exact", head: true })
+      .eq("referrer_id", uid);
     setActualReferrals(count ?? app.estimated_new_users ?? 0);
 
     if (subs && subs.length > 0) {
-      const posts = subs.filter((s: any) => s.submission_type === "post").map((s: any) => s.submission_url);
+      const posts  = subs.filter((s: any) => s.submission_type === "post").map((s: any) => s.submission_url);
       const spaces = subs.filter((s: any) => s.submission_type === "space").map((s: any) => s.submission_url);
       const videos = subs.filter((s: any) => s.submission_type === "video").map((s: any) => s.submission_url);
-      if (posts.length < 3) while (posts.length < 3) posts.push("");
-      if (spaces.length < 2) while (spaces.length < 2) spaces.push("");
-      if (videos.length < 2) while (videos.length < 2) videos.push("");
+      while (posts.length  < 3) posts.push("");
+      while (spaces.length < 2) spaces.push("");
+      while (videos.length < 2) videos.push("");
       setPostUrls(posts); setSpaceUrls(spaces); setVideoUrls(videos);
     }
     setLoading(false);
   }, [arxonId]);
 
-  /* ── Single field submit ── */
-  const submitSingle = useCallback(async (type: string, url: string) => {
-    if (!url.trim()) return;
-    const row = { arxon_account_id: arxonId.trim(), submission_url: url.trim(), submission_type: type, notes: null };
-    const { error } = await supabase.from("ambassador_submissions").upsert(row, { onConflict: "arxon_account_id,submission_url" });
-    if (error) toast.error("Failed to save link"); else toast.success("Link saved!");
-    await lookupPortal();
-  }, [arxonId, lookupPortal]);
+  /* ── Save a single link (insert only if URL not already saved) ── */
+  const saveSingleLink = useCallback(async (type: string, url: string): Promise<boolean> => {
+    const uid = arxonId.trim();
+    if (!url.trim() || !uid) return false;
 
-  /* ── Submit entire section ── */
-  const submitSection = useCallback(async (type: string, urls: string[], setFlag: (b: boolean) => void) => {
+    // Check if already exists
+    const { data: existing } = await supabase
+      .from("ambassador_submissions")
+      .select("id")
+      .eq("arxon_account_id", uid)
+      .eq("submission_url", url.trim())
+      .maybeSingle();
+
+    if (existing) {
+      toast.success("Link already saved");
+      return true;
+    }
+
+    const { error } = await supabase.from("ambassador_submissions").insert({
+      arxon_account_id: uid,
+      submission_url: url.trim(),
+      submission_type: type,
+      notes: null,
+    });
+
+    if (error) {
+      toast.error("Failed to save link — " + error.message);
+      return false;
+    }
+    toast.success("Link saved successfully!");
+    return true;
+  }, [arxonId]);
+
+  /* ── Submit single field ── */
+  const handleSubmitSingle = useCallback(async (
+    type: string, url: string, index: number,
+    setIdx: (n: number | null) => void
+  ) => {
+    if (!url.trim()) { toast.error("Field is empty"); return; }
+    setIdx(index);
+    const ok = await saveSingleLink(type, url);
+    if (ok) await lookupPortal();
+    setIdx(null);
+  }, [saveSingleLink, lookupPortal]);
+
+  /* ── Submit entire section (replace all of that type) ── */
+  const submitSection = useCallback(async (
+    type: string, urls: string[], setFlag: (b: boolean) => void
+  ) => {
+    const uid = arxonId.trim();
     const filtered = urls.filter(u => u.trim());
     if (!filtered.length) { toast.error("Add at least one link"); return; }
     setFlag(true);
-    await supabase.from("ambassador_submissions").delete().eq("arxon_account_id", arxonId.trim()).eq("submission_type", type);
-    const rows = filtered.map(url => ({ arxon_account_id: arxonId.trim(), submission_url: url.trim(), submission_type: type, notes: null }));
+    await supabase.from("ambassador_submissions")
+      .delete().eq("arxon_account_id", uid).eq("submission_type", type);
+    const rows = filtered.map(url => ({
+      arxon_account_id: uid, submission_url: url.trim(), submission_type: type, notes: null,
+    }));
     const { error } = await supabase.from("ambassador_submissions").insert(rows);
-    if (error) toast.error("Section submit failed"); else toast.success(`${type} links saved!`);
+    if (error) toast.error("Section submit failed — " + error.message);
+    else toast.success(`${type} links saved!`);
     await lookupPortal();
     setFlag(false);
   }, [arxonId, lookupPortal]);
 
-  /* ── Submit ALL ── */
+  /* ── Submit ALL sections ── */
   const handleSubmitAll = useCallback(async () => {
-    const allUrls = [...postUrls, ...spaceUrls, ...videoUrls].filter(u => u.trim());
-    if (!allUrls.length) { toast.error("Add at least one link across any section"); return; }
+    const uid = arxonId.trim();
+    const allFilled = [...postUrls, ...spaceUrls, ...videoUrls].filter(u => u.trim());
+    if (!allFilled.length) { toast.error("Add at least one link"); return; }
     setSubmittingAll(true);
-    await supabase.from("ambassador_submissions").delete().eq("arxon_account_id", arxonId.trim());
+    await supabase.from("ambassador_submissions").delete().eq("arxon_account_id", uid);
     const rows = [
-      ...postUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: arxonId.trim(), submission_url: url.trim(), submission_type: "post", notes: null })),
-      ...spaceUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: arxonId.trim(), submission_url: url.trim(), submission_type: "space", notes: null })),
-      ...videoUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: arxonId.trim(), submission_url: url.trim(), submission_type: "video", notes: null })),
+      ...postUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: uid, submission_url: url.trim(), submission_type: "post", notes: null })),
+      ...spaceUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: uid, submission_url: url.trim(), submission_type: "space", notes: null })),
+      ...videoUrls.filter(u => u.trim()).map(url => ({ arxon_account_id: uid, submission_url: url.trim(), submission_type: "video", notes: null })),
     ];
     const { error } = await supabase.from("ambassador_submissions").insert(rows);
-    if (error) toast.error("Submission failed. Try again."); else toast.success("All links submitted successfully!");
+    if (error) toast.error("Submit failed — " + error.message);
+    else toast.success("All links submitted successfully!");
     await lookupPortal();
     setSubmittingAll(false);
   }, [postUrls, spaceUrls, videoUrls, arxonId, lookupPortal]);
 
-  /* ── URL array helpers ── */
-  const updateUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) => (i: number, v: string) =>
-    setter(prev => { const a = [...prev]; a[i] = v; return a; });
-  const removeUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) => (i: number) =>
-    setter(prev => prev.filter((_, idx) => idx !== i));
-  const addUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) => () =>
-    setter(prev => [...prev, ""]);
+  /* ── URL array helpers (stable, won't remount inputs) ── */
+  const updateUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
+    (i: number, v: string) => setter(prev => { const a = [...prev]; a[i] = v; return a; });
+  const removeUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
+    (i: number) => setter(prev => prev.filter((_, idx) => idx !== i));
+  const addUrl = (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
+    () => setter(prev => [...prev, ""]);
 
-  const postCount = portalData?.submissions.filter((s: any) => s.submission_type === "post").length || 0;
+  const postCount  = portalData?.submissions.filter((s: any) => s.submission_type === "post").length  || 0;
   const spaceCount = portalData?.submissions.filter((s: any) => s.submission_type === "space").length || 0;
   const videoCount = portalData?.submissions.filter((s: any) => s.submission_type === "video").length || 0;
 
-  /* ── Layout wrapper ── */
-  const Wrap = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen bg-[#0a0a0e] overflow-hidden">
-      <div className="absolute inset-0"><Grid size={64} opacity={0.025} /></div>
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 30%,rgba(168,195,240,0.07) 0%,transparent 60%)" }} />
-      <div className="relative z-10"><Navbar /><div className="pt-28 pb-20 px-6">{children}</div><Footer /></div>
-    </div>
-  );
-
-  /* ── LOGIN SCREEN ── */
+  /* ════ LOGIN SCREEN ════ */
   if (!portalData) return (
-    <Wrap>
+    <PageWrap>
       <div className="max-w-[820px] mx-auto">
         <motion.button onClick={() => navigate("/ambassadors")} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0] mb-10 transition-colors">
@@ -295,6 +400,7 @@ const AmbassadorPortal = () => {
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Ambassador Portal</h1>
           <p className="text-white/55 font-mono text-xs">Track progress · submit content · manage your ambassador node</p>
         </motion.div>
+
         <div className="grid md:grid-cols-[1fr_320px] gap-5 items-start">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="relative bg-[#101018] border border-white/[0.1] rounded-2xl overflow-hidden">
@@ -314,12 +420,18 @@ const AmbassadorPortal = () => {
                 <button onClick={() => navigate("/ambassador-apply")} className="text-[#a8c3f0] hover:text-white transition-colors underline">Haven't applied?</button>
               </p>
               <div className="flex gap-3 mb-4">
-                <input className="flex-1 bg-white/[0.05] border border-[#a8c3f0]/20 rounded-lg px-4 py-3 text-white text-sm font-mono placeholder:text-white/50 focus:outline-none focus:border-[#a8c3f0]/50 transition-all"
-                  placeholder="ARXON_ACCOUNT_ID" value={arxonId} onChange={e => setArxonId(e.target.value)} onKeyDown={e => e.key === "Enter" && lookupPortal()} />
-                <motion.button onClick={lookupPortal} disabled={loading || !arxonId.trim()} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                <input
+                  className="flex-1 bg-white/[0.05] border border-[#a8c3f0]/20 rounded-lg px-4 py-3 text-white text-sm font-mono placeholder:text-white/50 focus:outline-none focus:border-[#a8c3f0]/50 transition-all"
+                  placeholder="ARXON_ACCOUNT_ID"
+                  value={arxonId}
+                  onChange={e => setArxonId(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && lookupPortal()}
+                />
+                <motion.button onClick={() => lookupPortal()} disabled={loading || !arxonId.trim()}
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                   className="px-5 py-3 rounded-lg font-mono text-sm font-bold text-[#09090b] disabled:opacity-40 shrink-0"
                   style={{ background: "linear-gradient(135deg,#a8c3f0,#c8d8f8)" }}>
-                  {loading ? <Activity size={14} className="animate-spin" /> : <><ChevronRight size={14} /></>}
+                  {loading ? <Activity size={14} className="animate-spin" /> : <ChevronRight size={14} />}
                 </motion.button>
               </div>
               <AnimatePresence>
@@ -328,12 +440,14 @@ const AmbassadorPortal = () => {
                     className="flex items-center gap-2.5 px-4 py-3 bg-red-400/[0.08] border border-red-400/25 rounded-lg">
                     <AlertCircle size={13} className="text-red-300 shrink-0" />
                     <p className="font-mono text-[10px] text-red-300/90">No application found.{" "}
-                      <button onClick={() => navigate("/ambassador-apply")} className="text-red-200 hover:text-white underline">Apply now →</button></p>
+                      <button onClick={() => navigate("/ambassador-apply")} className="text-red-200 hover:text-white underline">Apply now →</button>
+                    </p>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </motion.div>
+
           <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-3">
             {[
               { icon: Shield, title: "Secure Access", desc: "Accessed via your Account ID only." },
@@ -345,17 +459,20 @@ const AmbassadorPortal = () => {
                   <div className="w-8 h-8 rounded-lg bg-[#a8c3f0]/12 border border-[#a8c3f0]/25 flex items-center justify-center shrink-0 mt-0.5">
                     <item.icon size={14} className="text-[#a8c3f0]" />
                   </div>
-                  <div><div className="text-white/90 font-semibold text-sm mb-0.5">{item.title}</div><div className="text-white/50 text-xs">{item.desc}</div></div>
+                  <div>
+                    <div className="text-white/90 font-semibold text-sm mb-0.5">{item.title}</div>
+                    <div className="text-white/50 text-xs">{item.desc}</div>
+                  </div>
                 </div>
               </div>
             ))}
           </motion.div>
         </div>
       </div>
-    </Wrap>
+    </PageWrap>
   );
 
-  /* ── DASHBOARD ── */
+  /* ════ DASHBOARD ════ */
   const isApproved = portalData.application.status === "approved";
   const RETWEET_POSTS_PORTAL = [
     { label: "Arxon Official Post #1", url: "https://x.com/arxoninfra/status/2052324369775440352?s=20" },
@@ -364,9 +481,10 @@ const AmbassadorPortal = () => {
   ];
 
   return (
-    <Wrap>
+    <PageWrap>
       <div className="max-w-[860px] mx-auto">
-        <motion.button onClick={() => { setPortalData(null); setArxonId(""); setActualReferrals(0); }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        <motion.button onClick={() => { setPortalData(null); setArxonId(""); setActualReferrals(0); }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0] mb-8 transition-colors">
           <ArrowLeft size={12} /> SIGN OUT OF PORTAL
         </motion.button>
@@ -424,13 +542,12 @@ const AmbassadorPortal = () => {
           <StatCard icon={Video} label="VIDEOS" value={videoCount} target="1-2" met={videoCount >= 1} />
         </motion.div>
 
-        {/* Requirements checklist */}
+        {/* Requirements */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
           className="relative bg-[#101018] border border-white/[0.08] rounded-xl overflow-hidden mb-4">
           <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.10]">
             <CheckCircle2 size={11} className="text-[#a8c3f0]" />
             <span className="font-mono text-[9px] text-white/60">REQUIREMENTS_CHECKLIST</span>
-            <div className="flex-1" />
           </div>
           <div className="p-5 space-y-2">
             <ReqRow icon={Twitter} label="Followed @arxoninfra on X (Twitter)" met={!!portalData.application.followed_arxon} />
@@ -443,7 +560,7 @@ const AmbassadorPortal = () => {
           </div>
         </motion.div>
 
-        {/* Follow & Retweet tasks */}
+        {/* Social tasks */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
           className="relative bg-[#101018] border border-[#a8c3f0]/15 rounded-xl overflow-hidden mb-4">
           <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.08] bg-[#a8c3f0]/[0.03]">
@@ -451,25 +568,23 @@ const AmbassadorPortal = () => {
             <span className="font-mono text-[9px] text-[#a8c3f0]/70 tracking-widest">SOCIAL_TASKS · FOLLOW & RETWEET</span>
           </div>
           <div className="p-5 space-y-3">
-            {/* Follow */}
             <div className="flex items-center justify-between gap-3 p-3 bg-white/[0.03] border border-white/[0.07] rounded-lg flex-wrap">
               <div>
                 <div className="text-white/80 text-sm font-semibold">Follow @arxoninfra on X</div>
-                <div className="font-mono text-[9px] text-white/40 mt-0.5">Official Arxon account — required task</div>
+                <div className="font-mono text-[9px] text-white/40 mt-0.5">Required · visit the official Arxon account</div>
               </div>
               <a href="https://x.com/arxoninfra" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg font-mono text-xs font-bold text-white bg-[#a8c3f0]/15 border border-[#a8c3f0]/30 hover:bg-[#a8c3f0]/25 transition-colors shrink-0">
                 <Twitter size={11} /> FOLLOW @arxoninfra
               </a>
             </div>
-            {/* Retweet posts */}
             {RETWEET_POSTS_PORTAL.map((post, i) => (
               <div key={i} className="flex items-center justify-between gap-3 p-3 bg-white/[0.03] border border-white/[0.07] rounded-lg flex-wrap">
                 <div>
                   <div className="text-white/80 text-sm font-semibold">{post.label}</div>
                   <a href={post.url} target="_blank" rel="noopener noreferrer"
                     className="font-mono text-[9px] text-[#a8c3f0]/50 hover:text-[#a8c3f0] transition-colors flex items-center gap-1 mt-0.5">
-                    <ExternalLink size={8} /> {post.url.slice(0, 50)}...
+                    <ExternalLink size={8} /> {post.url.slice(0, 52)}...
                   </a>
                 </div>
                 <a href={post.url} target="_blank" rel="noopener noreferrer"
@@ -484,29 +599,38 @@ const AmbassadorPortal = () => {
         {/* Submission sections */}
         <div className="space-y-4 mb-6">
           <SubmissionSection
-            title="POST_SUBMISSIONS" subtitle="Posts: X/Twitter, YouTube, Facebook, Medium, blogs, etc. · target 8+"
+            title="POST_SUBMISSIONS"
+            subtitle="X/Twitter, YouTube, Facebook, Medium, blogs, TikTok — any platform · target 8+"
             icon={MessageSquare} type="post" urls={postUrls}
-            onUpdateUrl={updateUrl(setPostUrls)} onRemoveUrl={removeUrl(setPostUrls)} onAdd={addUrl(setPostUrls)}
-            onSubmitSingle={(i) => { setSubmittingPostIdx(i); submitSingle("post", postUrls[i]).finally(() => setSubmittingPostIdx(null)); }}
+            onUpdateUrl={updateUrl(setPostUrls)}
+            onRemoveUrl={removeUrl(setPostUrls)}
+            onAdd={addUrl(setPostUrls)}
+            onSubmitSingle={(i, val) => handleSubmitSingle("post", val, i, setSubmittingPostIdx)}
             onSubmitAll={() => submitSection("post", postUrls, setSubmittingPostSection)}
             submittingIdx={submittingPostIdx} submittingAll={submittingPostSection}
           />
           <SubmissionSection
-            title="SPACES_SUBMISSIONS" subtitle="Twitter (X) Spaces recordings or links · target 2+"
+            title="SPACES_SUBMISSIONS"
+            subtitle="Twitter (X) Space recordings or event links · target 2+"
             icon={Users} type="space" urls={spaceUrls}
-            onUpdateUrl={updateUrl(setSpaceUrls)} onRemoveUrl={removeUrl(setSpaceUrls)} onAdd={addUrl(setSpaceUrls)}
-            onSubmitSingle={(i) => { setSubmittingSpaceIdx(i); submitSingle("space", spaceUrls[i]).finally(() => setSubmittingSpaceIdx(null)); }}
+            onUpdateUrl={updateUrl(setSpaceUrls)}
+            onRemoveUrl={removeUrl(setSpaceUrls)}
+            onAdd={addUrl(setSpaceUrls)}
+            onSubmitSingle={(i, val) => handleSubmitSingle("space", val, i, setSubmittingSpaceIdx)}
             onSubmitAll={() => submitSection("space", spaceUrls, setSubmittingSpaceSection)}
             submittingIdx={submittingSpaceIdx} submittingAll={submittingSpaceSection}
           />
           <SubmissionSection
-            title="VIDEO_SUBMISSIONS" subtitle="Bonus: YouTube, TikTok, Twitter video, Loom · priority scoring"
+            title="VIDEO_SUBMISSIONS"
+            subtitle="YouTube, TikTok, Twitter video, Loom · priority scoring bonus"
             icon={Video} type="video" urls={videoUrls}
-            onUpdateUrl={updateUrl(setVideoUrls)} onRemoveUrl={removeUrl(setVideoUrls)} onAdd={addUrl(setVideoUrls)}
-            onSubmitSingle={(i) => { setSubmittingVideoIdx(i); submitSingle("video", videoUrls[i]).finally(() => setSubmittingVideoIdx(null)); }}
+            onUpdateUrl={updateUrl(setVideoUrls)}
+            onRemoveUrl={removeUrl(setVideoUrls)}
+            onAdd={addUrl(setVideoUrls)}
+            onSubmitSingle={(i, val) => handleSubmitSingle("video", val, i, setSubmittingVideoIdx)}
             onSubmitAll={() => submitSection("video", videoUrls, setSubmittingVideoSection)}
             submittingIdx={submittingVideoIdx} submittingAll={submittingVideoSection}
-            accent="amber"
+            accentAmber
           />
         </div>
 
@@ -518,11 +642,13 @@ const AmbassadorPortal = () => {
           <motion.div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
             animate={{ x: ["-200%", "200%"] }} transition={{ duration: 2.5, repeat: Infinity, ease: "linear", repeatDelay: 1.5 }} />
           <span className="relative z-10 flex items-center gap-2">
-            {submittingAll ? <><Activity size={13} className="animate-spin" /> SUBMITTING ALL...</> : <><Link2 size={13} /> SUBMIT ALL LINKS <ArrowRight size={13} /></>}
+            {submittingAll
+              ? <><Activity size={13} className="animate-spin" /> SUBMITTING ALL...</>
+              : <><Link2 size={13} /> SUBMIT ALL LINKS <ArrowRight size={13} /></>}
           </span>
         </motion.button>
       </div>
-    </Wrap>
+    </PageWrap>
   );
 };
 
