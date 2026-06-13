@@ -4,16 +4,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import {
-  Terminal, Cpu, Network, Shield, Zap, ChevronRight,
-  Activity, Radio, Database, Lock, GitBranch, Hash,
+  Terminal, Cpu, Network, Shield, ChevronRight,
+  Activity, Radio, Hash,
   Users, Globe, Video, MessageSquare, Award, ArrowRight,
-  Signal, Server, Code2, Layers, TrendingUp,
-  AlertCircle, CheckCircle2, Clock, ExternalLink, ArrowUpRight, Unlock
+  TrendingUp, AlertCircle, Clock, Unlock, Lock, Twitter
 } from "lucide-react";
 
-/* ════════════════════════════════════════
-   COUNTDOWN — target: June 15 2025 14:00 UTC
-════════════════════════════════════════ */
 const LAUNCH_UTC = Date.UTC(2026, 5, 15, 14, 0, 0);
 
 function useCountdown() {
@@ -32,19 +28,15 @@ function useCountdown() {
   return state;
 }
 
-/* ─── Digit block ─── */
 const DigitBlock = ({ value, label }: { value: number; label: string }) => {
   const display = String(value).padStart(2, "0");
   return (
     <div className="flex flex-col items-center gap-2.5">
       <div className="relative w-[96px] h-[84px] bg-[#090910] border border-[#a8c3f0]/20 rounded-xl overflow-hidden flex items-center justify-center"
         style={{ boxShadow: "0 0 30px rgba(168,195,240,0.07), inset 0 1px 0 rgba(168,195,240,0.07)" }}>
-        {/* Scanlines */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(168,195,240,0.012) 3px,rgba(168,195,240,0.012) 4px)" }} />
-        {/* Mid line */}
         <div className="absolute left-0 right-0 top-1/2 h-px bg-[#a8c3f0]/8" />
-        {/* Corner accents */}
         <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#a8c3f0]/35 rounded-tl-xl" />
         <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-[#a8c3f0]/35 rounded-tr-xl" />
         <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[#a8c3f0]/35 rounded-bl-xl" />
@@ -71,7 +63,6 @@ const Sep = () => (
   </div>
 );
 
-/* ─── Canvas Grid Background ─── */
 const CircuitBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -110,7 +101,7 @@ const Scanline = () => (
 
 const TypeLine = ({ text, delay = 0, color = "text-[#a8c3f0]/60" }: { text: string; delay?: number; color?: string }) => {
   const [show, setShow] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setShow(true), delay * 1000); return () => clearTimeout(t); }, [delay]);
+  useEffect(() => { const t = setTimeout(() => setShow(true), delay * 1000); return () => clearTimeout(t); }, []);
   if (!show) return null;
   return <motion.p initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className={`font-mono text-[11px] leading-relaxed ${color}`}>{text}</motion.p>;
 };
@@ -135,25 +126,18 @@ const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
   return <div className={`absolute ${cls} w-4 h-4 ${bord} border-[#a8c3f0]/30`} />;
 };
 
-/* ════════════════════════════════════════
-   COUNTDOWN SECTION (shown above hero content when locked)
-════════════════════════════════════════ */
 const CountdownSection = ({ hours, minutes, seconds }: { hours: number; minutes: number; seconds: number }) => {
   const launchLocal = new Date(LAUNCH_UTC);
   const localTimeStr = launchLocal.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
   const localDateStr = launchLocal.toLocaleDateString([], { weekday: "short", month: "long", day: "numeric" });
   const tzLabel = Intl.DateTimeFormat().resolvedOptions().timeZone || "your timezone";
   const totalSecs = hours * 3600 + minutes * 60 + seconds;
-  // Progress: assume max ~72h countdown window
   const progress = Math.max(0, Math.min(100, (1 - totalSecs / (72 * 3600)) * 100));
-
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
       className="relative bg-[#09090e]/90 border border-[#a8c3f0]/18 rounded-2xl overflow-hidden backdrop-blur-sm"
       style={{ boxShadow: "0 0 80px rgba(168,195,240,0.06)" }}>
       <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-
-      {/* Header */}
       <div className="flex items-center gap-2.5 px-6 py-3.5 border-b border-[#a8c3f0]/10 bg-[#a8c3f0]/[0.03]">
         <Lock size={10} className="text-[#a8c3f0]/70" />
         <span className="font-mono text-[9px] text-[#a8c3f0]/70 tracking-widest">AMBASSADOR_PROGRAM · APPLICATIONS_LOCKED</span>
@@ -163,21 +147,15 @@ const CountdownSection = ({ hours, minutes, seconds }: { hours: number; minutes:
           <span className="font-mono text-[9px] text-amber-400/80 tracking-wider">OPENING JUNE 15 · 14:00 UTC</span>
         </div>
       </div>
-
       <div className="px-6 md:px-10 py-10">
-        {/* Label */}
         <div className="text-center mb-8">
           <p className="font-mono text-[10px] text-[#a8c3f0]/55 tracking-[0.25em] mb-3 uppercase">Applications Open In</p>
           <p className="text-white/40 text-xs font-mono">
             <Clock size={10} className="inline mr-1.5 text-[#a8c3f0]/50" />
-            That's{" "}
-            <span className="text-[#a8c3f0]/75 font-semibold">{localTimeStr} · {localDateStr}</span>
-            {" "}in your local time
+            That's <span className="text-[#a8c3f0]/75 font-semibold">{localTimeStr} · {localDateStr}</span> in your local time
             <span className="text-white/25 ml-1">({tzLabel})</span>
           </p>
         </div>
-
-        {/* Digits */}
         <div className="flex items-end justify-center gap-4 mb-10">
           <DigitBlock value={hours} label="Hours" />
           <Sep />
@@ -185,27 +163,17 @@ const CountdownSection = ({ hours, minutes, seconds }: { hours: number; minutes:
           <Sep />
           <DigitBlock value={seconds} label="Seconds" />
         </div>
-
-        {/* Progress bar */}
         <div className="relative h-[3px] bg-white/[0.05] rounded-full overflow-hidden mb-3 mx-auto max-w-[480px]">
           <motion.div className="absolute left-0 top-0 h-full rounded-full"
-            style={{ background: "linear-gradient(90deg,#7c93c3,#a8c3f0,#c8d8f8)" }}
-            animate={{ width: `${progress}%` }} transition={{ duration: 1, ease: "linear" }} />
-          <motion.div className="absolute top-0 h-full w-16 rounded-full"
-            style={{ background: "linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)", left: `${Math.max(0, progress - 6)}%` }}
-            animate={{ left: [`${Math.max(0, progress - 12)}%`, `${progress}%`] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }} />
+            style={{ background: "linear-gradient(90deg,#7c93c3,#a8c3f0,#c8d8f8)", width: `${progress}%` }} />
         </div>
         <div className="flex justify-between font-mono text-[9px] text-white/20 max-w-[480px] mx-auto mb-6">
-          <span>NOW</span>
-          <span>JUNE 15 · 14:00 UTC</span>
+          <span>NOW</span><span>JUNE 15 · 14:00 UTC</span>
         </div>
-
-        {/* Info row */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2 border-t border-[#a8c3f0]/8">
           <div className="flex items-center gap-2">
             <AlertCircle size={10} className="text-[#a8c3f0]/35" />
-            <p className="font-mono text-[9px] text-white/30">The countdown is universal — it stops for everyone at the same moment.</p>
+            <p className="font-mono text-[9px] text-white/30">The countdown is universal — stops for everyone at the same moment.</p>
           </div>
           <div className="hidden sm:block w-px h-4 bg-white/[0.06]" />
           <p className="font-mono text-[9px] text-white/20">Apply & portal buttons appear automatically.</p>
@@ -215,9 +183,7 @@ const CountdownSection = ({ hours, minutes, seconds }: { hours: number; minutes:
   );
 };
 
-/* ════════════════════════════════════════
-   HERO
-════════════════════════════════════════ */
+/* ════ HERO ════ */
 const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => {
   const navigate = useNavigate();
   const [ts, setTs] = useState("");
@@ -229,70 +195,50 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-[#09090b]">
-        <CircuitBackground />
-        <Scanline />
+        <CircuitBackground /><Scanline />
         <Grid size={64} opacity={0.022} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] pointer-events-none"
           style={{ background: "radial-gradient(ellipse,rgba(124,147,195,0.055) 0%,transparent 65%)" }} />
         <svg className="absolute top-20 left-0 w-48 h-48 opacity-20 pointer-events-none" viewBox="0 0 192 192" fill="none">
-          <path d="M0 8h24l8 8h40" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <path d="M0 24h12l8 8h32" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <path d="M8 0v24l8 8v40" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <rect x="68" y="12" width="6" height="6" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <rect x="36" y="12" width="4" height="4" fill="rgba(124,147,195,0.3)"/>
+          <path d="M0 8h24l8 8h40" stroke="#a8c3f0" strokeWidth="0.5"/><path d="M0 24h12l8 8h32" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M8 0v24l8 8v40" stroke="#a8c3f0" strokeWidth="0.5"/><rect x="68" y="12" width="6" height="6" stroke="#a8c3f0" strokeWidth="0.5"/>
         </svg>
         <svg className="absolute top-20 right-0 w-48 h-48 opacity-20 pointer-events-none" viewBox="0 0 192 192" fill="none">
-          <path d="M192 8h-24l-8 8h-40" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <path d="M192 24h-12l-8 8h-32" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <path d="M184 0v24l-8 8v40" stroke="#a8c3f0" strokeWidth="0.5"/>
-          <rect x="118" y="12" width="6" height="6" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M192 8h-24l-8 8h-40" stroke="#a8c3f0" strokeWidth="0.5"/><path d="M192 24h-12l-8 8h-32" stroke="#a8c3f0" strokeWidth="0.5"/>
+          <path d="M184 0v24l-8 8v40" stroke="#a8c3f0" strokeWidth="0.5"/><rect x="118" y="12" width="6" height="6" stroke="#a8c3f0" strokeWidth="0.5"/>
         </svg>
       </div>
-
       <div className="relative z-10 max-w-[1120px] mx-auto px-6 pt-28 pb-20 w-full">
-        {/* System path */}
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 mb-12">
           <div className="flex items-center gap-1.5 font-mono text-[10px] text-white/60">
             <Terminal size={10} className="text-[#a8c3f0]/40" />
-            <span>ARXON</span><span className="text-[#a8c3f0]/25">/</span>
-            <span>PRIVACY PROTOCOL</span><span className="text-[#a8c3f0]/25">/</span>
+            <span>ARXON</span><span className="text-[#a8c3f0]/25">/</span><span>PRIVACY PROTOCOL</span><span className="text-[#a8c3f0]/25">/</span>
             <span className="text-[#a8c3f0]/50">AMBASSADOR CAMPAIGN</span>
           </div>
           <div className="flex-1 h-px bg-gradient-to-r from-[#a8c3f0]/15 to-transparent" />
           <span className="font-mono text-[9px] text-white/55">{ts}</span>
           <Pill label="LIVE" variant="green" />
         </motion.div>
-
         <div className="grid lg:grid-cols-[1fr_440px] gap-12 items-start">
-          {/* Left */}
           <div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}
               className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#a8c3f0]/20 bg-[#a8c3f0]/5 rounded font-mono text-[9px] text-[#a8c3f0]/80 tracking-widest uppercase mb-6">
               <Radio size={8} className="animate-pulse" />
               CAMPAIGN v1.0 · 30-Day Ambassador Campaign · $100K ARX Allocation
             </motion.div>
-
             <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="text-[clamp(38px,5.5vw,68px)] font-bold leading-[1.04] tracking-tight text-white mb-6">
               Arxon<br />
-              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8 50%,#a8c3f0)" }}>
-                Ambassador Program
-              </span>
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8 50%,#a8c3f0)" }}>Ambassador Program</span>
             </motion.h1>
-
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
               className="text-white/65 text-[15px] leading-relaxed max-w-[500px] mb-10">
               Get deployed as Arxon Blockchain representative in your country and community. 30 days of verified output. Quality over vanity metrics. Share the $100,000 ARX reward pool at TGE.
             </motion.p>
-
-            {/* Metric strip */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
               className="relative flex gap-0 mb-10 rounded-xl overflow-hidden border border-white/[0.07] bg-white/[0.03]">
               <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-              {[
-                { label: "REWARD POOL", val: "$100K", sub: "ARX Token" },
-                { label: "DURATION", val: "30D", sub: "Challenge" },
-              ].map((m, i) => (
+              {[{ label: "REWARD POOL", val: "$100K", sub: "ARX Token" }, { label: "DURATION", val: "30D", sub: "Challenge" }].map((m, i) => (
                 <div key={i} className="flex-1 px-5 py-4 border-r border-white/[0.10] last:border-0">
                   <div className="font-mono text-[9px] text-white/60 mb-1 tracking-widest">{m.label}</div>
                   <div className="font-mono text-2xl font-bold text-white">{m.val}</div>
@@ -300,37 +246,24 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
                 </div>
               ))}
             </motion.div>
-
-            {/* ── CTA BUTTONS — hidden until launched ── */}
             <AnimatePresence>
               {countdown.launched ? (
-                <motion.div
-                  key="buttons"
-                  initial={{ opacity: 0, y: 10, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  className="flex flex-col sm:flex-row gap-3">
-                  <motion.button
-                    onClick={() => navigate("/ambassador-apply")}
-                    whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }}
-                    whileTap={{ scale: 0.97 }}
+                <motion.div key="buttons" initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex flex-col sm:flex-row gap-3">
+                  <motion.button onClick={() => navigate("/ambassador-apply")}
+                    whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }} whileTap={{ scale: 0.97 }}
                     className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
                     style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
                     <span className="relative z-10 flex items-center gap-2"><Cpu size={13} /> APPLY NOW <ChevronRight size={13} /></span>
                   </motion.button>
-                  <motion.button
-                    onClick={() => navigate("/ambassador-portal")}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
+                  <motion.button onClick={() => navigate("/ambassador-portal")} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                     className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/40 transition-all">
                     <Terminal size={13} /> ACCESS PORTAL
                   </motion.button>
                 </motion.div>
               ) : (
-                <motion.div key="locked-hint"
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                <motion.div key="locked-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-amber-400/15 bg-amber-400/[0.04] w-fit">
                   <Lock size={11} className="text-amber-400/60 shrink-0" />
                   <span className="font-mono text-[10px] text-amber-400/60">Apply & Portal unlock when countdown ends</span>
@@ -338,8 +271,6 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
               )}
             </AnimatePresence>
           </div>
-
-          {/* Right: terminal */}
           <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
             <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-5 -right-4 z-20 bg-[#0c0c10] border border-[#a8c3f0]/20 rounded-lg px-4 py-3 shadow-xl">
@@ -351,20 +282,14 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <div>
                 <div className="font-mono text-[9px] text-white font-semibold">APPLICATIONS STATUS</div>
-                <div className="font-mono text-[9px] text-emerald-400">
-                  {countdown.launched ? "ACCEPTING APPLICATIONS" : "OPENS JUNE 15 · 14:00 UTC"}
-                </div>
+                <div className="font-mono text-[9px] text-emerald-400">{countdown.launched ? "ACCEPTING APPLICATIONS" : "OPENS JUNE 15 · 14:00 UTC"}</div>
               </div>
             </motion.div>
-
             <div className="relative bg-[#0a0a0d] border border-[#a8c3f0]/15 rounded-xl overflow-hidden shadow-2xl">
               <div className="flex items-center gap-2 px-4 py-3 border-b border-[#a8c3f0]/10 bg-[#a8c3f0]/[0.02]">
-                <div className="flex gap-1.5">
-                  {["bg-white/8","bg-white/8","bg-white/8"].map((c,i) => <div key={i} className={`w-2.5 h-2.5 rounded-full ${c}`} />)}
-                </div>
+                <div className="flex gap-1.5">{["bg-white/8","bg-white/8","bg-white/8"].map((c,i) => <div key={i} className={`w-2.5 h-2.5 rounded-full ${c}`} />)}</div>
                 <span className="font-mono text-[9px] text-white/65 ml-2">arxon://ambassador program.sh</span>
-                <div className="flex-1" />
-                <Activity size={9} className="text-[#a8c3f0]/40 animate-pulse" />
+                <div className="flex-1" /><Activity size={9} className="text-[#a8c3f0]/40 animate-pulse" />
               </div>
               <div className="p-5 space-y-1 min-h-[310px]">
                 <TypeLine text="$ ./init --protocol ambassador --network arxon" delay={0.3} color="text-white/50" />
@@ -377,19 +302,15 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
                 <TypeLine text="[PASS] SELECTION MODE     = QUALITY FIRST" delay={4.1} color="text-emerald-400/60" />
                 <TypeLine text="[PASS] CHAIN              = ARXON MAINNET" delay={4.5} color="text-emerald-400/60" />
                 <TypeLine text="" delay={4.9} />
-                <TypeLine text="[INFO] Min requirements: 8 posts + 40 referrals minimum" delay={5.2} />
+                <TypeLine text="[INFO] Min requirements: follow + retweet + 8 posts + 40 referrals" delay={5.2} />
                 <TypeLine text="[INFO] Video content earns priority scoring" delay={5.6} />
                 <TypeLine text="" delay={6.0} />
                 <TypeLine text="$ ready. awaiting applications_" delay={6.3} color="text-[#a8c3f0]/80" />
               </div>
-              <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none overflow-hidden">
-                <Grid size={8} opacity={0.05} />
-              </div>
+              <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none overflow-hidden"><Grid size={8} opacity={0.05} /></div>
             </div>
           </motion.div>
         </div>
-
-        {/* ── COUNTDOWN BLOCK below hero content ── */}
         <AnimatePresence>
           {!countdown.launched && (
             <motion.div exit={{ opacity: 0, y: -10 }} className="mt-12">
@@ -397,13 +318,9 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* ── UNLOCKED BANNER (appears when launched) ── */}
         <AnimatePresence>
           {countdown.launched && (
-            <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+            <motion.div initial={{ opacity: 0, y: 16, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 180, damping: 16 }}
               className="mt-10 flex items-center gap-4 px-6 py-4 bg-emerald-400/[0.05] border border-emerald-400/22 rounded-xl">
               <div className="w-10 h-10 rounded-xl bg-emerald-400/12 border border-emerald-400/20 flex items-center justify-center shrink-0">
@@ -421,9 +338,7 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
   );
 };
 
-/* ════════════════════════════════════════
-   BENEFITS
-════════════════════════════════════════ */
+/* ════ BENEFITS ════ */
 const modules = [
   { id: "MOD-001", icon: TrendingUp, label: "TOKEN REWARDS", title: "ARX Reward Pool", spec: "$100,000 · TGE-linked", desc: "Top performing ambassadors earn proportional allocations from the $100K ARX pool. Distributed at TGE.", tags: ["ARX TOKEN","TGE LINKED","QUALITY SCORED"], status: "green" as const },
   { id: "MOD-002", icon: Shield, label: "CREDENTIAL REWARDS", title: "Official Ambassador Badge", spec: "Verified status · Early access · Core comms", desc: "Earn verified Arxon Ambassador credentials. Unlocks early access to feature previews, protocol updates, and direct dev communication channels.", tags: ["VERIFIED","EARLY ACCESS","CORE COMMS","PRIVILEGED"], status: "blue" as const },
@@ -469,9 +384,6 @@ const BenefitsSection = () => {
                   {m.tags.map(t => <span key={t} className="font-mono text-[8px] text-white/60 bg-white/[0.04] border border-white/[0.09] px-2 py-1 rounded tracking-wider">{t}</span>)}
                 </div>
               </div>
-              <div className="absolute bottom-0 right-0 w-16 h-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
-                <Grid size={8} opacity={0.08} />
-              </div>
             </motion.div>
           ))}
         </div>
@@ -480,23 +392,24 @@ const BenefitsSection = () => {
   );
 };
 
-/* ════════════════════════════════════════
-   PROTOCOL
-════════════════════════════════════════ */
+/* ════ PROTOCOL ════ */
 const steps = [
   { seq: "01", cmd: "PARTICIPATE IN MINING", title: "Create Arxon Mining Account", desc: "Initialize your identity at arxonchain.xyz. Your mining account ID becomes your ambassador credential and referral tracking key.", params: ["NETWORK=ARXON","ACCOUNT TYPE=MINING"] },
-  { seq: "02", cmd: "SUBMIT APPLICATION", title: "Fill Your Application Form", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
-  { seq: "03", cmd: "PARTICIPATE IN THE 30D CHALLENGE", title: "Execute the 30-Day Ambassador Challenge", desc: "Post quality content, host Spaces, drive referrals, and tag #ArxonAmbassador. Every action builds your scoring index.", params: ["DURATION=30 DAYS","MODE=QUALITY FIRST","TAG=#ArxonAmbassador"] },
-  { seq: "04", cmd: "PUSH DELIVERABLES", title: "Submit Your Best Work", desc: "Access your personal portal and push up to 8 top-performing content pieces to the evaluation queue.", params: ["MAX ITEMS=8","PORTAL REQUIRED=TRUE","DEADLINE=END OF CAMPAIGN"] },
-  { seq: "05", cmd: "CLAIM ALLOCATION", title: "Selection & Reward Allocation", desc: "Top performers are selected as official Arxon Ambassadors. ARX allocations distribute at TGE.", params: ["TOKEN=ARX","TRIGGER=TGE_EVENT"] },
+  { seq: "02", cmd: "FOLLOW & RETWEET", title: "Follow Arxon & Retweet Posts", desc: "Follow @arxoninfra on X (Twitter) and retweet the designated Arxon posts. This is verified as part of your application.", params: ["ACCOUNT=@arxoninfra","ACTION=FOLLOW + RETWEET","VERIFIED=TRUE"] },
+  { seq: "03", cmd: "SUBMIT APPLICATION", title: "Fill Your Application Form", desc: "Submit the ambassador form with your X handle, follower count, and links to your existing crypto content for initial vetting.", params: ["REQUIRED=TRUE","FORMAT=STRUCTURED","REVIEW=24-48H"] },
+  { seq: "04", cmd: "PARTICIPATE IN THE 30D CHALLENGE", title: "Execute the 30-Day Ambassador Challenge", desc: "Post quality content, host Spaces, drive referrals, and tag #ArxonAmbassador. Every action builds your scoring index.", params: ["DURATION=30 DAYS","MODE=QUALITY FIRST","TAG=#ArxonAmbassador"] },
+  { seq: "05", cmd: "PUSH DELIVERABLES", title: "Submit Your Best Work", desc: "Access your personal portal and push your top-performing content pieces to the evaluation queue.", params: ["PORTAL REQUIRED=TRUE","DEADLINE=END OF CAMPAIGN"] },
+  { seq: "06", cmd: "CLAIM ALLOCATION", title: "Selection & Reward Allocation", desc: "Top performers are selected as official Arxon Ambassadors. ARX allocations distribute at TGE.", params: ["TOKEN=ARX","TRIGGER=TGE_EVENT"] },
 ];
 
+/* ── UPDATED requirements — follow/retweet is now #1 ── */
 const requirements = [
-  { icon: MessageSquare, cmd: "POST CONTENT", req: "Minimum 8 quality tweets/threads about Arxon", type: "REQUIRED" },
-  { icon: Users, cmd: "HOST SPACES", req: "Host/Co-host 2+ Twitter(X) Spaces about Arxon while you tag the Arxon acc (@arxoninfra)", type: "REQUIRED" },
+  { icon: Twitter, cmd: "FOLLOW & RETWEET", req: "Follow @arxoninfra on X and retweet the designated Arxon posts in your application", type: "REQUIRED" },
+  { icon: MessageSquare, cmd: "POST CONTENT", req: "Minimum 8 quality posts about Arxon (X/Twitter, YouTube, Facebook, Medium, blogs, etc.)", type: "REQUIRED" },
+  { icon: Users, cmd: "HOST SPACES", req: "Host/Co-host 2+ Twitter(X) Spaces about Arxon while tagging @arxoninfra", type: "REQUIRED" },
   { icon: Globe, cmd: "DRIVE REFERRALS", req: "Refer minimum of 40 verified new users via your referral link", type: "REQUIRED" },
   { icon: Hash, cmd: "TAG PROTOCOL", req: "#ArxonAmbassador on all content + @arxoninfra mentions", type: "REQUIRED" },
-  { icon: Video, cmd: "CREATE VIDEO", req: "1-2 video pieces which unlocks priority scoring weight (bonus for anyone doing this)", type: "BONUS" },
+  { icon: Video, cmd: "CREATE VIDEO", req: "1-2 video pieces — unlocks priority scoring weight (bonus)", type: "BONUS" },
 ];
 
 const ProtocolSection = () => {
@@ -515,7 +428,7 @@ const ProtocolSection = () => {
             <span className="font-mono text-[9px] text-[#a8c3f0]/50 tracking-widest uppercase">Campaign.Execution</span>
           </div>
           <h2 className="text-[clamp(28px,4vw,40px)] font-bold text-white mb-2">Campaign <span className="text-[#a8c3f0]">Execution</span></h2>
-          <p className="font-mono text-xs text-white/65">5 sequential operations · all required for selection eligibility</p>
+          <p className="font-mono text-xs text-white/65">6 sequential operations · all required for selection eligibility</p>
         </motion.div>
         <div className="grid lg:grid-cols-[360px_1fr] gap-5 mb-16">
           <div className="space-y-2">
@@ -549,11 +462,16 @@ const ProtocolSection = () => {
               <div className="space-y-2 p-4 bg-white/[0.03] rounded-lg border border-white/[0.08]">
                 {steps[active].params.map(p => (
                   <div key={p} className="flex items-center gap-2 font-mono text-[10px]">
-                    <span className="text-[#a8c3f0]/35">──</span>
-                    <span className="text-white/55">{p}</span>
+                    <span className="text-[#a8c3f0]/35">──</span><span className="text-white/55">{p}</span>
                   </div>
                 ))}
               </div>
+              {active === 1 && (
+                <a href="https://x.com/arxoninfra" target="_blank" rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs font-bold text-white border border-[#a8c3f0]/30 bg-[#a8c3f0]/8 hover:bg-[#a8c3f0]/15 transition-colors">
+                  <Twitter size={13} className="text-[#a8c3f0]" /> FOLLOW @arxoninfra ON X
+                </a>
+              )}
             </div>
             <div className="absolute bottom-0 right-0 w-28 h-28 pointer-events-none overflow-hidden"><Grid size={8} opacity={0.04} /></div>
           </motion.div>
@@ -564,15 +482,15 @@ const ProtocolSection = () => {
           <div className="flex items-center gap-3 mb-5">
             <span className="font-mono text-[10px] text-white/65 tracking-widest">MINIMUM REQUIREMENTS</span>
             <div className="flex-1 h-px bg-white/[0.05]" />
-            <span className="font-mono text-[9px] text-white/55">5 OPERATIONS · {requirements.filter(r => r.type === "REQUIRED").length} REQUIRED</span>
+            <span className="font-mono text-[9px] text-white/55">{requirements.length} OPERATIONS · {requirements.filter(r => r.type === "REQUIRED").length} REQUIRED</span>
           </div>
           <div className="bg-[#0a0a0d] border border-white/[0.09] rounded-xl overflow-hidden">
-            <div className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-2.5 border-b border-white/[0.08] bg-white/[0.03]">
+            <div className="grid grid-cols-[40px_90px_1fr_72px] gap-4 px-5 py-2.5 border-b border-white/[0.08] bg-white/[0.03]">
               {["#","OP_CODE","REQUIREMENT","TYPE"].map(h => <span key={h} className="font-mono text-[8px] text-white/60 tracking-widest">{h}</span>)}
             </div>
             {requirements.map((r, i) => (
               <motion.div key={i} initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.5 + i * 0.06 }}
-                className="grid grid-cols-[40px_80px_1fr_72px] gap-4 px-5 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.03] transition-colors group items-center">
+                className="grid grid-cols-[40px_90px_1fr_72px] gap-4 px-5 py-3.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.03] transition-colors group items-center">
                 <span className="font-mono text-[9px] text-white/55">{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center group-hover:bg-[#a8c3f0]/14 transition-colors">
@@ -588,7 +506,7 @@ const ProtocolSection = () => {
           <div className="mt-4 flex items-start gap-3 px-5 py-4 bg-[#a8c3f0]/[0.03] border border-[#a8c3f0]/12 rounded-xl">
             <AlertCircle size={13} className="text-[#a8c3f0]/60 shrink-0 mt-0.5" />
             <p className="font-mono text-[10px] text-white/55 leading-relaxed">
-              <span className="text-[#a8c3f0]/60">NOTICE:</span> Rewards are distributed at TGE. Selected ambassadors continue promotion through TGE. Quality and genuine engagement are prioritized over raw follower metrics.
+              <span className="text-[#a8c3f0]/60">NOTICE:</span> Rewards are distributed at TGE. Selected ambassadors continue promotion through TGE. Quality and genuine engagement are prioritized over raw follower metrics. Content accepted from any platform: X/Twitter, YouTube, Facebook, Medium, blogs, etc.
             </p>
           </div>
         </motion.div>
@@ -597,9 +515,7 @@ const ProtocolSection = () => {
   );
 };
 
-/* ════════════════════════════════════════
-   CTA
-════════════════════════════════════════ */
+/* ════ CTA ════ */
 const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => {
   const navigate = useNavigate();
   const ref = useRef(null);
@@ -611,8 +527,7 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
         <motion.div initial={{ opacity: 0, y: 28 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           className="relative bg-[#0a0a0d] border border-[#a8c3f0]/20 rounded-2xl overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
-            <CircuitBackground />
-            <Grid size={48} opacity={0.025} />
+            <CircuitBackground /><Grid size={48} opacity={0.025} />
             <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center,rgba(124,147,195,0.06) 0%,transparent 65%)" }} />
           </div>
           <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
@@ -624,21 +539,13 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
             </div>
             <h2 className="text-[clamp(28px,4vw,44px)] font-bold text-white mb-4 leading-tight">
               Initialize Your<br />
-              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                Ambassador Capacity
-              </span>
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>Ambassador Capacity</span>
             </h2>
-            <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">
-              30 days · quality over quantity · $100K ARX pool for top performers
-            </p>
-
+            <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">30 days · quality over quantity · $100K ARX pool for top performers</p>
             <AnimatePresence>
               {countdown.launched ? (
-                <motion.div key="cta-buttons"
-                  initial={{ opacity: 0, y: 10, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }}
-                  className="flex flex-col sm:flex-row gap-4 justify-center">
+                <motion.div key="cta-buttons" initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex flex-col sm:flex-row gap-4 justify-center">
                   <motion.button onClick={() => navigate("/ambassador-apply")}
                     whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }} whileTap={{ scale: 0.97 }}
                     className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
@@ -646,20 +553,16 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
                     <span className="relative z-10 flex items-center gap-2"><Cpu size={15} /> APPLY NOW <ArrowRight size={15} /></span>
                   </motion.button>
-                  <motion.button onClick={() => navigate("/ambassador-portal")}
-                    whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  <motion.button onClick={() => navigate("/ambassador-portal")} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                     className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/28 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/45 transition-all">
                     <Terminal size={15} /> ACCESS PORTAL
                   </motion.button>
                 </motion.div>
               ) : (
-                <motion.div key="cta-locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="flex flex-col items-center gap-3">
+                <motion.div key="cta-locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-3">
                   <div className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-amber-400/15 bg-amber-400/[0.04]">
                     <Lock size={13} className="text-amber-400/60" />
-                    <span className="font-mono text-xs text-amber-400/60">
-                      Applications open June 15 · 14:00 UTC · {countdown.hours}h {countdown.minutes}m remaining
-                    </span>
+                    <span className="font-mono text-xs text-amber-400/60">Applications open June 15 · 14:00 UTC · {countdown.hours}h {countdown.minutes}m remaining</span>
                   </div>
                   <p className="font-mono text-[9px] text-white/25">Buttons appear automatically when countdown ends</p>
                 </motion.div>
@@ -672,9 +575,6 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
   );
 };
 
-/* ════════════════════════════════════════
-   PAGE
-════════════════════════════════════════ */
 const Ambassadors = () => {
   const countdown = useCountdown();
   return (
