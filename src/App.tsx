@@ -21,12 +21,13 @@ import Ambassadors from "./pages/Ambassadors";
 import AmbassadorApply from "./pages/AmbassadorApply";
 import AmbassadorPortal from "./pages/AmbassadorPortal";
 
-// Admin/utility pages (unchanged — imported from same paths)
+// Admin/utility pages
 import WaitlistAdmin from "./pages/WaitlistAdmin";
 import InvestorForm from "./pages/InvestorForm";
 import InvestorAdmin from "./pages/InvestorAdmin";
 import AmbassadorAdmin from "./pages/AmbassadorAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,8 @@ const App = () => (
           <Route path="/ambassador-apply" element={<AmbassadorApply />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
           <Route path="/ambassador-admin" element={<AmbassadorAdmin />} />
+          {/* Global admin dashboard */}
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
