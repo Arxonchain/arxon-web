@@ -22,6 +22,7 @@ const Navbar = () => {
     { label: "Roadmap", href: "/learn-more#roadmap" },
     { label: "Global Mining Network", href: "/global-mining" },
     { label: "Investors", href: "/partners" },
+    { label: "Ambassador", href: "/ambassador" },
     { label: "FAQ", href: "/faq" },
     { label: "Litepaper", href: "/litepaper" },
   ];
