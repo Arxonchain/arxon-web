@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Users, TrendingUp, FileDown } from "lucide-react";
 import { generateNdaPdf } from "@/lib/generateNdaPdf";
+import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 import { useToast } from "@/hooks/use-toast";
 
 interface InvestorSubmission {
@@ -49,18 +50,15 @@ export default function InvestorAdmin() {
 
       setUser(user);
 
-      const { data: roleData, error: roleError } = await supabase
-        .rpc('has_role', { _user_id: user.id, _role: 'admin' });
-
-      if (roleError) throw roleError;
-
-      if (!roleData) {
+      const access = await verifyApprovedAdminAccess(user.id);
+      if (!access.allowed) {
+        await supabase.auth.signOut();
         toast({
           title: "Access Denied",
-          description: "You don't have permission to access this page.",
+          description: access.reason ?? "You don't have permission to access this page.",
           variant: "destructive",
         });
-        navigate("/");
+        navigate("/auth");
         return;
       }
 

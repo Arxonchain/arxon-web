@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Home, User, Settings, Users } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 import arxonIcon from "@/assets/arxon-logo-wide.svg";
 
 import {
@@ -44,14 +45,9 @@ export function AppSidebar() {
       return;
     }
 
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', session.user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
+    const access = await verifyApprovedAdminAccess(session.user.id);
 
-    if (roleData) {
+    if (access.allowed) {
       setIsAdmin(true);
       setItems([...baseItems, ...adminItems]);
     } else {

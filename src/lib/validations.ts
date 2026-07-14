@@ -33,5 +33,25 @@ export const authSchema = z.object({
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
 });
 
+export const adminSignupSchema = authSchema.extend({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Full name is required")
+    .max(100, "Name must be less than 100 characters"),
+  organization: z
+    .string()
+    .trim()
+    .max(120, "Organization must be less than 120 characters")
+    .optional()
+    .or(z.literal("")),
+  reason: z
+    .string()
+    .trim()
+    .min(10, "Please explain why you need admin access")
+    .max(500, "Reason must be less than 500 characters"),
+});
+
 export type WaitlistFormData = z.infer<typeof waitlistSchema>;
 export type AuthFormData = z.infer<typeof authSchema>;
+export type AdminSignupFormData = z.infer<typeof adminSignupSchema>;

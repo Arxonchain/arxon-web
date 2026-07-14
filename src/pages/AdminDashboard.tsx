@@ -13,6 +13,7 @@ import {
   ChevronLeft, Copy, Check, X as XIcon
 } from "lucide-react";
 import { toast } from "sonner";
+import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 
 /* ─── Shared UI ─── */
 const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder:text-[#52525b] focus:outline-none focus:border-[#7c93c3]/50 transition-colors";
@@ -886,8 +887,13 @@ const AdminDashboard = () => {
     const check = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { toast.error("Sign in required"); navigate("/auth"); return; }
-      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role","admin");
-      if (!roles || roles.length === 0) { toast.error("Admin access required"); navigate("/"); return; }
+      const access = await verifyApprovedAdminAccess(user.id);
+      if (!access.allowed) {
+        await supabase.auth.signOut();
+        toast.error(access.reason ?? "Admin access required");
+        navigate("/auth");
+        return;
+      }
       setIsAdmin(true); setChecking(false);
     };
     check();

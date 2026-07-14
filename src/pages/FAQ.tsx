@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ARXON_X_MENTION } from "@/lib/social";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -13,7 +14,7 @@ const faqs = [
   { q:"When is the private voting dApp coming?", a:"The voting dApp is in development, launching after the mining phase. Follow community channels for updates." },
   { q:"Is Arxon open source?", a:"Yes. Arxon is committed to transparency and the codebase will be open for community review and contribution." },
   { q:"When is TGE?", a:"TGE timeline will be announced as we progress through the mining phase. Ambassador and waitlist members will be first to know." },
-  { q:"How do I join the waitlist?", a:"Join directly from the homepage or at arxon.io/waitlist. You'll need to follow @ARXONarx on X to participate." },
+  { q:"How do I join the waitlist?", a:`Join directly from the homepage or at arxon.io/waitlist. You'll need to follow ${ARXON_X_MENTION} on X to participate.` },
 ];
 
 const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {

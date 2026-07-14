@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ARXON_X_URL } from "@/lib/social";
 import arxonLogoWide from "@/assets/arxon-logo-wide.svg";
 import { FaXTwitter, FaDiscord, FaMedium } from "react-icons/fa6";
 import { motion } from "framer-motion";
@@ -13,9 +14,9 @@ const Footer = () => (
       backgroundSize: "60px 60px",
     }} />
     <div className="relative max-w-[1200px] mx-auto px-6 py-7 flex flex-col md:flex-row items-center justify-between gap-4">
-      <motion.div whileHover={{ opacity: 0.7 }} className="opacity-35 transition-opacity">
+      <motion.a href={ARXON_X_URL} target="_blank" rel="noopener noreferrer" whileHover={{ opacity: 0.7 }} className="opacity-35 transition-opacity">
         <img src={arxonLogoWide} alt="ARXON" className="h-6" />
-      </motion.div>
+      </motion.a>
 
       <div className="flex items-center gap-1 font-mono text-[9px] text-white/55">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -28,7 +29,7 @@ const Footer = () => (
         </Link>
         {[
           { href: "https://discord.gg/mGWg3mnkvZ", icon: FaDiscord },
-          { href: "https://x.com/ARXONarx", icon: FaXTwitter },
+          { href: ARXON_X_URL, icon: FaXTwitter },
           { href: "https://medium.com/@arxondigest", icon: FaMedium },
         ].map(({ href, icon: Icon }) => (
           <motion.a key={href} href={href} target="_blank" rel="noopener noreferrer"

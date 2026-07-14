@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 
 /* ─── Static helpers ─── */
 const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-[#52525b] focus:outline-none focus:border-[#7c93c3]/40 transition-colors font-mono";
@@ -695,8 +696,13 @@ const AmbassadorAdmin = () => {
   const checkAdmin = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { toast.error("Please sign in to access admin panel"); navigate("/auth"); return; }
-    const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin");
-    if (!roles || roles.length === 0) { toast.error("Access denied. Admin privileges required."); navigate("/"); return; }
+    const access = await verifyApprovedAdminAccess(user.id);
+    if (!access.allowed) {
+      await supabase.auth.signOut();
+      toast.error(access.reason ?? "Access denied. Admin privileges required.");
+      navigate("/auth");
+      return;
+    }
     setIsAdmin(true);
     await loadData();
     setLoading(false);

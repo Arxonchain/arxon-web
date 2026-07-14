@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import { DollarSign, Users, TrendingUp, Zap, ArrowRight, Mail, ChevronLeft, ChevronRight, Rocket, Terminal, Activity } from "lucide-react";
 import { FaXTwitter, FaDiscord, FaMedium } from "react-icons/fa6";
+import { ARXON_X_URL } from "@/lib/social";
 import move1 from "@/assets/move-1.png";
 import move2 from "@/assets/move-2.png";
 import move3 from "@/assets/move-3.png";
@@ -135,7 +136,7 @@ const Investors = () => {
                 </motion.a>
               </div>
               <div className="mt-8 flex items-center justify-center gap-4">
-                {[{href:"https://discord.gg/mGWg3mnkvZ",icon:FaDiscord},{href:"https://x.com/ARXONarx",icon:FaXTwitter},{href:"https://medium.com/@arxondigest",icon:FaMedium}].map(({href,icon:Icon})=>(
+                {[{href:"https://discord.gg/mGWg3mnkvZ",icon:FaDiscord},{href:ARXON_X_URL,icon:FaXTwitter},{href:"https://medium.com/@arxondigest",icon:FaMedium}].map(({href,icon:Icon})=>(
                   <motion.a key={href} href={href} target="_blank" rel="noopener noreferrer" whileHover={{scale:1.2}}
                     className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.10] flex items-center justify-center text-white/50 hover:text-[#a8c3f0] hover:border-[#a8c3f0]/25 transition-all">
                     <Icon className="w-3.5 h-3.5"/>

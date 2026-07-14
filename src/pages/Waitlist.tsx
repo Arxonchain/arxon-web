@@ -8,6 +8,7 @@ import arxonLogo from "@/assets/arxon-logo-wide.svg";
 import miningIllustration from "@/assets/mining-illustration.jpg";
 import { Loader2, ArrowLeft, CheckCircle2, Send, FaXTwitter as XIcon, Activity, Terminal } from "lucide-react";
 import { FaXTwitter } from "react-icons/fa6";
+import { ARXON_X_MENTION, ARXON_X_URL } from "@/lib/social";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -26,12 +27,12 @@ const Waitlist = () => {
   const [showFollowPrompt, setShowFollowPrompt] = useState(false);
   const [form, setForm] = useState({ name:"", email:"" });
 
-  const handleFollowClick = () => { window.open("https://x.com/ARXONarx","_blank"); setShowFollowPrompt(true); };
+  const handleFollowClick = () => { window.open(ARXON_X_URL,"_blank"); setShowFollowPrompt(true); };
   const confirmFollow = () => { setHasFollowed(true); toast({title:"Thank you!",description:"You can now join the waitlist."}); };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!hasFollowed) { toast({title:"Follow Required",description:"Please follow @ARXONarx on X first.",variant:"destructive"}); return; }
+    if (!hasFollowed) { toast({title:"Follow Required",description:`Please follow ${ARXON_X_MENTION} on X first.`,variant:"destructive"}); return; }
     try {
       const data = waitlistSchema.parse(form);
       setLoading(true);
@@ -115,7 +116,7 @@ const Waitlist = () => {
                         <div className="space-y-2">
                           <motion.button type="button" onClick={handleFollowClick} whileHover={{scale:1.01}} whileTap={{scale:0.98}}
                             className="w-full flex items-center justify-center gap-2 py-3 rounded-lg border border-white/[0.08] text-white/60 font-mono text-xs hover:border-[#a8c3f0]/25 hover:text-white/80 transition-all">
-                            <FaXTwitter className="w-3.5 h-3.5"/> FOLLOW @ARXONarx
+                            <FaXTwitter className="w-3.5 h-3.5"/> FOLLOW {ARXON_X_MENTION}
                           </motion.button>
                           {showFollowPrompt&&(
                             <motion.button type="button" onClick={confirmFollow} initial={{opacity:0}} animate={{opacity:1}} whileHover={{scale:1.01}} whileTap={{scale:0.98}}

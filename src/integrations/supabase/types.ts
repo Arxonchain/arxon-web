@@ -89,6 +89,48 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_access_requests: {
+        Row: {
+          approval_token: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          organization: string | null
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          approval_token?: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          organization?: string | null
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          approval_token?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          organization?: string | null
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       investor_submissions: {
         Row: {
           additional_notes: string | null
@@ -187,6 +229,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      review_admin_access_request: {
+        Args: {
+          _action: string
+          _reviewed_by?: string
+          _token: string
+        }
+        Returns: Json
       }
     }
     Enums: {

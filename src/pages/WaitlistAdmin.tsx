@@ -8,6 +8,7 @@ import { Loader2, Users, Calendar, ArrowLeft, TrendingUp } from "lucide-react";
 import { format, startOfDay, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
+import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -40,21 +41,15 @@ const WaitlistAdmin = () => {
 
     setUser(session.user);
 
-    // Check if user is admin
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', session.user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
-
-    if (!roleData) {
+    const access = await verifyApprovedAdminAccess(session.user.id);
+    if (!access.allowed) {
+      await supabase.auth.signOut();
       toast({
         title: "Access Denied",
-        description: "You don't have permission to view this page",
+        description: access.reason ?? "You don't have permission to view this page",
         variant: "destructive",
       });
-      navigate("/");
+      navigate("/auth");
       return;
     }
 
