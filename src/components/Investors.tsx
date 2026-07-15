@@ -43,7 +43,7 @@ const Investors = () => {
     { q:"When is the private voting dApp coming?", a:"The private voting dApp is currently in development and will be released following the mining phase. Stay tuned to our community channels for updates." },
     { q:"Is Arxon open source?", a:"Yes, Arxon is committed to transparency and will be open source. The codebase will be available for community review and contribution as we progress through development." },
     { q:"Can I invest in the seed round?", a:"Yes, we're raising $2.5M in our pre-seed round. Email us at arxonchain@yahoo.com or apply directly through our investor form.", hasLink:true },
-    { q:"How do I stay updated?", a:"Join our Telegram channel, Discord, and follow us on X. You can also join the waitlist at arxon.io/waitlist for direct updates." },
+    { q:"How do I stay updated?", a:"Join our Telegram channel, Discord, and follow us on X for the latest announcements and mining updates." },
   ];
 
   return (

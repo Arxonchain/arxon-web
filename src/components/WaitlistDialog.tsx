@@ -8,7 +8,7 @@ export const WaitlistDialog = ({ children }: WaitlistDialogProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/waitlist");
+    navigate("/mining-choice");
   };
 
   return (

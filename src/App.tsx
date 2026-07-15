@@ -10,7 +10,6 @@ import FAQ from "./pages/FAQ";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
-import Waitlist from "./pages/Waitlist";
 import LearnMore from "./pages/LearnMore";
 import Partners from "./pages/Partners";
 import NotFound from "./pages/NotFound";
@@ -47,7 +46,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/waitlist" element={<Waitlist />} />
+          <Route path="/waitlist" element={<Navigate to="/mining-choice" replace />} />
           <Route path="/waitlist-admin" element={<WaitlistAdmin />} />
           <Route path="/investor-form" element={<InvestorForm />} />
           <Route path="/investor-admin" element={<InvestorAdmin />} />
@@ -55,7 +54,6 @@ const App = () => (
           <Route path="/ambassador-apply" element={<Navigate to="/ambassador-portal" replace />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
           <Route path="/ambassador-admin" element={<Navigate to="/admin?section=ambassadors" replace />} />
-          {/* Global admin dashboard */}
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

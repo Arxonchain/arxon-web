@@ -127,21 +127,18 @@ const MiningWaitlist = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <div>
                 <button
                   onClick={() => navigate("/mining-choice")}
-                  className="group flex items-center justify-center gap-2 flex-1 font-mono text-sm font-bold py-3 rounded-xl text-[#09090b] transition-all"
+                  className="group flex items-center justify-center gap-2 w-full font-mono text-sm font-bold py-3 rounded-xl text-[#09090b] transition-all"
                   style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}
                 >
                   Start Mining
                   <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                 </button>
-                <button
-                  onClick={() => navigate("/waitlist")}
-                  className="flex items-center justify-center gap-2 flex-1 font-mono text-sm font-semibold py-3 rounded-xl text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 transition-all"
-                >
-                  Join Waitlist
-                </button>
+                <p className="text-center text-[#3f3f46] text-[11px] mt-3 tracking-wide font-medium">
+                  web · google play · ios soon
+                </p>
               </div>
             </div>
 

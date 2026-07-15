@@ -20,7 +20,6 @@ const Footer = () => (
         <Link to="/faq" className="text-white/60 hover:text-[#a8c3f0]/60 transition-colors tracking-wider">FAQ</Link>
         <Link to="/litepaper" className="text-white/60 hover:text-[#a8c3f0]/60 transition-colors tracking-wider">LITEPAPER</Link>
         <Link to="/ambassadors" className="text-white/60 hover:text-[#a8c3f0]/60 transition-colors tracking-wider">AMBASSADORS</Link>
-        <Link to="/waitlist" className="text-white/60 hover:text-[#a8c3f0]/60 transition-colors tracking-wider">WAITLIST</Link>
         <Link to="/privacy-policy" className="text-white/60 hover:text-[#a8c3f0]/60 transition-colors tracking-wider">PRIVACY</Link>
       </div>
 
