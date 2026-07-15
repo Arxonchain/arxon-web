@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Redesigned pages
 import Index from "./pages/Index";
@@ -18,7 +18,6 @@ import GlobalMining from "./pages/GlobalMining";
 import Litepaper from "./pages/Litepaper";
 import MiningChoice from "./pages/MiningChoice";
 import Ambassadors from "./pages/Ambassadors";
-import AmbassadorApply from "./pages/AmbassadorApply";
 import AmbassadorPortal from "./pages/AmbassadorPortal";
 
 // Admin/utility pages
@@ -54,7 +53,7 @@ const App = () => (
           <Route path="/investor-form" element={<InvestorForm />} />
           <Route path="/investor-admin" element={<InvestorAdmin />} />
           <Route path="/ambassadors" element={<Ambassadors />} />
-          <Route path="/ambassador-apply" element={<AmbassadorApply />} />
+          <Route path="/ambassador-apply" element={<Navigate to="/ambassador-portal" replace />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
           <Route path="/ambassador-admin" element={<AmbassadorAdmin />} />
           {/* Global admin dashboard */}

@@ -7,7 +7,7 @@ import {
   CheckCircle2, Award, AlertCircle, Link2, ArrowLeft, Plus, X,
   MessageSquare, Users, Globe, Video, Hash, ArrowRight,
   Terminal, Activity, Shield, Database,
-  Cpu, Lock, Server, ChevronRight, Twitter, ExternalLink, Send, RefreshCw
+  Cpu, Lock, Server, ChevronRight, Twitter, ExternalLink, Send, RefreshCw, Clock
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -363,7 +363,7 @@ const AmbassadorPortal = () => {
             <span className="font-mono text-[9px] text-[#a8c3f0] tracking-widest">PORTAL_ACCESS.auth</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Ambassador Portal</h1>
-          <p className="text-white/55 font-mono text-xs">Track progress · submit content · manage your ambassador node</p>
+          <p className="text-white/55 font-mono text-xs">Check your selection status · track progress · manage your ambassador node</p>
         </motion.div>
         <div className="grid md:grid-cols-[1fr_320px] gap-5 items-start">
           <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
@@ -380,8 +380,7 @@ const AmbassadorPortal = () => {
               </div>
               <h3 className="text-white font-bold text-lg mb-1">Access Your Node</h3>
               <p className="text-white/55 text-sm mb-6">
-                Enter your Arxon Account ID to access your ambassador dashboard.{" "}
-                <button onClick={() => navigate("/ambassador-apply")} className="text-[#a8c3f0] hover:text-white transition-colors underline">Haven't applied?</button>
+                Enter the Arxon Account ID you used when you applied. Applications are closed — this portal is for existing applicants to check selection status and track progress.
               </p>
               <div className="flex gap-3 mb-4">
                 <input
@@ -401,8 +400,8 @@ const AmbassadorPortal = () => {
                   <motion.div initial={{ opacity:0, y:-6 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}
                     className="flex items-center gap-2.5 px-4 py-3 bg-red-400/[0.08] border border-red-400/25 rounded-lg">
                     <AlertCircle size={13} className="text-red-300 shrink-0"/>
-                    <p className="font-mono text-[10px] text-red-300/90">No application found for this ID.{" "}
-                      <button onClick={() => navigate("/ambassador-apply")} className="text-red-200 hover:text-white underline">Apply now →</button>
+                    <p className="font-mono text-[10px] text-red-300/90">
+                      No application found for this ID. Applications are closed. Only applicants who registered before can access the portal.
                     </p>
                   </motion.div>
                 )}
@@ -431,7 +430,9 @@ const AmbassadorPortal = () => {
   );
 
   /* ════ DASHBOARD ════ */
-  const isApproved = portalData.application.status==="approved";
+  const isApproved = portalData.application.status === "approved";
+  const isPending = portalData.application.status === "pending";
+  const isRejected = portalData.application.status === "rejected";
   const RETWEET_POSTS_PORTAL = [
     { label:"Arxon Official Post #1", url:"https://x.com/arxoninfra/status/2052324369775440352?s=20" },
     { label:"Arxon Official Post #2", url:"https://x.com/arxoninfra/status/2041816286724796678?s=20" },
@@ -455,16 +456,36 @@ const AmbassadorPortal = () => {
           <span className="text-[#a8c3f0]/50">/</span>
           <span className="text-[#a8c3f0]">{portalData.application.arxon_account_id}</span>
           <div className="flex-1"/>
-          <Pill label={isApproved?"AMBASSADOR":"ACTIVE_TRIAL"} variant={isApproved?"green":"blue"}/>
+          <Pill label={isApproved ? "SELECTED" : isRejected ? "NOT SELECTED" : "UNDER REVIEW"} variant={isApproved ? "green" : isRejected ? "amber" : "blue"} />
         </motion.div>
 
         <AnimatePresence>
+          {isPending && (
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 px-5 py-4 bg-[#a8c3f0]/[0.08] border border-[#a8c3f0]/25 rounded-xl mb-5">
+              <Clock size={16} className="text-[#a8c3f0] shrink-0" />
+              <div>
+                <div className="text-[#d8e6ff] font-semibold text-sm">Application Under Review</div>
+                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">Selection is in progress. Check back here to see if you were chosen.</div>
+              </div>
+            </motion.div>
+          )}
+          {isRejected && (
+            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 px-5 py-4 bg-red-400/[0.08] border border-red-400/25 rounded-xl mb-5">
+              <AlertCircle size={16} className="text-red-300 shrink-0" />
+              <div>
+                <div className="text-red-200 font-semibold text-sm">Not Selected This Round</div>
+                <div className="text-red-300/70 font-mono text-[10px] mt-0.5">Thank you for applying. You were not chosen for this ambassador cohort.</div>
+              </div>
+            </motion.div>
+          )}
           {isApproved && (
             <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
               className="flex items-center gap-3 px-5 py-4 bg-emerald-400/[0.08] border border-emerald-400/25 rounded-xl mb-5">
               <Award size={16} className="text-emerald-400 shrink-0"/>
               <div>
-                <div className="text-emerald-300 font-semibold text-sm">Congratulations — Official Arxon Ambassador</div>
+                <div className="text-emerald-300 font-semibold text-sm">You Were Selected — Official Arxon Ambassador</div>
                 <div className="text-emerald-300/70 font-mono text-[10px] mt-0.5">ARX reward allocation confirmed · vest starts at TGE</div>
               </div>
             </motion.div>

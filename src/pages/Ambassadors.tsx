@@ -236,30 +236,19 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
                 </div>
               ))}
             </motion.div>
-            <AnimatePresence>
-              {countdown.launched ? (
-                <motion.div key="buttons" initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex flex-col sm:flex-row gap-3">
-                  <motion.button onClick={() => navigate("/ambassador-apply")}
-                    whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }} whileTap={{ scale: 0.97 }}
-                    className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
-                    style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
-                    <span className="relative z-10 flex items-center gap-2"><Cpu size={13} /> APPLY NOW <ChevronRight size={13} /></span>
-                  </motion.button>
-                  <motion.button onClick={() => navigate("/ambassador-portal")} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/40 transition-all">
-                    <Terminal size={13} /> ACCESS PORTAL
-                  </motion.button>
-                </motion.div>
-              ) : (
-                <motion.div key="locked-hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="flex items-center gap-2.5 px-4 py-3 rounded-lg border border-amber-400/15 bg-amber-400/[0.04] w-fit">
-                  <Lock size={11} className="text-amber-400/60 shrink-0" />
-                  <span className="font-mono text-[10px] text-amber-400/60">Apply & Portal unlock when countdown ends</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-3">
+              <motion.button onClick={() => navigate("/ambassador-portal")}
+                whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(124,147,195,0.3)" }} whileTap={{ scale: 0.97 }}
+                className="relative group flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
+                <span className="relative z-10 flex items-center gap-2"><Terminal size={13} /> ACCESS PORTAL <ChevronRight size={13} /></span>
+              </motion.button>
+            </motion.div>
+            <p className="mt-4 font-mono text-[10px] text-amber-400/70 max-w-[500px]">
+              Applications are closed. If you already applied, use the portal to check whether you were selected.
+            </p>
           </div>
           <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
             <motion.div animate={{ y: [-4, 4, -4] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -272,7 +261,7 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
               <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <div>
                 <div className="font-mono text-[9px] text-white font-semibold">APPLICATIONS STATUS</div>
-                <div className="font-mono text-[9px] text-emerald-400">{countdown.launched ? "ACCEPTING APPLICATIONS" : "OPENS JUNE 15 · 14:00 UTC"}</div>
+                <div className="font-mono text-[9px] text-amber-400">CLOSED · CHECK PORTAL</div>
               </div>
             </motion.div>
             <div className="relative bg-[#0a0a0d] border border-[#a8c3f0]/15 rounded-xl overflow-hidden shadow-2xl">
@@ -295,34 +284,23 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
                 <TypeLine text="[INFO] Min requirements: follow + retweet + 8 posts + 40 referrals" delay={5.2} />
                 <TypeLine text="[INFO] Video content earns priority scoring" delay={5.6} />
                 <TypeLine text="" delay={6.0} />
-                <TypeLine text="$ ready. awaiting applications_" delay={6.3} color="text-[#a8c3f0]/80" />
+                <TypeLine text="$ status. applications closed — portal access only_" delay={6.3} color="text-amber-400/70" />
               </div>
               <div className="absolute top-0 right-0 w-24 h-24 pointer-events-none overflow-hidden"><Grid size={8} opacity={0.05} /></div>
             </div>
           </motion.div>
         </div>
-        <AnimatePresence>
-          {!countdown.launched && (
-            <motion.div exit={{ opacity: 0, y: -10 }} className="mt-12">
-              <CountdownSection hours={countdown.hours} minutes={countdown.minutes} seconds={countdown.seconds} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {countdown.launched && (
-            <motion.div initial={{ opacity: 0, y: 16, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: "spring", stiffness: 180, damping: 16 }}
-              className="mt-10 flex items-center gap-4 px-6 py-4 bg-emerald-400/[0.05] border border-emerald-400/22 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-emerald-400/12 border border-emerald-400/20 flex items-center justify-center shrink-0">
-                <Unlock size={18} className="text-emerald-400" />
-              </div>
-              <div>
-                <div className="text-emerald-300 font-semibold text-sm">Ambassador Applications Are Now Open</div>
-                <div className="text-emerald-400/55 font-mono text-[10px] mt-0.5">Use the Apply Now button above · review takes 24–48h · $100K ARX pool</div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div initial={{ opacity: 0, y: 16, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", stiffness: 180, damping: 16 }}
+          className="mt-10 flex items-center gap-4 px-6 py-4 bg-amber-400/[0.05] border border-amber-400/22 rounded-xl">
+          <div className="w-10 h-10 rounded-xl bg-amber-400/12 border border-amber-400/20 flex items-center justify-center shrink-0">
+            <Lock size={18} className="text-amber-400" />
+          </div>
+          <div>
+            <div className="text-amber-300 font-semibold text-sm">Applications Are Now Closed</div>
+            <div className="text-amber-400/55 font-mono text-[10px] mt-0.5">Existing applicants: access the portal with your Arxon Account ID to check selection status</div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -528,36 +506,22 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
               <div className="h-px w-12 bg-[#a8c3f0]/25" />
             </div>
             <h2 className="text-[clamp(28px,4vw,44px)] font-bold text-white mb-4 leading-tight">
-              Initialize Your<br />
-              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>Ambassador Capacity</span>
+              Check Your<br />
+              <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>Ambassador Status</span>
             </h2>
-            <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">30 days · quality over quantity · $100K ARX pool for top performers</p>
-            <AnimatePresence>
-              {countdown.launched ? (
-                <motion.div key="cta-buttons" initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <motion.button onClick={() => navigate("/ambassador-apply")}
-                    whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }} whileTap={{ scale: 0.97 }}
-                    className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
-                    style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
-                    <span className="relative z-10 flex items-center gap-2"><Cpu size={15} /> APPLY NOW <ArrowRight size={15} /></span>
-                  </motion.button>
-                  <motion.button onClick={() => navigate("/ambassador-portal")} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                    className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/28 hover:bg-[#a8c3f0]/5 hover:border-[#a8c3f0]/45 transition-all">
-                    <Terminal size={15} /> ACCESS PORTAL
-                  </motion.button>
-                </motion.div>
-              ) : (
-                <motion.div key="cta-locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-3">
-                  <div className="flex items-center gap-2.5 px-5 py-3 rounded-xl border border-amber-400/15 bg-amber-400/[0.04]">
-                    <Lock size={13} className="text-amber-400/60" />
-                    <span className="font-mono text-xs text-amber-400/60">Applications open June 15 · 14:00 UTC · {countdown.hours}h {countdown.minutes}m remaining</span>
-                  </div>
-                  <p className="font-mono text-[9px] text-white/25">Buttons appear automatically when countdown ends</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">
+              Applications are closed. If you applied before, enter your Arxon Account ID in the portal to see if you were selected.
+            </p>
+            <motion.div initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex justify-center">
+              <motion.button onClick={() => navigate("/ambassador-portal")}
+                whileHover={{ scale: 1.03, boxShadow: "0 0 40px rgba(124,147,195,0.28)" }} whileTap={{ scale: 0.97 }}
+                className="relative group flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-bold text-[#09090b] overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(135deg,#a8b8d8,#a8c3f0)" }} />
+                <span className="relative z-10 flex items-center gap-2"><Terminal size={15} /> ACCESS PORTAL <ArrowRight size={15} /></span>
+              </motion.button>
+            </motion.div>
           </div>
         </motion.div>
       </div>

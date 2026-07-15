@@ -950,7 +950,6 @@ const AdminDashboard = () => {
                 <p className="font-mono text-[8px] text-white/20 px-1 mb-2">QUICK LINKS</p>
                 {[
                   { label:"Ambassador Page", path:"/ambassadors" },
-                  { label:"Apply Page",      path:"/ambassador-apply" },
                   { label:"Portal",          path:"/ambassador-portal" },
                   { label:"Site Home",       path:"/" },
                 ].map(l => (
