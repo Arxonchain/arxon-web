@@ -92,7 +92,7 @@ const AmbassadorCTA = () => {
                 Ambassador Portal — <span className="bg-gradient-to-r from-[#a8c3f0] to-[#a8b8d8] bg-clip-text text-transparent">Check Your Status</span>
               </h3>
               <p className="text-[#a1a1aa] text-sm">
-                Already applied? Enter your Arxon Account ID to see if you were selected and track your ambassador progress.
+                Already applied? Enter your Arxon Account ID to see if you were selected. If your application is still under review, check back in 5 days.
               </p>
             </div>
 

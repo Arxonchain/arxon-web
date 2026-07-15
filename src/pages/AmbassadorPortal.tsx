@@ -380,7 +380,7 @@ const AmbassadorPortal = () => {
               </div>
               <h3 className="text-white font-bold text-lg mb-1">Access Your Node</h3>
               <p className="text-white/55 text-sm mb-6">
-                Enter the Arxon Account ID you used when you applied. Applications are closed — this portal is for existing applicants to check selection status and track progress.
+                Enter the Arxon Account ID you used when you applied. Applications are closed — existing applicants can check selection status here. If still under review, check back in 5 days.
               </p>
               <div className="flex gap-3 mb-4">
                 <input
@@ -466,7 +466,7 @@ const AmbassadorPortal = () => {
               <Clock size={16} className="text-[#a8c3f0] shrink-0" />
               <div>
                 <div className="text-[#d8e6ff] font-semibold text-sm">Application Under Review</div>
-                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">Selection is in progress. Check back here to see if you were chosen.</div>
+                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">Selection is in progress. Check back here in 5 days to see if you were chosen.</div>
               </div>
             </motion.div>
           )}

@@ -247,7 +247,7 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
               </motion.button>
             </motion.div>
             <p className="mt-4 font-mono text-[10px] text-amber-400/70 max-w-[500px]">
-              Applications are closed. If you already applied, use the portal to check whether you were selected.
+              Applications are closed. If you already applied, use the portal to check whether you were selected — check back in 5 days if your status is still under review.
             </p>
           </div>
           <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="relative">
@@ -298,7 +298,7 @@ const Hero = ({ countdown }: { countdown: ReturnType<typeof useCountdown> }) => 
           </div>
           <div>
             <div className="text-amber-300 font-semibold text-sm">Applications Are Now Closed</div>
-            <div className="text-amber-400/55 font-mono text-[10px] mt-0.5">Existing applicants: access the portal with your Arxon Account ID to check selection status</div>
+            <div className="text-amber-400/55 font-mono text-[10px] mt-0.5">Existing applicants: access the portal with your Arxon Account ID · check back in 5 days if under review</div>
           </div>
         </motion.div>
       </div>
@@ -510,7 +510,7 @@ const CTASection = ({ countdown }: { countdown: ReturnType<typeof useCountdown> 
               <span className="text-transparent bg-clip-text" style={{ backgroundImage: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>Ambassador Status</span>
             </h2>
             <p className="font-mono text-xs text-white/55 mb-10 max-w-md mx-auto leading-relaxed">
-              Applications are closed. If you applied before, enter your Arxon Account ID in the portal to see if you were selected.
+              Applications are closed. If you applied before, enter your Arxon Account ID in the portal to see if you were selected. Still under review? Check back in 5 days.
             </p>
             <motion.div initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 18 }} className="flex justify-center">
