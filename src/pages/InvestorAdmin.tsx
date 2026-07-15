@@ -66,7 +66,7 @@ export default function InvestorAdmin() {
       fetchSubmissions();
     } catch (error) {
       console.error("Auth check error:", error);
-      navigate("/");
+      navigate("/auth");
     }
   };
 
@@ -110,15 +110,15 @@ export default function InvestorAdmin() {
   const latestSubmission = submissions[0];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#09090b] text-white">
       <div className="container mx-auto p-6 max-w-7xl">
         <Button
           variant="ghost"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/admin")}
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          Back to Admin
         </Button>
 
         <div className="flex items-center justify-between mb-8">
@@ -229,63 +229,6 @@ export default function InvestorAdmin() {
           </CardContent>
         </Card>
 
-        {/* Privacy Modes Table */}
-        <Card className="mt-8 border-[#7D93C4]/20 bg-[hsl(220,20%,5%)]">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold" style={{ fontFamily: 'Creato Display, sans-serif' }}>
-              <span className="text-[#7D93C4]">Arxon</span> Privacy Modes
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Configurable privacy layers for every transaction type
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto rounded-xl border border-[#7D93C4]/10">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-[#7D93C4]/10 border-b border-[#7D93C4]/15">
-                    <th className="px-5 py-4 text-left font-semibold text-[#7D93C4] tracking-wide">Privacy Mode</th>
-                    <th className="px-5 py-4 text-center font-semibold text-[#7D93C4] tracking-wide">Sender Hidden?</th>
-                    <th className="px-5 py-4 text-center font-semibold text-[#7D93C4] tracking-wide">Receiver Hidden?</th>
-                    <th className="px-5 py-4 text-center font-semibold text-[#7D93C4] tracking-wide">Amount Hidden?</th>
-                    <th className="px-5 py-4 text-left font-semibold text-[#7D93C4] tracking-wide">Real Use Case Example</th>
-                    <th className="px-5 py-4 text-left font-semibold text-[#7D93C4] tracking-wide">Compliance Fit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { mode: "All Public", sender: false, receiver: false, amount: false, useCase: "Auditable business / KYC transfer", compliance: "Full audit possible" },
-                    { mode: "Hide Amount Only", sender: false, receiver: false, amount: true, useCase: "Remittance to family (they know it's you, boss can't see amount)", compliance: "Parties traceable" },
-                    { mode: "Hide Sender + Amount", sender: true, receiver: false, amount: true, useCase: "Anonymous donation to known receiver", compliance: "Receiver auditable" },
-                    { mode: "Hide Everything", sender: true, receiver: true, amount: true, useCase: "Coercion-resistant voting ballot", compliance: "Zero visibility" },
-                    { mode: "Hide Receiver + Amount", sender: false, receiver: true, amount: true, useCase: "Paying a service privately (sender auditable)", compliance: "Sender traceable" },
-                  ].map((row, i) => (
-                    <tr key={i} className={`border-b border-[#7D93C4]/8 ${i % 2 === 0 ? 'bg-white/[0.02]' : 'bg-transparent'} hover:bg-[#7D93C4]/5 transition-colors`}>
-                      <td className="px-5 py-4 font-medium text-foreground whitespace-nowrap">{row.mode}</td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${row.sender ? 'bg-[#7D93C4]/20 text-[#7D93C4]' : 'bg-red-500/10 text-red-400'}`}>
-                          {row.sender ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${row.receiver ? 'bg-[#7D93C4]/20 text-[#7D93C4]' : 'bg-red-500/10 text-red-400'}`}>
-                          {row.receiver ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${row.amount ? 'bg-[#7D93C4]/20 text-[#7D93C4]' : 'bg-red-500/10 text-red-400'}`}>
-                          {row.amount ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 text-foreground/90 max-w-[220px]">{row.useCase}</td>
-                      <td className="px-5 py-4 text-foreground/90 whitespace-nowrap">{row.compliance}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

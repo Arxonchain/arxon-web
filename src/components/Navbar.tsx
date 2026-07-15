@@ -21,6 +21,8 @@ const Navbar = () => {
     { label: "What Arxon is Building", href: "/learn-more" },
     { label: "Roadmap", href: "/learn-more#roadmap" },
     { label: "Global Mining Network", href: "/global-mining" },
+    { label: "Ambassadors", href: "/ambassadors" },
+    { label: "Waitlist", href: "/waitlist" },
     { label: "Investors", href: "/partners" },
     { label: "FAQ", href: "/faq" },
     { label: "Litepaper", href: "/litepaper" },

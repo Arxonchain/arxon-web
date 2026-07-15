@@ -4,17 +4,18 @@ import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Terminal, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
+import PageMeta from "@/components/PageMeta";
 import { useNavigate } from "react-router-dom";
 
 const faqs = [
   { q:"What is Arxon?", a:"Arxon is a privacy-first Layer-1 blockchain that lets you send money, vote, and create tokens all with one-tap privacy. It's fast (instant), cheap (less than $0.01), and built for real people." },
-  { q:"When does mining start?", a:"JAN 2 2026. Mobile mining via a simple web app & mobile app. No expensive rigs. Open source." },
+  { q:"When does mining start?", a:"Mining is live now. Use the web app in your browser or download the Android app from Google Play. iOS mining is coming soon." },
   { q:"What is the $ARX token used for?", a:"$ARX powers everything: pay fees (or earn them via staking), vote in governance, create memecoins/NFTs, and earn rewards via mining/staking." },
   { q:"How does privacy work?", a:"Every transaction has a privacy toggle. Turn it on → amount hidden from public, only you + receiver see details, wallet balance fully shielded, auto-receipt attached (uneditable)." },
   { q:"When is the private voting dApp coming?", a:"The voting dApp is in development, launching after the mining phase. Follow community channels for updates." },
   { q:"Is Arxon open source?", a:"Yes. Arxon is committed to transparency and the codebase will be open for community review and contribution." },
   { q:"When is TGE?", a:"TGE timeline will be announced as we progress through the mining phase. Ambassador and waitlist members will be first to know." },
-  { q:"How do I join the waitlist?", a:`Join directly from the homepage or at arxon.io/waitlist. You'll need to follow ${ARXON_X_MENTION} on X to participate.` },
+  { q:"How do I join the waitlist?", a:`Join at arxon.io/waitlist for launch updates. Mining is already live via the web app and Google Play (Android). Follow ${ARXON_X_MENTION} on X to participate.` },
 ];
 
 const Corner = ({ pos }: { pos:"tl"|"tr"|"bl"|"br" }) => {
@@ -28,6 +29,7 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <PageMeta title="FAQ | ARXON" description="Frequently asked questions about Arxon mining, privacy, and the ambassador program." />
       <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
       <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 50% 20%,rgba(124,147,195,0.04) 0%,transparent 60%)"}} />
       <Navbar />

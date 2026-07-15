@@ -1,63 +1,48 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import { Switch } from "@/components/ui/switch";
-import { Bell, Shield, Palette, Globe, Terminal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Settings as SettingsIcon, Globe, Smartphone, ArrowRight } from "lucide-react";
+import PageMeta from "@/components/PageMeta";
+import { ARXON_GOOGLE_PLAY_URL, ARXON_WEB_MINING_URL, ARXON_TELEGRAM_URL, ARXON_DISCORD_URL } from "@/lib/social";
 
-const sections = [
-  { icon:Bell, id:"NOTIFICATIONS", title:"Notifications", desc:"Manage how you receive notifications",
-    items:[{id:"mining-alerts",label:"Mining Alerts",sub:"Get notified about mining activities",def:false},{id:"transaction-alerts",label:"Transaction Alerts",sub:"Get notified about transactions",def:false},{id:"security-alerts",label:"Security Alerts",sub:"Important security notifications",def:true}] },
-  { icon:Shield, id:"SECURITY", title:"Security", desc:"Manage your account security settings",
-    items:[{id:"2fa",label:"Two-Factor Authentication",sub:"Add an extra layer of security",def:false},{id:"session",label:"Session Timeout",sub:"Auto-logout after 30 minutes of inactivity",def:true}] },
-  { icon:Palette, id:"APPEARANCE", title:"Appearance", desc:"Customize your interface preferences",
-    items:[{id:"dark",label:"Dark Mode",sub:"Use dark theme (recommended)",def:true},{id:"animations",label:"Animations",sub:"Enable interface animations",def:true}] },
-  { icon:Globe, id:"NETWORK", title:"Network", desc:"Configure network and data settings",
-    items:[{id:"testnet",label:"Show Testnet",sub:"Display testnet networks",def:false},{id:"analytics",label:"Usage Analytics",sub:"Help improve Arxon (anonymous)",def:true}] },
-];
+const Settings = () => {
+  const navigate = useNavigate();
 
-const Settings = () => (
-  <SidebarProvider>
-    <div className="min-h-screen flex w-full bg-[#09090b]">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.014]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}}/>
-      <AppSidebar />
-      <main className="flex-1 relative z-10">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-white/[0.10] bg-[#09090b]/95 backdrop-blur px-6">
-          <SidebarTrigger className="text-white/60 hover:text-white/70"/>
-          <div className="h-4 w-px bg-white/[0.06]"/>
-          <Terminal size={11} className="text-[#a8c3f0]/40"/>
-          <span className="font-mono text-[10px] text-white/65 tracking-widest">SYSTEM_SETTINGS</span>
-        </header>
-        <div className="p-6 space-y-4">
-          <div className="max-w-2xl mx-auto space-y-4">
-            {sections.map((sec,si)=>(
-              <div key={si} className="relative bg-[#0a0a0d] border border-white/[0.10] rounded-xl overflow-hidden">
-                <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-[#a8c3f0]/20"/>
-                <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/[0.08]">
-                  <div className="w-7 h-7 rounded-md bg-[#a8c3f0]/8 border border-[#a8c3f0]/12 flex items-center justify-center">
-                    <sec.icon size={13} className="text-[#a8c3f0]/60"/>
-                  </div>
-                  <div>
-                    <div className="font-mono text-[8px] text-[#a8c3f0]/35 tracking-widest">{sec.id}</div>
-                    <div className="text-white/80 text-sm font-semibold leading-tight">{sec.title}</div>
-                  </div>
-                  <span className="ml-auto font-mono text-[8px] text-white/55">{sec.desc}</span>
-                </div>
-                <div className="p-4 space-y-1">
-                  {sec.items.map((item,ii)=>(
-                    <div key={ii} className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-white/[0.03] transition-colors">
-                      <div>
-                        <div className="text-white/70 text-sm font-medium">{item.label}</div>
-                        <div className="font-mono text-[9px] text-white/65">{item.sub}</div>
-                      </div>
-                      <Switch id={item.id} defaultChecked={item.def} className="data-[state=checked]:bg-[#a8c3f0]"/>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+  return (
+    <div className="min-h-screen bg-[#09090b] flex items-center justify-center px-6 py-10">
+      <PageMeta title="Settings | ARXON" description="App settings are managed in the Arxon mining app." />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full bg-[#0a0a0d] border border-white/[0.10] rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-4">
+          <SettingsIcon size={18} className="text-[#a8c3f0]" />
+          <h1 className="text-xl font-bold text-white">App settings</h1>
         </div>
-      </main>
+        <p className="text-white/55 text-sm mb-6 leading-relaxed">
+          Notifications, security, and mining preferences are configured inside the Arxon mining app.
+        </p>
+        <div className="space-y-3 mb-6">
+          <a href={ARXON_WEB_MINING_URL} target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-mono text-sm font-bold text-[#09090b]"
+            style={{ background: "linear-gradient(135deg,#a8c3f0,#a8b8d8)" }}>
+            <Globe size={14} /> Open Web App <ArrowRight size={14} />
+          </a>
+          <a href={ARXON_GOOGLE_PLAY_URL} target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-mono text-sm font-semibold text-[#a8c3f0] border border-[#a8c3f0]/25">
+            <Smartphone size={14} /> Get Android App
+          </a>
+        </div>
+        <div className="pt-5 border-t border-white/[0.08] space-y-2">
+          <p className="font-mono text-[9px] text-white/40 tracking-widest mb-2">COMMUNITY</p>
+          <a href={ARXON_TELEGRAM_URL} target="_blank" rel="noopener noreferrer"
+            className="block font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0]">Telegram →</a>
+          <a href={ARXON_DISCORD_URL} target="_blank" rel="noopener noreferrer"
+            className="block font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0]">Discord →</a>
+        </div>
+        <button onClick={() => navigate("/")} className="mt-6 font-mono text-[10px] text-white/45 hover:text-white/70 transition-colors">
+          Back to home
+        </button>
+      </motion.div>
     </div>
-  </SidebarProvider>
-);
+  );
+};
+
 export default Settings;

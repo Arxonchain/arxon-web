@@ -452,7 +452,8 @@ const ProtocolSection = () => {
             <div className="flex-1 h-px bg-white/[0.05]" />
             <span className="font-mono text-[9px] text-white/55">{requirements.length} OPERATIONS · {requirements.filter(r => r.type === "REQUIRED").length} REQUIRED</span>
           </div>
-          <div className="bg-[#0a0a0d] border border-white/[0.09] rounded-xl overflow-hidden">
+          <div className="bg-[#0a0a0d] border border-white/[0.09] rounded-xl overflow-hidden overflow-x-auto">
+            <div className="min-w-[520px]">
             <div className="grid grid-cols-[40px_90px_1fr_72px] gap-4 px-5 py-2.5 border-b border-white/[0.08] bg-white/[0.03]">
               {["#","OP_CODE","REQUIREMENT","TYPE"].map(h => <span key={h} className="font-mono text-[8px] text-white/60 tracking-widest">{h}</span>)}
             </div>
@@ -470,6 +471,7 @@ const ProtocolSection = () => {
                 <span className={`font-mono text-[8px] px-2 py-1 rounded border text-center ${r.type === "REQUIRED" ? "text-emerald-400/70 bg-emerald-400/8 border-emerald-400/15" : "text-amber-400/70 bg-amber-400/8 border-amber-400/15"}`}>{r.type}</span>
               </motion.div>
             ))}
+          </div>
           </div>
           <div className="mt-4 flex items-start gap-3 px-5 py-4 bg-[#a8c3f0]/[0.03] border border-[#a8c3f0]/12 rounded-xl">
             <AlertCircle size={13} className="text-[#a8c3f0]/60 shrink-0 mt-0.5" />

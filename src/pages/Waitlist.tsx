@@ -6,9 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 import { waitlistSchema } from "@/lib/validations";
 import arxonLogo from "@/assets/arxon-logo-wide.svg";
 import miningIllustration from "@/assets/mining-illustration.jpg";
-import { Loader2, ArrowLeft, CheckCircle2, Send, FaXTwitter as XIcon, Activity, Terminal } from "lucide-react";
+import { Loader2, ArrowLeft, CheckCircle2, Send, Activity, Terminal } from "lucide-react";
 import { FaXTwitter } from "react-icons/fa6";
 import { ARXON_X_MENTION, ARXON_X_URL } from "@/lib/social";
+import PageMeta from "@/components/PageMeta";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -58,7 +59,7 @@ const Waitlist = () => {
           </motion.div>
           <div className="font-mono text-[9px] text-emerald-400/60 tracking-widest mb-3">WAITLIST_JOINED</div>
           <h2 className="text-2xl font-bold text-white mb-3">You're on the list</h2>
-          <p className="text-white/60 text-sm mb-8">You'll be notified as soon as ARX mining goes live. Stay close to our channels for updates.</p>
+          <p className="text-white/60 text-sm mb-8">You're on the list for direct updates. Mining is already live — start on web or Google Play anytime.</p>
           <motion.button onClick={()=>navigate("/")} whileHover={{scale:1.02}} whileTap={{scale:0.97}}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-mono text-sm font-bold text-[#09090b]"
             style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}>
@@ -66,11 +67,13 @@ const Waitlist = () => {
           </motion.button>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 
   return (
     <div className="min-h-screen bg-[#09090b] overflow-hidden">
+      <PageMeta title="Join the Waitlist | ARXON" description="Join the Arxon waitlist for updates. Mining is live on web and Google Play." />
       <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
       <div className="absolute inset-0 pointer-events-none" style={{background:"radial-gradient(ellipse at 30% 50%,rgba(124,147,195,0.04) 0%,transparent 60%)"}} />
       <Navbar />
@@ -169,7 +172,7 @@ const Waitlist = () => {
                   <div className="font-mono text-[9px] text-[#a8c3f0]/60 mb-1">MINING_STATUS</div>
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#a8c3f0] animate-pulse"/>
-                    <span className="font-mono text-xs text-white/50">LAUNCHING JAN 2026</span>
+                    <span className="font-mono text-xs text-white/50">MINING LIVE · ANDROID & WEB</span>
                   </div>
                 </div>
               </div>

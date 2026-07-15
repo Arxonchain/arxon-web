@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
@@ -10,10 +10,13 @@ import {
   MessageSquare, Video, CheckCircle2, Clock,
   Search, ChevronDown, ChevronUp, RefreshCw,
   Twitter, BarChart3, Award, ArrowLeft,
-  ChevronLeft, Copy, Check, X as XIcon
+  ChevronLeft, Copy, Check, X as XIcon, LogOut, KeyRound, List
 } from "lucide-react";
 import { toast } from "sonner";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
+import { authSchema } from "@/lib/validations";
+
+const SUPABASE_FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
 
 /* ─── Shared UI ─── */
 const inputCls = "w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-4 py-2.5 text-white text-sm font-mono placeholder:text-[#52525b] focus:outline-none focus:border-[#7c93c3]/50 transition-colors";
@@ -69,6 +72,74 @@ const CopyBtn = ({ text }: { text: string }) => {
     <button onClick={copy} className="shrink-0 w-6 h-6 rounded flex items-center justify-center bg-white/[0.04] hover:bg-white/[0.08] transition-colors" title="Copy link">
       {copied ? <Check size={10} className="text-emerald-400" /> : <Copy size={10} className="text-white/40" />}
     </button>
+  );
+};
+
+/* ════════════════════════════════════════
+   ACCOUNT SECURITY
+════════════════════════════════════════ */
+const AccountSecurity = () => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const changePassword = async () => {
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    try {
+      authSchema.shape.password.parse(newPassword);
+      setSaving(true);
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Password updated successfully");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Invalid password");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader icon={KeyRound} title="Account Security" subtitle="Change your admin password while signed in" />
+      <div className="p-5 space-y-3">
+        <input
+          className={inputCls}
+          type="password"
+          placeholder="New password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <input
+          className={inputCls}
+          type="password"
+          placeholder="Confirm new password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <motion.button
+          onClick={changePassword}
+          disabled={saving || !newPassword || !confirmPassword}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs font-bold text-[#09090b] disabled:opacity-40"
+          style={{ background: "linear-gradient(135deg,#7c93c3,#a8b8d8)" }}
+        >
+          {saving ? <Activity size={12} className="animate-spin" /> : <KeyRound size={12} />}
+          UPDATE PASSWORD
+        </motion.button>
+        <p className="font-mono text-[9px] text-white/35">
+          Forgot your password? Use the reset link on the sign-in page at /auth
+        </p>
+      </div>
+    </Card>
   );
 };
 
@@ -174,7 +245,7 @@ const PortalDetailOverlay = ({
     setLoadingRefs(true);
     try {
       const res = await fetch(
-        `https://knfpmzjghbjnlnarsivs.supabase.co/functions/v1/get-referral-count?account_id=${encodeURIComponent(app.arxon_account_id)}`,
+        `${SUPABASE_FUNCTIONS_URL}/get-referral-count?account_id=${encodeURIComponent(app.arxon_account_id)}`,
         { headers: { "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`, "Content-Type": "application/json" } }
       );
       const d = res.ok ? await res.json() : null;
@@ -217,7 +288,6 @@ const PortalDetailOverlay = ({
   );
 
   const reqsMet = [
-    !!app.followed_arxon, !!app.retweeted_posts,
     postSubs.length >= 8, spaceSubs.length >= 2,
     (referralCount ?? 0) >= 40, submissions.length > 0, videoSubs.length >= 1,
   ].filter(Boolean).length;
@@ -323,12 +393,10 @@ const PortalDetailOverlay = ({
             <CheckCircle2 size={11} className="text-[#7c93c3]" />
             <span className="font-mono text-[9px] text-white/40 tracking-widest">REQUIREMENTS CHECKLIST</span>
             <div className="flex-1" />
-            <span className="font-mono text-[9px] text-white/30">{reqsMet} / 7 met</span>
+            <span className="font-mono text-[9px] text-white/30">{reqsMet} / 5 met</span>
           </div>
           <div className="p-4 grid sm:grid-cols-2 gap-2">
             {[
-              { label: "Followed @arxoninfra", met: !!app.followed_arxon },
-              { label: "Retweeted required posts", met: !!app.retweeted_posts },
               { label: `8+ posts (${postSubs.length} submitted)`, met: postSubs.length >= 8 },
               { label: `2+ Spaces (${spaceSubs.length} submitted)`, met: spaceSubs.length >= 2 },
               { label: `40+ referrals (${referralCount ?? "?"} counted)`, met: (referralCount ?? 0) >= 40 },
@@ -419,16 +487,6 @@ const PortalDetailOverlay = ({
           <div className="px-4 pb-4">
             <p className="text-[#52525b] font-mono text-[9px] uppercase mb-1">Motivation</p>
             <p className="text-white/60 text-xs leading-relaxed">{app.motivation}</p>
-          </div>
-        </div>
-
-        {/* Social compliance */}
-        <div className="flex gap-3 flex-wrap">
-          <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono ${app.followed_arxon ? "bg-emerald-400/10 border-emerald-400/20 text-emerald-400" : "bg-white/[0.03] border-white/[0.08] text-white/40"}`}>
-            <Twitter size={11} /> {app.followed_arxon ? "Followed @arxoninfra ✓" : "Follow not confirmed"}
-          </div>
-          <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono ${app.retweeted_posts ? "bg-emerald-400/10 border-emerald-400/20 text-emerald-400" : "bg-white/[0.03] border-white/[0.08] text-white/40"}`}>
-            <CheckCircle2 size={11} /> {app.retweeted_posts ? "Retweeted posts ✓" : "Retweet not confirmed"}
           </div>
         </div>
 
@@ -640,16 +698,6 @@ const AmbassadorSection = () => {
 
                                 <div><p className="text-[#52525b] font-mono text-[9px] uppercase mb-1">Motivation</p><p className="text-white/60 text-xs leading-relaxed">{app.motivation}</p></div>
 
-                                {/* Social compliance */}
-                                <div className="flex gap-2 flex-wrap">
-                                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono ${app.followed_arxon ? "bg-emerald-400/10 border-emerald-400/20 text-emerald-400" : "bg-white/[0.03] border-white/[0.08] text-white/40"}`}>
-                                    <Twitter size={10} /> {app.followed_arxon ? "Followed ✓" : "Follow not confirmed"}
-                                  </div>
-                                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono ${app.retweeted_posts ? "bg-emerald-400/10 border-emerald-400/20 text-emerald-400" : "bg-white/[0.03] border-white/[0.08] text-white/40"}`}>
-                                    <CheckCircle2 size={10} /> {app.retweeted_posts ? "Retweeted ✓" : "Retweet not confirmed"}
-                                  </div>
-                                </div>
-
                                 {/* Application links */}
                                 {app.recent_post_links?.length > 0 && (
                                   <div>
@@ -839,7 +887,7 @@ const SiteStats = () => {
       supabase.from("ambassador_applications").select("*", { count:"exact", head:true }),
       supabase.from("ambassador_applications").select("*", { count:"exact", head:true }).eq("status","approved"),
       supabase.from("ambassador_submissions").select("*", { count:"exact", head:true }),
-      supabase.from("waitlist_entries").select("*", { count:"exact", head:true }),
+      supabase.from("waitlist").select("*", { count:"exact", head:true }),
     ]).then(([apps, approved, subs, waitlist]) => {
       setStats({
         users: apps.count || 0,
@@ -872,16 +920,26 @@ const SiteStats = () => {
    NAV + MAIN
 ════════════════════════════════════════ */
 const NAV = [
-  { id:"overview",    icon:BarChart3, label:"Overview" },
-  { id:"ambassadors", icon:Users,     label:"Ambassadors" },
-  { id:"settings",    icon:Settings,  label:"Settings & Links" },
+  { id:"overview",    icon:BarChart3, label:"Overview",    type:"section" as const },
+  { id:"waitlist",    icon:List,      label:"Waitlist",    type:"link" as const, path:"/waitlist-admin" },
+  { id:"investors",   icon:Globe,     label:"Investors",   type:"link" as const, path:"/investor-admin" },
+  { id:"ambassadors", icon:Users,     label:"Ambassadors", type:"section" as const },
+  { id:"settings",    icon:Settings,  label:"Settings",    type:"section" as const },
 ];
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isAdmin, setIsAdmin]     = useState(false);
   const [checking, setChecking]   = useState(true);
   const [activeSection, setActiveSection] = useState("overview");
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section && NAV.some((n) => n.id === section && n.type === "section")) {
+      setActiveSection(section);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const check = async () => {
@@ -907,6 +965,12 @@ const AdminDashboard = () => {
   );
   if (!isAdmin) return null;
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
+  };
+
   return (
     <div className="min-h-screen bg-[#09090b]">
       <div className="absolute inset-0 pointer-events-none opacity-[0.015]"
@@ -926,9 +990,17 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="flex-1" />
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-400/[0.06] border border-emerald-400/20 rounded-lg">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-[9px] text-emerald-400/80">SYSTEM ONLINE</span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-400/[0.06] border border-emerald-400/20 rounded-lg">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="font-mono text-[9px] text-emerald-400/80">SYSTEM ONLINE</span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/[0.03] border border-white/[0.08] rounded-lg font-mono text-[9px] text-white/50 hover:text-white/80 transition-colors"
+              >
+                <LogOut size={11} /> SIGN OUT
+              </button>
             </div>
           </motion.div>
 
@@ -937,13 +1009,15 @@ const AdminDashboard = () => {
             <motion.div initial={{ opacity:0, x:-12 }} animate={{ opacity:1, x:0 }}
               className="w-48 shrink-0 bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden sticky top-24">
               {NAV.map(item => (
-                <button key={item.id} onClick={() => setActiveSection(item.id)}
+                <button key={item.id}
+                  onClick={() => item.type === "link" ? navigate(item.path!) : setActiveSection(item.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors border-b border-white/[0.04] last:border-0 ${
-                    activeSection===item.id ? "bg-[#7c93c3]/10 text-white" : "text-white/45 hover:text-white/70 hover:bg-white/[0.03]"
+                    item.type === "section" && activeSection===item.id ? "bg-[#7c93c3]/10 text-white" : "text-white/45 hover:text-white/70 hover:bg-white/[0.03]"
                   }`}>
-                  <item.icon size={14} className={activeSection===item.id?"text-[#7c93c3]":"text-current"} />
+                  <item.icon size={14} className={item.type === "section" && activeSection===item.id ? "text-[#7c93c3]" : "text-current"} />
                   <span className="text-sm font-medium">{item.label}</span>
-                  {activeSection===item.id && <ChevronRight size={12} className="text-[#7c93c3] ml-auto" />}
+                  {item.type === "section" && activeSection===item.id && <ChevronRight size={12} className="text-[#7c93c3] ml-auto" />}
+                  {item.type === "link" && <ExternalLink size={10} className="text-white/25 ml-auto" />}
                 </button>
               ))}
               <div className="p-3 border-t border-white/[0.06] space-y-1.5 mt-1">
@@ -965,7 +1039,12 @@ const AdminDashboard = () => {
             <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} className="flex-1 min-w-0 space-y-5">
               {activeSection === "overview"    && <SiteStats />}
               {activeSection === "ambassadors" && <AmbassadorSection />}
-              {activeSection === "settings"    && <RetweetSettings />}
+              {activeSection === "settings"    && (
+                <>
+                  <AccountSecurity />
+                  <RetweetSettings />
+                </>
+              )}
             </motion.div>
           </div>
         </div>

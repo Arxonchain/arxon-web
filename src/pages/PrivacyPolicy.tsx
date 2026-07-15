@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageMeta from "@/components/PageMeta";
 
 const PrivacyPolicy = () => {
   const sections = [
@@ -9,13 +10,13 @@ const PrivacyPolicy = () => {
       content: (
         <>
           <p className="mb-3">We may collect the following types of information:</p>
-          <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-            <li><span className="text-foreground font-medium">Account Information:</span> Email address, username, and other details you provide when signing up or logging in.</li>
+          <ul className="list-disc list-inside space-y-2 text-white/60">
+            <li><span className="text-white font-medium">Account Information:</span> Email address, username, and other details you provide when signing up or logging in.</li>
             <li><span className="text-foreground font-medium">Usage Data:</span> Information about how you interact with the App, such as battles you participate in, points earned, and staking activity.</li>
             <li><span className="text-foreground font-medium">Device Information:</span> Device type, operating system version, and unique device identifiers (for push notifications and analytics).</li>
             <li><span className="text-foreground font-medium">Wallet/Blockchain Data:</span> Public wallet addresses and transaction-related data on the Arxon blockchain (note: blockchain data is public by design).</li>
           </ul>
-          <p className="mt-3 text-muted-foreground">We do not collect sensitive personal information such as your full name, address, phone number, or payment card details unless you voluntarily provide them.</p>
+          <p className="mt-3 text-white/60">We do not collect sensitive personal information such as your full name, address, phone number, or payment card details unless you voluntarily provide them.</p>
         </>
       ),
     },
@@ -105,18 +106,20 @@ const PrivacyPolicy = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050508] text-foreground">
+    <div className="min-h-screen bg-[#09090b] text-white overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.018]" style={{backgroundImage:"linear-gradient(rgba(124,147,195,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(124,147,195,0.5) 1px,transparent 1px)",backgroundSize:"64px 64px"}} />
+      <PageMeta title="Privacy Policy | ARXON" description="How Arxon collects, uses, and protects your information." />
       <Navbar />
-      <main className="max-w-3xl mx-auto px-6 pt-28 pb-20">
+      <main className="relative z-10 max-w-3xl mx-auto px-6 pt-28 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Privacy Policy</h1>
-          <p className="text-muted-foreground text-sm mb-10">Last updated: March 31, 2026</p>
+          <p className="text-white/55 text-sm mb-10">Last updated: March 31, 2026</p>
 
-          <p className="text-muted-foreground mb-8">
+          <p className="text-white/60 mb-8">
             Arxon ("we", "our", or "us") operates the Arxon Mining App (the "App"). This Privacy Policy explains how we collect, use, and protect your information when you use our mobile application.
           </p>
 

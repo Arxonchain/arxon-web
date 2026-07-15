@@ -12,6 +12,8 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
+const SUPABASE_FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+
 type PortalData = { application: any; submissions: any[] };
 
 /* ══════════════════════════════════════════════════
@@ -216,7 +218,7 @@ const AmbassadorPortal = () => {
     /* Referral count — fetch from mining app via Edge Function */
     try {
       const refRes = await fetch(
-        `https://knfpmzjghbjnlnarsivs.supabase.co/functions/v1/get-referral-count?account_id=${encodeURIComponent(uid)}`,
+        `${SUPABASE_FUNCTIONS_URL}/get-referral-count?account_id=${encodeURIComponent(uid)}`,
         {
           headers: {
             "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
@@ -254,7 +256,7 @@ const AmbassadorPortal = () => {
     setSyncingReferrals(true);
     try {
       const res = await fetch(
-        `https://knfpmzjghbjnlnarsivs.supabase.co/functions/v1/get-referral-count?account_id=${encodeURIComponent(uid)}`,
+        `${SUPABASE_FUNCTIONS_URL}/get-referral-count?account_id=${encodeURIComponent(uid)}`,
         {
           method: "GET",
           headers: {
@@ -560,8 +562,6 @@ const AmbassadorPortal = () => {
             </span>
           </div>
           <div className="p-5 space-y-2">
-            <ReqRow icon={Twitter}       label="Followed @arxoninfra on X (Twitter)"              met={!!portalData.application.followed_arxon}/>
-            <ReqRow icon={Twitter}       label="Retweeted required Arxon posts"                    met={!!portalData.application.retweeted_posts}/>
             <ReqRow icon={MessageSquare} label="8+ quality posts submitted (any platform)"         met={postCount>=8}/>
             <ReqRow icon={Users}         label="2+ Twitter Spaces co-hosted"                       met={spaceCount>=2}/>
             <ReqRow icon={Globe}         label={`${REFERRAL_TARGET}+ verified new users referred`} met={actualReferrals>=REFERRAL_TARGET}/>

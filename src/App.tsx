@@ -24,7 +24,6 @@ import AmbassadorPortal from "./pages/AmbassadorPortal";
 import WaitlistAdmin from "./pages/WaitlistAdmin";
 import InvestorForm from "./pages/InvestorForm";
 import InvestorAdmin from "./pages/InvestorAdmin";
-import AmbassadorAdmin from "./pages/AmbassadorAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -55,7 +54,7 @@ const App = () => (
           <Route path="/ambassadors" element={<Ambassadors />} />
           <Route path="/ambassador-apply" element={<Navigate to="/ambassador-portal" replace />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
-          <Route path="/ambassador-admin" element={<AmbassadorAdmin />} />
+          <Route path="/ambassador-admin" element={<Navigate to="/admin?section=ambassadors" replace />} />
           {/* Global admin dashboard */}
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />

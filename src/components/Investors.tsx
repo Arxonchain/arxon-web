@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import { DollarSign, Users, TrendingUp, Zap, ArrowRight, Mail, ChevronLeft, ChevronRight, Rocket, Terminal, Activity } from "lucide-react";
-import { FaXTwitter, FaDiscord, FaMedium } from "react-icons/fa6";
-import { ARXON_X_URL } from "@/lib/social";
+import { FaXTwitter, FaDiscord, FaMedium, FaTelegram } from "react-icons/fa6";
+import { ARXON_X_URL, ARXON_TELEGRAM_URL, ARXON_DISCORD_URL, ARXON_MEDIUM_URL } from "@/lib/social";
 import move1 from "@/assets/move-1.png";
 import move2 from "@/assets/move-2.png";
 import move3 from "@/assets/move-3.png";
@@ -24,7 +24,7 @@ const Investors = () => {
   const highlights = [
     { id:"MKT-001", icon:DollarSign, title:"$1B+ Market Opportunity", desc:"Addressing payments, voting, and supply chain across global markets." },
     { id:"TAM-002", icon:Users, title:"Massive TAM", desc:"Small businesses to Fortune 500, local to national governments, millions of voters." },
-    { id:"FMA-003", icon:TrendingUp, title:"First-Mover Advantage", desc:"Addressing payments, voting, and supply chain across global markets." },
+    { id:"FMA-003", icon:TrendingUp, title:"First-Mover Advantage", desc:"Early privacy infrastructure on a dedicated L1 — ahead of enterprise and government adoption curves." },
     { id:"REV-004", icon:Zap, title:"Multiple Revenue Streams", desc:"Transaction fees, token creation fees, enterprise licensing, government contracts." },
   ];
   const totalPairs = Math.ceil(highlights.length/2);
@@ -37,13 +37,13 @@ const Investors = () => {
 
   const faqs = [
     { q:"What is Arxon?", a:"Arxon is a privacy-focused blockchain built on its own Network, designed to address payments, voting, and supply chain management across global markets while maintaining complete privacy and security." },
-    { q:"When does mining start?", a:"Mining starts in JAN 2026. Users will mine ARX-P (points) offchain to earn real ARX tokens. Mining can be done directly from your web browser." },
+    { q:"When does mining start?", a:"Mining is live. Users earn ARX-P (points) via the web app or Google Play on Android. iOS mining is coming soon." },
     { q:"What is the $ARX token used for?", a:"$ARX is the native token of the Arxon network, used for transactions, governance, and accessing features within the ecosystem. It powers payments, voting, and supply chain applications." },
     { q:"How does privacy work?", a:"All transactions and data are encrypted by choice, ensuring complete confidentiality based on user's consent while maintaining the security benefits of blockchain technology." },
     { q:"When is the private voting dApp coming?", a:"The private voting dApp is currently in development and will be released following the mining phase. Stay tuned to our community channels for updates." },
     { q:"Is Arxon open source?", a:"Yes, Arxon is committed to transparency and will be open source. The codebase will be available for community review and contribution as we progress through development." },
     { q:"Can I invest in the seed round?", a:"Yes, we're raising $2.5M in our pre-seed round. Email us at arxonchain@yahoo.com or apply directly through our investor form.", hasLink:true },
-    { q:"How do I stay updated?", a:"Join our community on Discord, follow us on X (Twitter), and join our Telegram channel. You can also join the waitlist to receive direct updates." },
+    { q:"How do I stay updated?", a:"Join our Telegram channel, Discord, and follow us on X. You can also join the waitlist at arxon.io/waitlist for direct updates." },
   ];
 
   return (
@@ -136,7 +136,7 @@ const Investors = () => {
                 </motion.a>
               </div>
               <div className="mt-8 flex items-center justify-center gap-4">
-                {[{href:"https://discord.gg/mGWg3mnkvZ",icon:FaDiscord},{href:ARXON_X_URL,icon:FaXTwitter},{href:"https://medium.com/@arxondigest",icon:FaMedium}].map(({href,icon:Icon})=>(
+                {[{href:ARXON_TELEGRAM_URL,icon:FaTelegram},{href:ARXON_DISCORD_URL,icon:FaDiscord},{href:ARXON_X_URL,icon:FaXTwitter},{href:ARXON_MEDIUM_URL,icon:FaMedium}].map(({href,icon:Icon})=>(
                   <motion.a key={href} href={href} target="_blank" rel="noopener noreferrer" whileHover={{scale:1.2}}
                     className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.10] flex items-center justify-center text-white/50 hover:text-[#a8c3f0] hover:border-[#a8c3f0]/25 transition-all">
                     <Icon className="w-3.5 h-3.5"/>

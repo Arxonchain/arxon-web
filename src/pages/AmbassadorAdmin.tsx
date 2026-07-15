@@ -183,7 +183,7 @@ const PortalDetailView = ({
     setLoadingReferrals(true);
     try {
       const res = await fetch(
-        `https://knfpmzjghbjnlnarsivs.supabase.co/functions/v1/get-referral-count?account_id=${encodeURIComponent(app.arxon_account_id)}`,
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-referral-count?account_id=${encodeURIComponent(app.arxon_account_id)}`,
         {
           headers: {
             "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
@@ -884,7 +884,7 @@ const AmbassadorAdmin = () => {
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <button
-                            onClick={e => { e.stopPropagation(); setActiveTab("portal"); }}
+                            onClick={e => { e.stopPropagation(); setActiveTab("portal"); setSelectedAppId(app.id); }}
                             className="px-3 py-1.5 rounded-lg bg-[#7c93c3]/10 text-[#7c93c3] text-xs font-semibold border border-[#7c93c3]/20 hover:bg-[#7c93c3]/20 transition-colors"
                           >
                             View Portal →

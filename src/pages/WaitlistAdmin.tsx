@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Users, Calendar, ArrowLeft, TrendingUp } from "lucide-react";
-import { format, startOfDay, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
@@ -78,15 +78,24 @@ const WaitlistAdmin = () => {
 
   const getChartData = () => {
     const signupsByDate = entries.reduce((acc, entry) => {
-      const date = format(startOfDay(parseISO(entry.created_at)), 'MMM d');
+      const date = format(parseISO(entry.created_at), 'yyyy-MM-dd');
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     return Object.entries(signupsByDate)
       .map(([date, count]) => ({ date, signups: count }))
-      .reverse();
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-14)
+      .map(({ date, signups }) => ({ date: format(parseISO(date), 'MMM d'), signups }));
   };
+
+  const last7Days = entries.filter(e => {
+    const d = parseISO(e.created_at);
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return d >= weekAgo;
+  }).length;
 
   const chartConfig = {
     signups: {
@@ -104,16 +113,16 @@ const WaitlistAdmin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-[#09090b] p-6 text-white">
       <div className="container mx-auto max-w-6xl">
         <div className="mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/admin")}
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            Back to Admin
           </Button>
           <h1 className="text-4xl font-bold mb-2">Mining Waitlist</h1>
           <p className="text-muted-foreground">Manage your ARX mining waitlist signups</p>
@@ -146,14 +155,14 @@ const WaitlistAdmin = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Growth Trend</CardTitle>
+              <CardTitle className="text-sm font-medium">Last 7 Days</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-primary">
-                {entries.length > 0 ? '+' + entries.length : '0'}
+                {entries.length > 0 ? `+${last7Days}` : '0'}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Total registrations</p>
+              <p className="text-xs text-muted-foreground mt-1">New signups this week</p>
             </CardContent>
           </Card>
         </div>

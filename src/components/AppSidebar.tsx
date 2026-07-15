@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Home, User, Settings, Users } from "lucide-react";
+import { Home, Users } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
@@ -19,12 +19,10 @@ import {
 
 const baseItems = [
   { title: "Home", url: "/", icon: Home },
-  { title: "Profile", url: "/profile", icon: User },
-  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 const adminItems = [
-  { title: "Waitlist", url: "/waitlist-admin", icon: Users },
+  { title: "Admin", url: "/admin", icon: Users },
 ];
 
 export function AppSidebar() {

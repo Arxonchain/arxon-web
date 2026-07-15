@@ -260,7 +260,7 @@ const GlobalMining = () => (
           Where <span className="text-[#a8c3f0]">Arxon</span> Miners Operate
         </h1>
         <p className="text-white/55 text-sm max-w-md font-mono">
-          Decentralized mining network · 18 countries · real-time data
+          Decentralized mining network · 30+ countries · real-time data
         </p>
       </motion.div>
 
