@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,6 +24,8 @@ interface InvestorSubmission {
 
 export default function InvestorAdmin() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || "/admin?section=overview";
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<InvestorSubmission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,7 +116,7 @@ export default function InvestorAdmin() {
       <div className="container mx-auto p-6 max-w-7xl">
         <Button
           variant="ghost"
-          onClick={() => navigate("/admin")}
+          onClick={() => navigate(returnTo)}
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />

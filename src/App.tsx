@@ -53,7 +53,7 @@ const App = () => (
           <Route path="/ambassadors" element={<Ambassadors />} />
           <Route path="/ambassador-apply" element={<Navigate to="/ambassador-portal" replace />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />
-          <Route path="/ambassador-admin" element={<Navigate to="/admin?section=ambassadors" replace />} />
+          <Route path="/ambassador-admin" element={<Navigate to="/admin?section=ambassadors&tab=applications&queue=pending" replace />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

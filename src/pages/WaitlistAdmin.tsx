@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Users, Calendar, ArrowLeft, TrendingUp } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -26,6 +26,8 @@ const WaitlistAdmin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || "/admin?section=overview";
 
   useEffect(() => {
     checkAuth();
@@ -118,7 +120,7 @@ const WaitlistAdmin = () => {
         <div className="mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate(returnTo)}
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />

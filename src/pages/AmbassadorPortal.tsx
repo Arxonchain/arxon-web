@@ -434,6 +434,7 @@ const AmbassadorPortal = () => {
   /* ════ DASHBOARD ════ */
   const isApproved = portalData.application.status === "approved";
   const isPending = portalData.application.status === "pending";
+  const isConsideration = portalData.application.status === "consideration";
   const isRejected = portalData.application.status === "rejected";
   const RETWEET_POSTS_PORTAL = [
     { label:"Arxon Official Post #1", url:"https://x.com/arxoninfra/status/2052324369775440352?s=20" },
@@ -458,17 +459,21 @@ const AmbassadorPortal = () => {
           <span className="text-[#a8c3f0]/50">/</span>
           <span className="text-[#a8c3f0]">{portalData.application.arxon_account_id}</span>
           <div className="flex-1"/>
-          <Pill label={isApproved ? "SELECTED" : isRejected ? "NOT SELECTED" : "UNDER REVIEW"} variant={isApproved ? "green" : isRejected ? "amber" : "blue"} />
+          <Pill label={isApproved ? "SELECTED" : isRejected ? "NOT SELECTED" : isConsideration ? "IN AUDIT REVIEW" : "UNDER REVIEW"} variant={isApproved ? "green" : isRejected ? "amber" : isConsideration ? "blue" : "blue"} />
         </motion.div>
 
         <AnimatePresence>
-          {isPending && (
+          {(isPending || isConsideration) && (
             <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
               className="flex items-center gap-3 px-5 py-4 bg-[#a8c3f0]/[0.08] border border-[#a8c3f0]/25 rounded-xl mb-5">
               <Clock size={16} className="text-[#a8c3f0] shrink-0" />
               <div>
-                <div className="text-[#d8e6ff] font-semibold text-sm">Application Under Review</div>
-                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">Selection is in progress. Check back here in 5 days to see if you were chosen.</div>
+                <div className="text-[#d8e6ff] font-semibold text-sm">{isConsideration ? "Selected for Further Review" : "Application Under Review"}</div>
+                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">
+                  {isConsideration
+                    ? "Your application has been flagged for audit. Our team is reviewing your activity and profile in detail."
+                    : "Selection is in progress. Check back here in 5 days to see if you were chosen."}
+                </div>
               </div>
             </motion.div>
           )}
