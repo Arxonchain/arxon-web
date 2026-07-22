@@ -1,10 +1,11 @@
 ﻿import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Activity, ArrowLeft, Eye, EyeOff, User, Building2, FileText, Lock, KeyRound } from "lucide-react";
 import { authSchema, adminSignupSchema } from "@/lib/validations";
 import { notifyAdminSignup, verifyApprovedAdminAccess } from "@/lib/adminAccess";
+import { validateAdminReturnTo } from "@/lib/adminNav";
 import { motion } from "framer-motion";
 import PageMeta from "@/components/PageMeta";
 
@@ -70,12 +71,13 @@ const Auth = () => {
   const [showNewPw, setShowNewPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const routeIfApproved = async (userId: string) => {
     const access = await verifyApprovedAdminAccess(userId);
     if (access.allowed) {
-      navigate("/admin");
+      navigate(validateAdminReturnTo(searchParams.get("returnTo")));
       return;
     }
     await supabase.auth.signOut();

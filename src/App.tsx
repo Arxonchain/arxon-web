@@ -20,9 +20,7 @@ import Ambassadors from "./pages/Ambassadors";
 import AmbassadorPortal from "./pages/AmbassadorPortal";
 
 // Admin/utility pages
-import WaitlistAdmin from "./pages/WaitlistAdmin";
 import InvestorForm from "./pages/InvestorForm";
-import InvestorAdmin from "./pages/InvestorAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -47,9 +45,9 @@ const App = () => (
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/waitlist" element={<Navigate to="/mining-choice" replace />} />
-          <Route path="/waitlist-admin" element={<WaitlistAdmin />} />
+          <Route path="/waitlist-admin" element={<Navigate to="/admin?section=waitlist" replace />} />
           <Route path="/investor-form" element={<InvestorForm />} />
-          <Route path="/investor-admin" element={<InvestorAdmin />} />
+          <Route path="/investor-admin" element={<Navigate to="/admin?section=investors" replace />} />
           <Route path="/ambassadors" element={<Ambassadors />} />
           <Route path="/ambassador-apply" element={<Navigate to="/ambassador-portal" replace />} />
           <Route path="/ambassador-portal" element={<AmbassadorPortal />} />

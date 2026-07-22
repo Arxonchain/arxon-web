@@ -6,6 +6,19 @@ export type AdminAccessResult = {
 };
 
 export async function verifyApprovedAdminAccess(userId: string): Promise<AdminAccessResult> {
+  const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
+    _user_id: userId,
+    _role: "admin",
+  });
+
+  if (roleError) {
+    return { allowed: false, reason: "Unable to verify admin role. Please try again." };
+  }
+
+  if (isAdmin) {
+    return { allowed: true };
+  }
+
   const { data: request, error: requestError } = await supabase
     .from("admin_access_requests")
     .select("status")
@@ -16,35 +29,21 @@ export async function verifyApprovedAdminAccess(userId: string): Promise<AdminAc
     return { allowed: false, reason: "Unable to verify admin access. Please try again." };
   }
 
-  if (request) {
-    if (request.status === "pending") {
-      return {
-        allowed: false,
-        reason: "Your admin access request is pending approval. You will be notified once approved.",
-      };
-    }
-    if (request.status === "rejected") {
-      return {
-        allowed: false,
-        reason: "Your admin access request was not approved. Contact gabemetax@gmail.com if you need help.",
-      };
-    }
+  if (request?.status === "pending") {
+    return {
+      allowed: false,
+      reason: "Your admin access request is pending approval. You will be notified once approved.",
+    };
   }
 
-  const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-    _user_id: userId,
-    _role: "admin",
-  });
-
-  if (roleError) {
-    return { allowed: false, reason: "Unable to verify admin role. Please try again." };
+  if (request?.status === "rejected") {
+    return {
+      allowed: false,
+      reason: "Your admin access request was not approved. Contact gabemetax@gmail.com if you need help.",
+    };
   }
 
-  if (!isAdmin) {
-    return { allowed: false, reason: "You do not have admin access." };
-  }
-
-  return { allowed: true };
+  return { allowed: false, reason: "You do not have admin access." };
 }
 
 export async function notifyAdminSignup(userId: string) {

@@ -274,16 +274,21 @@ const ApplicantDetailView = ({
           { label: "Referrals", value: referralCount === null ? "…" : referralCount, target: 40, icon: Globe, met: (referralCount ?? 0) >= 40, action: syncRefs, loading: loadingRefs },
           { label: "Posts", value: postSubs.length, target: 8, icon: MessageSquare, met: postSubs.length >= 8 },
           { label: "Spaces", value: spaceSubs.length, target: 2, icon: Users, met: spaceSubs.length >= 2 },
-          { label: "Videos", value: videoSubs.length, target: 1, icon: Video, met: videoSubs.length >= 1 },
+          { label: "Videos", value: videoSubs.length, target: 1, icon: Video, met: videoSubs.length >= 1, bonus: true },
         ].map((stat) => (
           <div key={stat.label} className={`rounded-xl border p-4 ${stat.met ? "border-emerald-400/25 bg-emerald-400/[0.03]" : "border-white/[0.08] bg-white/[0.02]"}`}>
             <div className="flex items-center justify-between mb-2">
               <stat.icon size={16} className={stat.met ? "text-emerald-400" : "text-[#7c93c3]"} />
-              {stat.action && (
-                <button onClick={stat.action} disabled={stat.loading} className="p-1 rounded hover:bg-white/[0.06]">
-                  <RefreshCw size={12} className={`text-[#7c93c3] ${stat.loading ? "animate-spin" : ""}`} />
-                </button>
-              )}
+              <div className="flex items-center gap-1">
+                {"bonus" in stat && stat.bonus && (
+                  <span className="text-[9px] font-mono text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded">BONUS</span>
+                )}
+                {stat.action && (
+                  <button onClick={stat.action} disabled={stat.loading} className="p-1 rounded hover:bg-white/[0.06]">
+                    <RefreshCw size={12} className={`text-[#7c93c3] ${stat.loading ? "animate-spin" : ""}`} />
+                  </button>
+                )}
+              </div>
             </div>
             <p className={`text-2xl font-bold ${stat.met ? "text-emerald-400" : "text-white"}`}>{stat.value}</p>
             <p className="text-xs text-white/35 mt-1">
@@ -291,6 +296,35 @@ const ApplicantDetailView = ({
             </p>
           </div>
         ))}
+      </div>
+
+      <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+          <CheckCircle2 size={14} className="text-[#7c93c3]" />
+          <span className="text-sm font-semibold text-white">Requirements Checklist</span>
+        </div>
+        <div className="p-4 grid sm:grid-cols-2 gap-2">
+          {[
+            { label: `8+ posts (${postSubs.length} submitted)`, met: postSubs.length >= 8 },
+            { label: `2+ spaces (${spaceSubs.length} submitted)`, met: spaceSubs.length >= 2 },
+            { label: `40+ referrals (${referralCount ?? "?"} counted)`, met: (referralCount ?? 0) >= 40 },
+            { label: "Portal activity submitted", met: submissions.length > 0 },
+            { label: `1+ video bonus (${videoSubs.length} done)`, met: videoSubs.length >= 1, bonus: true },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm ${
+                item.met ? "border-emerald-400/20 bg-emerald-400/[0.04]" : "border-white/[0.06] bg-white/[0.02]"
+              }`}
+            >
+              <CheckCircle2 size={14} className={item.met ? "text-emerald-400 shrink-0" : "text-white/20 shrink-0"} />
+              <span className={item.met ? "text-white/85" : "text-white/45"}>{item.label}</span>
+              {item.bonus && (
+                <span className="ml-auto text-[9px] font-mono text-amber-300 bg-amber-400/10 border border-amber-400/20 px-1.5 py-0.5 rounded">BONUS</span>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-5">
@@ -442,8 +476,14 @@ const AmbassadorAdminPanel = () => {
       supabase.from("ambassador_applications").select("*").order("created_at", { ascending: false }),
       supabase.from("ambassador_submissions").select("*").order("created_at", { ascending: false }),
     ]);
-    setApps((a.data as AppRow[]) || []);
-    setSubs((s.data as SubRow[]) || []);
+    if (a.error || s.error) {
+      toast.error("Failed to load ambassador data");
+      setApps([]);
+      setSubs([]);
+    } else {
+      setApps((a.data as AppRow[]) || []);
+      setSubs((s.data as SubRow[]) || []);
+    }
     setLoading(false);
   }, []);
 
@@ -629,7 +669,13 @@ const AmbassadorAdminPanel = () => {
                             </div>
                             <div>
                               <p className="font-semibold text-white">{app.full_name}</p>
-                              <p className="text-xs text-white/35 truncate max-w-[180px]">{app.motivation?.slice(0, 60)}…</p>
+                              <p className="text-xs text-white/35 truncate max-w-[180px]">
+                                {app.motivation
+                                  ? app.motivation.length > 60
+                                    ? `${app.motivation.slice(0, 60)}…`
+                                    : app.motivation
+                                  : "No motivation provided"}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -697,7 +743,8 @@ const AmbassadorAdminPanel = () => {
                     const posts = appSubs.filter((s) => s.submission_type === "post").length;
                     const spaces = appSubs.filter((s) => s.submission_type === "space").length;
                     const videos = appSubs.filter((s) => s.submission_type === "video").length;
-                    const met = posts >= 8 && spaces >= 2 && videos >= 1;
+                    const coreMet = posts >= 8 && spaces >= 2;
+                    const bonusVideo = videos >= 1;
                     return (
                       <tr key={app.id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
                         <td className="px-4 py-4">
@@ -719,9 +766,10 @@ const AmbassadorAdminPanel = () => {
                         <td className={`px-4 py-4 font-semibold ${videos >= 1 ? "text-emerald-400" : "text-amber-400"}`}>{videos}/1</td>
                         <td className="px-4 py-4 font-semibold text-[#7c93c3]">{appSubs.length}</td>
                         <td className="px-4 py-4">
-                          <span className={`inline-flex items-center gap-1 text-xs font-semibold ${met ? "text-emerald-400" : "text-white/40"}`}>
-                            <CheckCircle2 size={13} /> {met ? "Core met" : "Incomplete"}
+                          <span className={`inline-flex items-center gap-1 text-xs font-semibold ${coreMet ? "text-emerald-400" : "text-white/40"}`}>
+                            <CheckCircle2 size={13} /> {coreMet ? "Core met" : "Incomplete"}
                           </span>
+                          {bonusVideo && <span className="block text-[10px] text-amber-300 mt-1">+ video bonus</span>}
                         </td>
                         <td className="px-4 py-4">
                           <button
