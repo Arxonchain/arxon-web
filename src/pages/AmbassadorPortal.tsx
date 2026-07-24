@@ -606,7 +606,7 @@ const AmbassadorPortal = () => {
                 <h2 className="text-red-100 font-bold text-lg mb-2">Thank You for Applying</h2>
                 <p className="text-red-100/75 text-sm leading-relaxed mb-3">
                   After reviewing your application against the ambassador requirements we set for this cohort — posts, spaces, referrals,
-                  content quality, and overall activity — we&apos;re sorry to let you know you were not selected this round.
+                  content quality, and overall activity we&apos;re sorry to let you know you were not selected this round.
                 </p>
                 <p className="text-white/50 text-sm leading-relaxed">
                   That doesn&apos;t mean your journey with Arxon stops here. You still play an important role in growing the network.
@@ -623,7 +623,7 @@ const AmbassadorPortal = () => {
             </div>
             <div className="p-6 space-y-4">
               <p className="text-white/70 text-sm leading-relaxed">
-                You can still support Arxon every day — refer friends and family to the mining app, grow your network, and earn more points
+                You can still support Arxon every day, refer friends and family to the mining app, grow your network, and earn more points
                 as your referrals stay active. Every person you bring in strengthens the ecosystem.
               </p>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -633,7 +633,7 @@ const AmbassadorPortal = () => {
                     <span className="text-white font-semibold text-sm">Refer & Earn</span>
                   </div>
                   <p className="text-white/45 text-xs leading-relaxed">
-                    Share your referral link inside the mining app. Invite friends, family, and your community — you earn points when they join and mine.
+                    Share your referral link inside the mining app. Invite friends, family, and your community, you earn points when they join and mine.
                   </p>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
