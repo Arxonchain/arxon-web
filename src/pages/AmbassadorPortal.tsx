@@ -7,12 +7,16 @@ import {
   CheckCircle2, Award, AlertCircle, Link2, ArrowLeft, Plus, X,
   MessageSquare, Users, Globe, Video, Hash, ArrowRight,
   Terminal, Activity, Shield, Database,
-  Cpu, Lock, Server, ChevronRight, Twitter, ExternalLink, Send, RefreshCw, Clock
+  Cpu, Lock, Server, ChevronRight, Twitter, ExternalLink, Send, RefreshCw, Clock,
+  Heart, Pickaxe, UserPlus, Sparkles, CalendarClock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 const SUPABASE_FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+const AMBASSADOR_DISCORD_URL = "https://discord.gg/R7PwgreGZ";
+const MINING_APP_URL = "https://arxonchain.xyz/";
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=xyz.arxonchain.app";
 
 type PortalData = { application: any; submissions: any[] };
 
@@ -442,6 +446,244 @@ const AmbassadorPortal = () => {
     ...(adminPost3 ? [{ label:"Arxon Official Post #3", url:adminPost3 }] : []),
   ];
 
+  const profileCard = (
+    <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }}
+      className="relative bg-[#101018] border border-white/[0.08] rounded-xl overflow-hidden mb-4">
+      <Corner pos="tl"/><Corner pos="tr"/>
+      <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.10] bg-white/[0.015]">
+        <Cpu size={10} className="text-[#a8c3f0]"/>
+        <span className="font-mono text-[9px] text-white/60">NODE_IDENTITY</span>
+      </div>
+      <div className="p-5 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-xl bg-[#a8c3f0]/15 border border-[#a8c3f0]/30 flex items-center justify-center font-mono text-lg font-bold text-[#a8c3f0] shrink-0">
+          {portalData.application.full_name.charAt(0).toUpperCase()}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-white font-bold text-base">{portalData.application.full_name}</h3>
+          <p className="text-[#a8c3f0] font-mono text-xs">{portalData.application.x_handle}</p>
+          <p className="text-white/55 font-mono text-[9px] mt-0.5">ID: {portalData.application.arxon_account_id}</p>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  /* ── SELECTED: Discord + work hub portal ── */
+  if (isApproved) {
+    return (
+      <PageWrap>
+        <div className="max-w-[860px] mx-auto">
+          <motion.button onClick={() => { setPortalData(null); setArxonId(""); setActualReferrals(0); setPostUrls(["","",""]); setSpaceUrls(["",""]); setVideoUrls(["",""]); }}
+            initial={{ opacity:0 }} animate={{ opacity:1 }}
+            className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0] mb-8 transition-colors">
+            <ArrowLeft size={12}/> SIGN OUT OF PORTAL
+          </motion.button>
+
+          <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#101018] border border-white/[0.08] rounded-lg mb-6 font-mono text-[9px]">
+            <Terminal size={10} className="text-[#a8c3f0]"/>
+            <span className="text-white/60">ARXON://AMBASSADOR_PORTAL</span>
+            <span className="text-[#a8c3f0]/50">/</span>
+            <span className="text-[#a8c3f0]">{portalData.application.arxon_account_id}</span>
+            <div className="flex-1"/>
+            <Pill label="SELECTED" variant="green"/>
+          </motion.div>
+
+          <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
+            className="relative overflow-hidden rounded-2xl border border-emerald-400/30 bg-gradient-to-br from-emerald-400/[0.12] via-[#101018] to-[#101018] p-6 mb-5">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"/>
+            <div className="relative flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-emerald-400/15 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                <Award size={22} className="text-emerald-300"/>
+              </div>
+              <div>
+                <h2 className="text-emerald-200 font-bold text-lg mb-1">Congratulations — You&apos;re an Official Arxon Ambassador</h2>
+                <p className="text-emerald-100/70 text-sm leading-relaxed max-w-xl">
+                  You met our selection criteria and have been chosen for this cohort. Your ARX reward allocation is confirmed and vests at TGE.
+                  Next step: join our private ambassador channel on Discord — that&apos;s where onboarding details and updates will be shared.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05 }}
+            className="relative overflow-hidden rounded-2xl border border-[#5865F2]/40 bg-[#5865F2]/[0.08] p-6 mb-5">
+            <div className="flex flex-col md:flex-row md:items-center gap-5">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles size={16} className="text-[#aab2ff]"/>
+                  <span className="font-mono text-[10px] text-[#aab2ff] tracking-widest uppercase">Required · Join Discord</span>
+                </div>
+                <h3 className="text-white font-bold text-base mb-2">Join the Arxon Ambassador Discord</h3>
+                <p className="text-white/60 text-sm leading-relaxed">
+                  All selected ambassadors must join our Discord server. Briefings, coordination, and next steps will be posted there first.
+                  Check announcements after you join.
+                </p>
+              </div>
+              <a href={AMBASSADOR_DISCORD_URL} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-mono text-sm font-bold text-white bg-[#5865F2] hover:bg-[#4752c4] border border-[#7289da]/50 transition-colors shrink-0 shadow-lg shadow-[#5865F2]/20">
+                <ExternalLink size={14}/> JOIN DISCORD
+              </a>
+            </div>
+          </motion.div>
+
+          {profileCard}
+
+          <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
+            className="relative bg-[#101018] border border-white/[0.08] rounded-2xl overflow-hidden mb-5">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.08] bg-white/[0.02]">
+              <CalendarClock size={12} className="text-[#a8c3f0]"/>
+              <span className="font-mono text-[9px] text-[#a8c3f0]/80 tracking-widest">AMBASSADOR WORK HUB</span>
+              <div className="flex-1"/>
+              <span className="font-mono text-[8px] text-amber-300 bg-amber-400/10 border border-amber-400/25 px-2 py-0.5 rounded">COMING SOON</span>
+            </div>
+            <div className="p-6 md:p-8">
+              <div className="max-w-lg">
+                <h3 className="text-white font-bold text-lg mb-2">Your Weekly Work Portal</h3>
+                <p className="text-white/55 text-sm leading-relaxed mb-4">
+                  A dedicated workspace for ambassador deliverables is being prepared. Once every ambassador for this cohort has been confirmed,
+                  this section will activate with your weekly tasks, submission tracking, and performance updates.
+                </p>
+                <p className="text-white/40 text-xs leading-relaxed font-mono">
+                  FULL WORK GUIDELINES · SUBMISSION FLOW · WEEKLY CHECK-INS — SHARED AFTER FINAL SELECTION
+                </p>
+              </div>
+              <div className="mt-6 grid sm:grid-cols-3 gap-3">
+                {[
+                  { label: "Weekly Tasks", desc: "Structured deliverables each week" },
+                  { label: "Work Submissions", desc: "Upload and track your content" },
+                  { label: "Performance", desc: "See how your node is scoring" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 opacity-60">
+                    <p className="text-white/80 text-sm font-semibold mb-1">{item.label}</p>
+                    <p className="text-white/40 text-xs">{item.desc}</p>
+                    <p className="font-mono text-[8px] text-white/25 mt-2 uppercase tracking-wider">Locked until launch</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.15 }}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <StatCard icon={MessageSquare} label="POSTS" value={postCount} target="8+" met={postCount>=8}/>
+            <StatCard icon={Users} label="SPACES" value={spaceCount} target="2+" met={spaceCount>=2}/>
+            <StatCard icon={Globe} label="REFERRALS" value={actualReferrals} target={`${REFERRAL_TARGET}+`} met={actualReferrals>=REFERRAL_TARGET}/>
+            <StatCard icon={Video} label="VIDEOS" value={videoCount} target="1-2" met={videoCount>=1}/>
+          </motion.div>
+        </div>
+      </PageWrap>
+    );
+  }
+
+  /* ── REJECTED: encouragement + mining/referrals ── */
+  if (isRejected) {
+    return (
+      <PageWrap>
+        <div className="max-w-[860px] mx-auto">
+          <motion.button onClick={() => { setPortalData(null); setArxonId(""); setActualReferrals(0); setPostUrls(["","",""]); setSpaceUrls(["",""]); setVideoUrls(["",""]); }}
+            initial={{ opacity:0 }} animate={{ opacity:1 }}
+            className="flex items-center gap-2 font-mono text-xs text-[#a8c3f0]/80 hover:text-[#a8c3f0] mb-8 transition-colors">
+            <ArrowLeft size={12}/> SIGN OUT OF PORTAL
+          </motion.button>
+
+          <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#101018] border border-white/[0.08] rounded-lg mb-6 font-mono text-[9px]">
+            <Terminal size={10} className="text-[#a8c3f0]"/>
+            <span className="text-white/60">ARXON://AMBASSADOR_PORTAL</span>
+            <span className="text-[#a8c3f0]/50">/</span>
+            <span className="text-[#a8c3f0]">{portalData.application.arxon_account_id}</span>
+            <div className="flex-1"/>
+            <Pill label="NOT SELECTED" variant="amber"/>
+          </motion.div>
+
+          <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
+            className="relative overflow-hidden rounded-2xl border border-red-400/25 bg-gradient-to-br from-red-400/[0.08] via-[#101018] to-[#101018] p-6 mb-5">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-red-400/10 border border-red-400/25 flex items-center justify-center shrink-0">
+                <Heart size={20} className="text-red-300"/>
+              </div>
+              <div>
+                <h2 className="text-red-100 font-bold text-lg mb-2">Thank You for Applying</h2>
+                <p className="text-red-100/75 text-sm leading-relaxed mb-3">
+                  After reviewing your application against the ambassador requirements we set for this cohort — posts, spaces, referrals,
+                  content quality, and overall activity — we&apos;re sorry to let you know you were not selected this round.
+                </p>
+                <p className="text-white/50 text-sm leading-relaxed">
+                  That doesn&apos;t mean your journey with Arxon stops here. You still play an important role in growing the network.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.05 }}
+            className="relative bg-[#101018] border border-[#a8c3f0]/20 rounded-2xl overflow-hidden mb-5">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.08] bg-[#a8c3f0]/[0.03]">
+              <Pickaxe size={12} className="text-[#a8c3f0]"/>
+              <span className="font-mono text-[9px] text-[#a8c3f0]/80 tracking-widest">KEEP BUILDING WITH ARXON</span>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-white/70 text-sm leading-relaxed">
+                You can still support Arxon every day — refer friends and family to the mining app, grow your network, and earn more points
+                as your referrals stay active. Every person you bring in strengthens the ecosystem.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <UserPlus size={14} className="text-[#a8c3f0]"/>
+                    <span className="text-white font-semibold text-sm">Refer & Earn</span>
+                  </div>
+                  <p className="text-white/45 text-xs leading-relaxed">
+                    Share your referral link inside the mining app. Invite friends, family, and your community — you earn points when they join and mine.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Pickaxe size={14} className="text-emerald-400"/>
+                    <span className="text-white font-semibold text-sm">Keep Mining</span>
+                  </div>
+                  <p className="text-white/45 text-xs leading-relaxed">
+                    Stay consistent with your mining activity. Points stack over time and keep you positioned in the Arxon network.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                <a href={MINING_APP_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-mono text-xs font-bold text-[#09090b] shrink-0"
+                  style={{ background:"linear-gradient(135deg,#a8c3f0,#c8d8f8)" }}>
+                  <Pickaxe size={13}/> OPEN MINING APP
+                </a>
+                <a href={GOOGLE_PLAY_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-mono text-xs font-bold text-white bg-white/[0.05] border border-white/[0.12] hover:bg-white/[0.08] transition-colors shrink-0">
+                  <ExternalLink size={13}/> GET ANDROID APP
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {profileCard}
+
+          <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
+            className="relative bg-[#101018] border border-white/[0.08] rounded-xl overflow-hidden mb-4">
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/[0.10]">
+              <CheckCircle2 size={11} className="text-[#a8c3f0]"/>
+              <span className="font-mono text-[9px] text-white/60">YOUR APPLICATION SUMMARY</span>
+            </div>
+            <div className="p-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <StatCard icon={MessageSquare} label="POSTS" value={postCount} target="8+" met={postCount>=8}/>
+              <StatCard icon={Users} label="SPACES" value={spaceCount} target="2+" met={spaceCount>=2}/>
+              <StatCard icon={Globe} label="REFERRALS" value={actualReferrals} target={`${REFERRAL_TARGET}+`} met={actualReferrals>=REFERRAL_TARGET}/>
+              <StatCard icon={Video} label="VIDEOS" value={videoCount} target="1-2" met={videoCount>=1}/>
+            </div>
+            <p className="px-5 pb-5 text-white/35 text-xs font-mono">
+              These were the requirements for ambassador selection. Keep building your referrals and activity — future cohorts may open again.
+            </p>
+          </motion.div>
+        </div>
+      </PageWrap>
+    );
+  }
+
+  /* ── IN REVIEW: full application portal (unchanged) ── */
   return (
     <PageWrap>
       <div className="max-w-[860px] mx-auto">
@@ -459,65 +701,25 @@ const AmbassadorPortal = () => {
           <span className="text-[#a8c3f0]/50">/</span>
           <span className="text-[#a8c3f0]">{portalData.application.arxon_account_id}</span>
           <div className="flex-1"/>
-          <Pill label={isApproved ? "SELECTED" : isRejected ? "NOT SELECTED" : isConsideration ? "IN AUDIT REVIEW" : "UNDER REVIEW"} variant={isApproved ? "green" : isRejected ? "amber" : isConsideration ? "blue" : "blue"} />
+          <Pill label={isConsideration ? "IN AUDIT REVIEW" : "UNDER REVIEW"} variant="blue" />
         </motion.div>
 
         <AnimatePresence>
-          {(isPending || isConsideration) && (
-            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 px-5 py-4 bg-[#a8c3f0]/[0.08] border border-[#a8c3f0]/25 rounded-xl mb-5">
-              <Clock size={16} className="text-[#a8c3f0] shrink-0" />
-              <div>
-                <div className="text-[#d8e6ff] font-semibold text-sm">{isConsideration ? "Selected for Further Review" : "Application Under Review"}</div>
-                <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">
-                  {isConsideration
-                    ? "Your application has been flagged for audit. Our team is reviewing your activity and profile in detail."
-                    : "Selection is in progress. Check back here in 5 days to see if you were chosen."}
-                </div>
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 px-5 py-4 bg-[#a8c3f0]/[0.08] border border-[#a8c3f0]/25 rounded-xl mb-5">
+            <Clock size={16} className="text-[#a8c3f0] shrink-0" />
+            <div>
+              <div className="text-[#d8e6ff] font-semibold text-sm">{isConsideration ? "Selected for Further Review" : "Application Under Review"}</div>
+              <div className="text-[#a8c3f0]/70 font-mono text-[10px] mt-0.5">
+                {isConsideration
+                  ? "Your application has been flagged for audit. Our team is reviewing your activity and profile in detail."
+                  : "Selection is in progress. Check back here in 5 days to see if you were chosen."}
               </div>
-            </motion.div>
-          )}
-          {isRejected && (
-            <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-3 px-5 py-4 bg-red-400/[0.08] border border-red-400/25 rounded-xl mb-5">
-              <AlertCircle size={16} className="text-red-300 shrink-0" />
-              <div>
-                <div className="text-red-200 font-semibold text-sm">Not Selected This Round</div>
-                <div className="text-red-300/70 font-mono text-[10px] mt-0.5">Thank you for applying. You were not chosen for this ambassador cohort.</div>
-              </div>
-            </motion.div>
-          )}
-          {isApproved && (
-            <motion.div initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }}
-              className="flex items-center gap-3 px-5 py-4 bg-emerald-400/[0.08] border border-emerald-400/25 rounded-xl mb-5">
-              <Award size={16} className="text-emerald-400 shrink-0"/>
-              <div>
-                <div className="text-emerald-300 font-semibold text-sm">You Were Selected — Official Arxon Ambassador</div>
-                <div className="text-emerald-300/70 font-mono text-[10px] mt-0.5">ARX reward allocation confirmed · vest starts at TGE</div>
-              </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
         </AnimatePresence>
 
-        {/* Profile */}
-        <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }}
-          className="relative bg-[#101018] border border-white/[0.08] rounded-xl overflow-hidden mb-4">
-          <Corner pos="tl"/><Corner pos="tr"/>
-          <div className="flex items-center gap-2 px-5 py-3 border-b border-white/[0.10] bg-white/[0.015]">
-            <Cpu size={10} className="text-[#a8c3f0]"/>
-            <span className="font-mono text-[9px] text-white/60">NODE_IDENTITY</span>
-          </div>
-          <div className="p-5 flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#a8c3f0]/15 border border-[#a8c3f0]/30 flex items-center justify-center font-mono text-lg font-bold text-[#a8c3f0] shrink-0">
-              {portalData.application.full_name.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-white font-bold text-base">{portalData.application.full_name}</h3>
-              <p className="text-[#a8c3f0] font-mono text-xs">{portalData.application.x_handle}</p>
-              <p className="text-white/55 font-mono text-[9px] mt-0.5">ID: {portalData.application.arxon_account_id}</p>
-            </div>
-          </div>
-        </motion.div>
+        {profileCard}
 
         {/* Stats — referral card has sync button */}
         <motion.div initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
