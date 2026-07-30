@@ -7,7 +7,7 @@ import {
   Users, Link2, Search, RefreshCw, Activity, ExternalLink,
   MessageSquare, Video, Globe, CheckCircle2, Shield, Twitter,
   ChevronLeft, ChevronRight, Copy, Check, ArrowLeft, Eye,
-  ClipboardList, Clock, XCircle, BadgeCheck,
+  ClipboardList, Clock, XCircle, BadgeCheck, Mail,
 } from "lucide-react";
 import {
   AMBASSADOR_QUEUES,
@@ -456,6 +456,9 @@ const AmbassadorAdminPanel = () => {
   const [search, setSearch] = useState("");
   const [portalSort, setPortalSort] = useState<"submissions" | "date">("submissions");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [sendingEmails, setSendingEmails] = useState(false);
+
+  const approvedCount = useMemo(() => apps.filter((a) => a.status === "approved").length, [apps]);
 
   const patchParams = useCallback(
     (patch: Record<string, string | null>) => {
@@ -554,6 +557,26 @@ const AmbassadorAdminPanel = () => {
   const openApplicant = (id: string) => patchParams({ applicant: id });
   const closeApplicant = () => patchParams({ applicant: null });
 
+  const sendSelectionEmails = async (dryRun: boolean) => {
+    setSendingEmails(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("notify-ambassador-selection", {
+        body: { dry_run: dryRun, force_resend: false },
+      });
+      if (error) throw error;
+      const summary = data as { sent?: number; skipped?: number; failed?: number; total?: number };
+      if (dryRun) {
+        toast.success(`Dry run: ${summary.total ?? 0} approved · ${summary.skipped ?? 0} would skip`);
+      } else {
+        toast.success(`Emails sent: ${summary.sent ?? 0} · skipped: ${summary.skipped ?? 0} · failed: ${summary.failed ?? 0}`);
+        await load();
+      }
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to send selection emails");
+    }
+    setSendingEmails(false);
+  };
+
   if (selectedApp) {
     const detailList = tab === "portal" ? portalApps : queueApps;
     return (
@@ -576,12 +599,32 @@ const AmbassadorAdminPanel = () => {
             <h2 className="text-lg font-bold text-white">Ambassador Audit Center</h2>
             <p className="text-xs text-white/40 mt-0.5">Review applications, portal activity, and audit queues</p>
           </div>
-          <button
-            onClick={load}
+          <div className="flex items-center gap-2">
+            {approvedCount > 0 && (
+              <>
+                <button
+                  onClick={() => sendSelectionEmails(true)}
+                  disabled={sendingEmails}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-white/60 hover:text-white disabled:opacity-40"
+                >
+                  <Mail size={13} /> Preview emails
+                </button>
+                <button
+                  onClick={() => sendSelectionEmails(false)}
+                  disabled={sendingEmails}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-400/10 border border-emerald-400/25 text-xs font-semibold text-emerald-400 hover:bg-emerald-400/20 disabled:opacity-40"
+                >
+                  <Mail size={13} /> {sendingEmails ? "Sending…" : "Send selection emails"}
+                </button>
+              </>
+            )}
+            <button
+              onClick={load}
             className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center hover:bg-white/[0.08]"
           >
             <RefreshCw size={14} className="text-white/50" />
           </button>
+          </div>
         </div>
 
         <div className="flex gap-2 p-4 border-b border-white/[0.06] bg-white/[0.01]">
