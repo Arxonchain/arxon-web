@@ -14,6 +14,8 @@ export default {
     },
       extend: {
         fontFamily: {
+          sans: ['"Creato Display"', 'system-ui', 'sans-serif'],
+          display: ['"Creato Display"', 'system-ui', 'sans-serif'],
           outfit: ['Outfit', 'sans-serif'],
         },
         colors: {

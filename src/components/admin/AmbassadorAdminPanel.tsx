@@ -47,6 +47,16 @@ type SubRow = {
   created_at: string;
 };
 
+type WeeklyReportRow = {
+  id: string;
+  arxon_account_id: string;
+  week_start: string;
+  status: string;
+  summary: string | null;
+  submitted_at: string | null;
+  ambassador_report_items: { id: string; item_type: string; url: string | null }[];
+};
+
 export const AmbassadorStatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
     approved: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
@@ -151,6 +161,7 @@ const StatusActions = ({
 const ApplicantDetailView = ({
   app,
   submissions,
+  weeklyReports,
   queueApps,
   onBack,
   onNavigate,
@@ -158,6 +169,7 @@ const ApplicantDetailView = ({
 }: {
   app: AppRow;
   submissions: SubRow[];
+  weeklyReports: WeeklyReportRow[];
   queueApps: AppRow[];
   onBack: () => void;
   onNavigate: (id: string) => void;
@@ -377,6 +389,35 @@ const ApplicantDetailView = ({
         </div>
       </div>
 
+      {weeklyReports.length > 0 && (
+        <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
+            <ClipboardList size={14} className="text-[#7c93c3]" />
+            <span className="text-sm font-semibold text-white">Weekly Reports</span>
+            <span className="text-xs text-[#7c93c3] bg-[#7c93c3]/10 px-2 py-0.5 rounded-full">{weeklyReports.length}</span>
+          </div>
+          <div className="divide-y divide-white/[0.04]">
+            {weeklyReports.map((report) => (
+              <div key={report.id} className="px-4 py-4">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <p className="text-sm font-semibold text-white">Week of {report.week_start}</p>
+                  <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
+                    report.status === "submitted" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-300"
+                  }`}>
+                    {report.status}
+                  </span>
+                </div>
+                {report.summary && <p className="text-sm text-white/55 mb-2">{report.summary}</p>}
+                <p className="text-xs text-white/35">
+                  {(report.ambassador_report_items ?? []).length} items
+                  {report.submitted_at ? ` · submitted ${new Date(report.submitted_at).toLocaleDateString()}` : ""}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
           <Link2 size={14} className="text-[#7c93c3]" />
@@ -452,6 +493,7 @@ const AmbassadorAdminPanel = () => {
 
   const [apps, setApps] = useState<AppRow[]>([]);
   const [subs, setSubs] = useState<SubRow[]>([]);
+  const [weeklyReports, setWeeklyReports] = useState<WeeklyReportRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [portalSort, setPortalSort] = useState<"submissions" | "date">("submissions");
@@ -475,17 +517,28 @@ const AmbassadorAdminPanel = () => {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [a, s] = await Promise.all([
+    const [a, s, w] = await Promise.all([
       supabase.from("ambassador_applications").select("*").order("created_at", { ascending: false }),
       supabase.from("ambassador_submissions").select("*").order("created_at", { ascending: false }),
+      supabase.from("ambassador_weekly_reports").select(`
+        id,
+        arxon_account_id,
+        week_start,
+        status,
+        summary,
+        submitted_at,
+        ambassador_report_items (id, item_type, url)
+      `).order("week_start", { ascending: false }),
     ]);
     if (a.error || s.error) {
       toast.error("Failed to load ambassador data");
       setApps([]);
       setSubs([]);
+      setWeeklyReports([]);
     } else {
       setApps((a.data as AppRow[]) || []);
       setSubs((s.data as SubRow[]) || []);
+      setWeeklyReports((w.data as WeeklyReportRow[]) || []);
     }
     setLoading(false);
   }, []);
@@ -495,6 +548,10 @@ const AmbassadorAdminPanel = () => {
   }, [load]);
 
   const getSubsFor = useCallback((accountId: string) => subs.filter((s) => s.arxon_account_id === accountId), [subs]);
+  const getReportsFor = useCallback(
+    (accountId: string) => weeklyReports.filter((r) => r.arxon_account_id === accountId),
+    [weeklyReports],
+  );
 
   const counts = useMemo(
     () => ({
@@ -583,6 +640,7 @@ const AmbassadorAdminPanel = () => {
       <ApplicantDetailView
         app={selectedApp}
         submissions={getSubsFor(selectedApp.arxon_account_id)}
+        weeklyReports={getReportsFor(selectedApp.arxon_account_id)}
         queueApps={detailList.length ? detailList : [selectedApp]}
         onBack={closeApplicant}
         onNavigate={openApplicant}
@@ -768,6 +826,7 @@ const AmbassadorAdminPanel = () => {
                   <th className="px-4 py-3 font-semibold">Posts</th>
                   <th className="px-4 py-3 font-semibold">Spaces</th>
                   <th className="px-4 py-3 font-semibold">Videos</th>
+                  <th className="px-4 py-3 font-semibold">Weekly Reports</th>
                   <th className="px-4 py-3 font-semibold">Total Links</th>
                   <th className="px-4 py-3 font-semibold">Requirements</th>
                   <th className="px-4 py-3 font-semibold">Actions</th>
@@ -776,7 +835,7 @@ const AmbassadorAdminPanel = () => {
               <tbody>
                 {portalApps.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-4 py-16 text-center text-white/35">
+                    <td colSpan={9} className="px-4 py-16 text-center text-white/35">
                       No ambassadors in this queue
                     </td>
                   </tr>
@@ -786,6 +845,8 @@ const AmbassadorAdminPanel = () => {
                     const posts = appSubs.filter((s) => s.submission_type === "post").length;
                     const spaces = appSubs.filter((s) => s.submission_type === "space").length;
                     const videos = appSubs.filter((s) => s.submission_type === "video").length;
+                    const appReports = getReportsFor(app.arxon_account_id);
+                    const submittedReports = appReports.filter((r) => r.status === "submitted").length;
                     const coreMet = posts >= 8 && spaces >= 2;
                     const bonusVideo = videos >= 1;
                     return (
@@ -807,6 +868,7 @@ const AmbassadorAdminPanel = () => {
                         <td className={`px-4 py-4 font-semibold ${posts >= 8 ? "text-emerald-400" : "text-white"}`}>{posts}/8</td>
                         <td className={`px-4 py-4 font-semibold ${spaces >= 2 ? "text-emerald-400" : "text-purple-400"}`}>{spaces}/2</td>
                         <td className={`px-4 py-4 font-semibold ${videos >= 1 ? "text-emerald-400" : "text-amber-400"}`}>{videos}/1</td>
+                        <td className="px-4 py-4 font-semibold text-sky-300">{submittedReports}/{appReports.length}</td>
                         <td className="px-4 py-4 font-semibold text-[#7c93c3]">{appSubs.length}</td>
                         <td className="px-4 py-4">
                           <span className={`inline-flex items-center gap-1 text-xs font-semibold ${coreMet ? "text-emerald-400" : "text-white/40"}`}>

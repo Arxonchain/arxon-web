@@ -62,6 +62,91 @@ export type Database = {
         }
         Relationships: []
       }
+      ambassador_report_items: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          item_type: string
+          report_id: string
+          sort_order: number
+          storage_path: string | null
+          url: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          item_type: string
+          report_id: string
+          sort_order?: number
+          storage_path?: string | null
+          url?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          item_type?: string
+          report_id?: string
+          sort_order?: number
+          storage_path?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_report_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_weekly_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambassador_weekly_reports: {
+        Row: {
+          application_id: string
+          arxon_account_id: string
+          created_at: string
+          id: string
+          status: string
+          submitted_at: string | null
+          summary: string | null
+          updated_at: string
+          week_start: string
+        }
+        Insert: {
+          application_id: string
+          arxon_account_id: string
+          created_at?: string
+          id?: string
+          status?: string
+          submitted_at?: string | null
+          summary?: string | null
+          updated_at?: string
+          week_start: string
+        }
+        Update: {
+          application_id?: string
+          arxon_account_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+          submitted_at?: string | null
+          summary?: string | null
+          updated_at?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambassador_weekly_reports_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "ambassador_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ambassador_submissions: {
         Row: {
           arxon_account_id: string
