@@ -1,6 +1,6 @@
 const ADMIN_PATHS = ["/admin", "/waitlist-admin", "/investor-admin"] as const;
 
-export const ADMIN_SECTIONS = ["overview", "waitlist", "investors", "ambassadors", "settings"] as const;
+export const ADMIN_SECTIONS = ["overview", "waitlist", "investors", "ambassadors", "reports", "settings"] as const;
 export type AdminSection = (typeof ADMIN_SECTIONS)[number];
 
 export function isAdminSection(value: string | null): value is AdminSection {

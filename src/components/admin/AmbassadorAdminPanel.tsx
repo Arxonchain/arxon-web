@@ -54,7 +54,7 @@ type WeeklyReportRow = {
   status: string;
   summary: string | null;
   submitted_at: string | null;
-  ambassador_report_items: { id: string; item_type: string; url: string | null }[];
+  ambassador_report_items: { id: string; item_type: string; url: string | null; storage_path: string | null; caption: string | null }[];
 };
 
 export const AmbassadorStatusBadge = ({ status }: { status: string }) => {
@@ -408,7 +408,27 @@ const ApplicantDetailView = ({
                   </span>
                 </div>
                 {report.summary && <p className="text-sm text-white/55 mb-2">{report.summary}</p>}
-                <p className="text-xs text-white/35">
+                {(report.ambassador_report_items ?? []).length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {(report.ambassador_report_items ?? []).map((item) => (
+                      <div key={item.id} className="flex items-start gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+                        <TypeTag type={item.item_type} />
+                        <div className="min-w-0 flex-1">
+                          {item.url ? (
+                            <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sm text-[#7c93c3] hover:underline truncate block">
+                              {item.url}
+                            </a>
+                          ) : (
+                            <p className="text-sm text-white/50 truncate">{item.storage_path ?? "Screenshot upload"}</p>
+                          )}
+                          {item.caption && <p className="text-xs text-white/35 mt-1">{item.caption}</p>}
+                        </div>
+                        {item.url && <CopyBtn text={item.url} />}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-xs text-white/35 mt-2">
                   {(report.ambassador_report_items ?? []).length} items
                   {report.submitted_at ? ` · submitted ${new Date(report.submitted_at).toLocaleDateString()}` : ""}
                 </p>
@@ -527,10 +547,10 @@ const AmbassadorAdminPanel = () => {
         status,
         summary,
         submitted_at,
-        ambassador_report_items (id, item_type, url)
+        ambassador_report_items (id, item_type, url, storage_path, caption)
       `).order("week_start", { ascending: false }),
     ]);
-    if (a.error || s.error) {
+    if (a.error || s.error || w.error) {
       toast.error("Failed to load ambassador data");
       setApps([]);
       setSubs([]);

@@ -7,12 +7,13 @@ import Footer from "@/components/Footer";
 import AmbassadorAdminPanel from "@/components/admin/AmbassadorAdminPanel";
 import WaitlistAdminSection from "@/components/admin/WaitlistAdminSection";
 import InvestorAdminSection from "@/components/admin/InvestorAdminSection";
+import AmbassadorReportsAuditSection from "@/components/admin/AmbassadorReportsAuditSection";
 import { AdminCard, AdminCardHeader, AdminStatBox, adminInputCls } from "@/components/admin/adminUi";
 import {
   Shield, Users, Settings, Save, ExternalLink,
   Activity, ChevronRight, Globe, Menu, X,
   CheckCircle2, Twitter, BarChart3,
-  LogOut, KeyRound, List,
+  LogOut, KeyRound, List, ClipboardList,
 } from "lucide-react";
 import { toast } from "sonner";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
@@ -24,6 +25,7 @@ const NAV: { id: AdminSection; icon: typeof BarChart3; label: string }[] = [
   { id: "waitlist", icon: List, label: "Waitlist" },
   { id: "investors", icon: Globe, label: "Investors" },
   { id: "ambassadors", icon: Users, label: "Ambassadors" },
+  { id: "reports", icon: ClipboardList, label: "Reports" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
@@ -172,6 +174,7 @@ const SiteStats = ({ onNavigate }: { onNavigate: (section: AdminSection, extra?:
     audit: 0,
     pending: 0,
     submissions: 0,
+    weeklyReports: 0,
     waitlist: 0,
     investors: 0,
   });
@@ -184,11 +187,12 @@ const SiteStats = ({ onNavigate }: { onNavigate: (section: AdminSection, extra?:
       supabase.from("ambassador_applications").select("*", { count: "exact", head: true }).eq("status", "consideration"),
       supabase.from("ambassador_applications").select("*", { count: "exact", head: true }).eq("status", "pending"),
       supabase.from("ambassador_submissions").select("*", { count: "exact", head: true }),
+      supabase.from("ambassador_weekly_reports").select("*", { count: "exact", head: true }).eq("status", "submitted"),
       supabase.from("waitlist").select("*", { count: "exact", head: true }),
       supabase.from("investor_submissions").select("*", { count: "exact", head: true }),
     ])
-      .then(([apps, approved, audit, pending, subs, waitlist, investors]) => {
-        const failed = [apps, approved, audit, pending, subs, waitlist, investors].some((r) => r.error);
+      .then(([apps, approved, audit, pending, subs, weeklyReports, waitlist, investors]) => {
+        const failed = [apps, approved, audit, pending, subs, weeklyReports, waitlist, investors].some((r) => r.error);
         if (failed) toast.error("Some overview stats could not be loaded");
         setStats({
           applications: apps.count || 0,
@@ -196,6 +200,7 @@ const SiteStats = ({ onNavigate }: { onNavigate: (section: AdminSection, extra?:
           audit: audit.count || 0,
           pending: pending.count || 0,
           submissions: subs.count || 0,
+          weeklyReports: weeklyReports.count || 0,
           waitlist: waitlist.count || 0,
           investors: investors.count || 0,
         });
@@ -218,6 +223,7 @@ const SiteStats = ({ onNavigate }: { onNavigate: (section: AdminSection, extra?:
             <AdminStatBox label="SELECTED FOR AUDIT" value={stats.audit} color="text-sky-400" onClick={() => onNavigate("ambassadors", { queue: "consideration" })} />
             <AdminStatBox label="APPROVED AMBASSADORS" value={stats.approved} color="text-emerald-400" onClick={() => onNavigate("ambassadors", { queue: "approved" })} />
             <AdminStatBox label="TOTAL APPLICATIONS" value={stats.applications} onClick={() => onNavigate("ambassadors", { queue: "all" })} />
+            <AdminStatBox label="WEEKLY REPORTS" value={stats.weeklyReports} color="text-sky-400" onClick={() => onNavigate("reports")} />
             <AdminStatBox label="PORTAL SUBMISSIONS" value={stats.submissions} color="text-[#7c93c3]" onClick={() => onNavigate("ambassadors", { tab: "portal" })} />
             <AdminStatBox label="WAITLIST ENTRIES" value={stats.waitlist} color="text-amber-400" onClick={() => onNavigate("waitlist")} />
             <AdminStatBox label="INVESTOR INQUIRIES" value={stats.investors} color="text-purple-400" onClick={() => onNavigate("investors")} />
@@ -385,6 +391,7 @@ const AdminDashboard = () => {
               {activeSection === "waitlist" && <WaitlistAdminSection />}
               {activeSection === "investors" && <InvestorAdminSection />}
               {activeSection === "ambassadors" && <AmbassadorAdminPanel />}
+              {activeSection === "reports" && <AmbassadorReportsAuditSection />}
               {activeSection === "settings" && (
                 <>
                   <AccountSecurity />
