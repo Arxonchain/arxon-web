@@ -268,6 +268,9 @@ async function loadReports(
       submitted_at,
       created_at,
       updated_at,
+      admin_points,
+      admin_points_note,
+      admin_points_assigned_at,
       ambassador_report_items (
         id,
         item_type,

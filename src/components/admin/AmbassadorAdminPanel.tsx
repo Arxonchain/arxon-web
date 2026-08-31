@@ -18,6 +18,8 @@ import {
   isAmbassadorTab,
   statusLabel,
 } from "@/lib/ambassadorAdmin";
+import { buildAdminSectionUrl } from "@/lib/adminNav";
+import { loadSignedReportImageUrls, totalPointsForReports } from "@/lib/ambassadorReportsAdmin";
 
 const SUPABASE_FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
 const inputCls =
@@ -54,6 +56,8 @@ type WeeklyReportRow = {
   status: string;
   summary: string | null;
   submitted_at: string | null;
+  admin_points: number | null;
+  admin_points_note: string | null;
   ambassador_report_items: { id: string; item_type: string; url: string | null; storage_path: string | null; caption: string | null }[];
 };
 
@@ -178,6 +182,9 @@ const ApplicantDetailView = ({
   const [referralCount, setReferralCount] = useState<number | null>(null);
   const [loadingRefs, setLoadingRefs] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [reportImageUrls, setReportImageUrls] = useState<Record<string, string>>({});
+
+  const totalPoints = totalPointsForReports(weeklyReports);
 
   const postSubs = submissions.filter((s) => s.submission_type === "post");
   const spaceSubs = submissions.filter((s) => s.submission_type === "space");
@@ -209,6 +216,22 @@ const ApplicantDetailView = ({
   useEffect(() => {
     syncRefs();
   }, [syncRefs]);
+
+  useEffect(() => {
+    const paths = weeklyReports
+      .flatMap((r) => r.ambassador_report_items ?? [])
+      .map((i) => i.storage_path)
+      .filter((p): p is string => Boolean(p));
+    if (!paths.length) {
+      setReportImageUrls({});
+      return;
+    }
+    let cancelled = false;
+    loadSignedReportImageUrls(paths).then((urls) => {
+      if (!cancelled) setReportImageUrls(urls);
+    });
+    return () => { cancelled = true; };
+  }, [weeklyReports]);
 
   const handleStatus = async (status: AmbassadorStatus) => {
     setUpdating(true);
@@ -281,12 +304,13 @@ const ApplicantDetailView = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {[
           { label: "Referrals", value: referralCount === null ? "…" : referralCount, target: 40, icon: Globe, met: (referralCount ?? 0) >= 40, action: syncRefs, loading: loadingRefs },
           { label: "Posts", value: postSubs.length, target: 8, icon: MessageSquare, met: postSubs.length >= 8 },
           { label: "Spaces", value: spaceSubs.length, target: 2, icon: Users, met: spaceSubs.length >= 2 },
           { label: "Videos", value: videoSubs.length, target: 1, icon: Video, met: videoSubs.length >= 1, bonus: true },
+          { label: "Report points", value: totalPoints, target: null as number | null, icon: ClipboardList, met: totalPoints > 0 },
         ].map((stat) => (
           <div key={stat.label} className={`rounded-xl border p-4 ${stat.met ? "border-emerald-400/25 bg-emerald-400/[0.03]" : "border-white/[0.08] bg-white/[0.02]"}`}>
             <div className="flex items-center justify-between mb-2">
@@ -304,7 +328,7 @@ const ApplicantDetailView = ({
             </div>
             <p className={`text-2xl font-bold ${stat.met ? "text-emerald-400" : "text-white"}`}>{stat.value}</p>
             <p className="text-xs text-white/35 mt-1">
-              {stat.label} / {stat.target}
+              {stat.target != null ? `${stat.label} / ${stat.target}` : stat.label}
             </p>
           </div>
         ))}
@@ -391,23 +415,45 @@ const ApplicantDetailView = ({
 
       {weeklyReports.length > 0 && (
         <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden">
-          <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-2">
-            <ClipboardList size={14} className="text-[#7c93c3]" />
-            <span className="text-sm font-semibold text-white">Weekly Reports</span>
-            <span className="text-xs text-[#7c93c3] bg-[#7c93c3]/10 px-2 py-0.5 rounded-full">{weeklyReports.length}</span>
+          <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <ClipboardList size={14} className="text-[#7c93c3]" />
+              <span className="text-sm font-semibold text-white">Weekly Reports</span>
+              <span className="text-xs text-[#7c93c3] bg-[#7c93c3]/10 px-2 py-0.5 rounded-full">{weeklyReports.length}</span>
+              {totalPoints > 0 && (
+                <span className="text-xs text-[#a8c3f0] bg-[#7c93c3]/10 px-2 py-0.5 rounded-full">{totalPoints} pts total</span>
+              )}
+            </div>
+            <a
+              href={buildAdminSectionUrl("reports")}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7c93c3] hover:underline"
+            >
+              <ExternalLink size={12} />
+              Open reports audit
+            </a>
           </div>
           <div className="divide-y divide-white/[0.04]">
             {weeklyReports.map((report) => (
               <div key={report.id} className="px-4 py-4">
-                <div className="flex items-center justify-between gap-3 mb-2">
+                <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
                   <p className="text-sm font-semibold text-white">Week of {report.week_start}</p>
-                  <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
-                    report.status === "submitted" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-300"
-                  }`}>
-                    {report.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {report.admin_points != null && (
+                      <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full bg-[#7c93c3]/15 text-[#a8c3f0]">
+                        {report.admin_points} pts
+                      </span>
+                    )}
+                    <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full ${
+                      report.status === "submitted" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-300"
+                    }`}>
+                      {report.status}
+                    </span>
+                  </div>
                 </div>
                 {report.summary && <p className="text-sm text-white/55 mb-2">{report.summary}</p>}
+                {report.admin_points_note && (
+                  <p className="text-xs text-white/40 mb-2 italic">Score note: {report.admin_points_note}</p>
+                )}
                 {(report.ambassador_report_items ?? []).length > 0 && (
                   <div className="mt-3 space-y-2">
                     {(report.ambassador_report_items ?? []).map((item) => (
@@ -417,6 +463,15 @@ const ApplicantDetailView = ({
                           {item.url ? (
                             <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-sm text-[#7c93c3] hover:underline truncate block">
                               {item.url}
+                            </a>
+                          ) : item.storage_path && reportImageUrls[item.storage_path] ? (
+                            <a href={reportImageUrls[item.storage_path]} target="_blank" rel="noopener noreferrer" className="block">
+                              <img
+                                src={reportImageUrls[item.storage_path]}
+                                alt={item.caption ?? "Screenshot"}
+                                className="mt-1 max-h-32 rounded-lg border border-white/[0.08] object-cover"
+                                loading="lazy"
+                              />
                             </a>
                           ) : (
                             <p className="text-sm text-white/50 truncate">{item.storage_path ?? "Screenshot upload"}</p>
@@ -435,6 +490,17 @@ const ApplicantDetailView = ({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {weeklyReports.length === 0 && app.status === "approved" && (
+        <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl px-5 py-8 text-center">
+          <ClipboardList size={24} className="text-white/15 mx-auto mb-2" />
+          <p className="text-sm text-white/40">No weekly reports submitted yet.</p>
+          <a href={buildAdminSectionUrl("reports")} className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-[#7c93c3] hover:underline">
+            <ExternalLink size={11} />
+            Monitor reports section
+          </a>
         </div>
       )}
 
@@ -547,6 +613,8 @@ const AmbassadorAdminPanel = () => {
         status,
         summary,
         submitted_at,
+        admin_points,
+        admin_points_note,
         ambassador_report_items (id, item_type, url, storage_path, caption)
       `).order("week_start", { ascending: false }),
     ]);
@@ -847,6 +915,7 @@ const AmbassadorAdminPanel = () => {
                   <th className="px-4 py-3 font-semibold">Spaces</th>
                   <th className="px-4 py-3 font-semibold">Videos</th>
                   <th className="px-4 py-3 font-semibold">Weekly Reports</th>
+                  <th className="px-4 py-3 font-semibold">Points</th>
                   <th className="px-4 py-3 font-semibold">Total Links</th>
                   <th className="px-4 py-3 font-semibold">Requirements</th>
                   <th className="px-4 py-3 font-semibold">Actions</th>
@@ -855,7 +924,7 @@ const AmbassadorAdminPanel = () => {
               <tbody>
                 {portalApps.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="px-4 py-16 text-center text-white/35">
+                    <td colSpan={10} className="px-4 py-16 text-center text-white/35">
                       No ambassadors in this queue
                     </td>
                   </tr>
@@ -867,6 +936,7 @@ const AmbassadorAdminPanel = () => {
                     const videos = appSubs.filter((s) => s.submission_type === "video").length;
                     const appReports = getReportsFor(app.arxon_account_id);
                     const submittedReports = appReports.filter((r) => r.status === "submitted").length;
+                    const ambassadorPoints = totalPointsForReports(appReports);
                     const coreMet = posts >= 8 && spaces >= 2;
                     const bonusVideo = videos >= 1;
                     return (
@@ -889,6 +959,7 @@ const AmbassadorAdminPanel = () => {
                         <td className={`px-4 py-4 font-semibold ${spaces >= 2 ? "text-emerald-400" : "text-purple-400"}`}>{spaces}/2</td>
                         <td className={`px-4 py-4 font-semibold ${videos >= 1 ? "text-emerald-400" : "text-amber-400"}`}>{videos}/1</td>
                         <td className="px-4 py-4 font-semibold text-sky-300">{submittedReports}/{appReports.length}</td>
+                        <td className="px-4 py-4 font-semibold text-[#a8c3f0]">{ambassadorPoints > 0 ? ambassadorPoints : "—"}</td>
                         <td className="px-4 py-4 font-semibold text-[#7c93c3]">{appSubs.length}</td>
                         <td className="px-4 py-4">
                           <span className={`inline-flex items-center gap-1 text-xs font-semibold ${coreMet ? "text-emerald-400" : "text-white/40"}`}>

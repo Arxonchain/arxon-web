@@ -23,12 +23,14 @@ export function ApprovedWorkHub({
 }: Props) {
   const submittedCount = reports.filter((r) => r.status === "submitted").length;
   const currentSubmitted = reports.some((r) => r.week_start === currentWeek && r.status === "submitted");
+  const totalPoints = reports.reduce((sum, r) => sum + (r.admin_points ?? 0), 0);
+  const scoredWeeks = reports.filter((r) => r.admin_points != null).length;
 
   return (
     <div className="mx-auto max-w-6xl">
       <ApprovedHeader profile={profile} onSignOut={onSignOut} />
 
-      <div className="mb-6 grid gap-4 md:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <StatCard
           icon={Award}
           label="Ambassador status"
@@ -46,6 +48,13 @@ export function ApprovedWorkHub({
           label="This week"
           value={currentSubmitted ? "Submitted" : "Pending"}
           tone={currentSubmitted ? "success" : "neutral"}
+        />
+        <StatCard
+          icon={BarChart3}
+          label="Total points"
+          value={totalPoints > 0 ? String(totalPoints) : "—"}
+          hint={scoredWeeks > 0 ? `${scoredWeeks} week${scoredWeeks !== 1 ? "s" : ""} scored` : "Awaiting review"}
+          tone={totalPoints > 0 ? "accent" : "neutral"}
         />
       </div>
 
@@ -78,11 +87,13 @@ function StatCard({
   icon: Icon,
   label,
   value,
+  hint,
   tone,
 }: {
   icon: typeof Award;
   label: string;
   value: string;
+  hint?: string;
   tone: "accent" | "success" | "neutral";
 }) {
   const toneClass = {
@@ -98,6 +109,7 @@ function StatCard({
       </div>
       <p className="text-xs font-semibold uppercase tracking-wide text-white/40">{label}</p>
       <p className={`mt-1 text-2xl font-bold ${toneClass}`}>{value}</p>
+      {hint && <p className="mt-1 text-xs text-white/35">{hint}</p>}
     </div>
   );
 }

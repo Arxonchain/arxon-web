@@ -31,6 +31,9 @@ export type WeeklyReport = {
   submitted_at: string | null;
   created_at: string;
   updated_at: string;
+  admin_points: number | null;
+  admin_points_note: string | null;
+  admin_points_assigned_at: string | null;
   ambassador_report_items: ReportItem[];
 };
 

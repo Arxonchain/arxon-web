@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CheckCircle2, Clock, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { Award, CheckCircle2, Clock, ExternalLink, Image as ImageIcon } from "lucide-react";
 import { WeeklyReport, formatWeekLabel } from "@/lib/ambassadorPortalApi";
 import { portalCard, portalLabel } from "./portalTheme";
 
@@ -53,8 +53,10 @@ export function ReportHistory({
                 <p className="text-sm font-semibold text-white">{formatWeekLabel(week_start)}</p>
                 <p className="mt-0.5 text-xs text-white/45">
                   {week_start === currentWeek ? "Current week" : "Past week"}
+                  {report?.admin_points != null ? ` · ${report.admin_points} pts` : ""}
                 </p>
               </div>
+              <div className="flex flex-col items-end gap-1">
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${
                   submitted
@@ -65,6 +67,13 @@ export function ReportHistory({
                 {submitted ? <CheckCircle2 size={11} /> : <Clock size={11} />}
                 {submitted ? "Submitted" : report ? "Draft" : "Open"}
               </span>
+              {submitted && report?.admin_points != null && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#a8c3f0]">
+                  <Award size={10} />
+                  Scored
+                </span>
+              )}
+              </div>
             </button>
           );
         })}
@@ -93,6 +102,17 @@ export function ReportPreviewCard({ report }: { report: WeeklyReport }) {
         <p className="mt-4 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-sm leading-relaxed text-white/65">
           {report.summary}
         </p>
+      )}
+      {report.admin_points != null && (
+        <div className="mt-4 rounded-xl border border-[#a8c3f0]/25 bg-[#a8c3f0]/[0.06] p-4">
+          <div className="flex items-center gap-2 text-[#a8c3f0]">
+            <Award size={16} />
+            <p className="text-sm font-semibold">Score: {report.admin_points} points</p>
+          </div>
+          {report.admin_points_note && (
+            <p className="mt-2 text-sm text-white/55">{report.admin_points_note}</p>
+          )}
+        </div>
       )}
       {links.length > 0 && (
         <div className="mt-4">

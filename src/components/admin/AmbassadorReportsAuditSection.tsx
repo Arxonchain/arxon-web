@@ -1,19 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
-  Activity, Calendar, CheckCircle2, ChevronDown, ChevronUp, ClipboardList,
-  ExternalLink, Image as ImageIcon, RefreshCw, Search, Users,
+  Activity, Award, Calendar, CheckCircle2, ChevronDown, ChevronUp, ClipboardList,
+  ExternalLink, Image as ImageIcon, Loader2, RefreshCw, Save, Search, Users,
 } from "lucide-react";
 import { AdminCard, AdminCardHeader, AdminStatBox, adminInputCls } from "@/components/admin/adminUi";
 import { verifyApprovedAdminAccess } from "@/lib/adminAccess";
+import { buildAdminSectionUrl } from "@/lib/adminNav";
 import {
+  assignReportPoints,
   AuditReport,
   groupReportsByWeek,
   ITEM_TYPE_LABELS,
+  loadSignedReportImageUrls,
   matchesReportSearch,
+  MAX_ADMIN_POINTS,
   ReportStatusFilter,
+  totalPointsForReports,
   weekLabel,
 } from "@/lib/ambassadorReportsAdmin";
 
@@ -32,14 +38,112 @@ const TypeBadge = ({ type }: { type: string }) => {
   );
 };
 
+const PointsEditor = ({
+  report,
+  adminUserId,
+  onSaved,
+}: {
+  report: AuditReport;
+  adminUserId: string;
+  onSaved: (reportId: string, points: number | null, note: string | null) => void;
+}) => {
+  const [points, setPoints] = useState(report.admin_points?.toString() ?? "");
+  const [note, setNote] = useState(report.admin_points_note ?? "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setPoints(report.admin_points?.toString() ?? "");
+    setNote(report.admin_points_note ?? "");
+  }, [report.id, report.admin_points, report.admin_points_note]);
+
+  const handleSave = async () => {
+    const trimmed = points.trim();
+    const parsed = trimmed === "" ? null : Number.parseInt(trimmed, 10);
+    if (parsed !== null && (Number.isNaN(parsed) || parsed < 0 || parsed > MAX_ADMIN_POINTS)) {
+      toast.error(`Enter a whole number from 0 to ${MAX_ADMIN_POINTS}, or leave blank to clear`);
+      return;
+    }
+
+    setSaving(true);
+    const { error } = await assignReportPoints(report.id, adminUserId, parsed, note);
+    setSaving(false);
+
+    if (error) {
+      toast.error(error);
+      return;
+    }
+
+    toast.success(parsed !== null ? `Assigned ${parsed} points` : "Points cleared");
+    onSaved(report.id, parsed, note.trim() || null);
+  };
+
+  if (report.status !== "submitted") {
+    return (
+      <p className="text-xs text-white/35">Points can be assigned after the ambassador submits this week.</p>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-[#7c93c3]/20 bg-[#7c93c3]/[0.04] p-4 space-y-3">
+      <div className="flex items-center gap-2">
+        <Award size={14} className="text-[#7c93c3]" />
+        <p className="text-sm font-semibold text-white">Assign weekly points</p>
+      </div>
+      <div className="grid sm:grid-cols-[140px_1fr] gap-3">
+        <div>
+          <label className="text-[11px] uppercase tracking-wide text-white/35 mb-1 block">Points (0–{MAX_ADMIN_POINTS})</label>
+          <input
+            type="number"
+            min={0}
+            max={MAX_ADMIN_POINTS}
+            className={adminInputCls}
+            placeholder="e.g. 100"
+            value={points}
+            onChange={(e) => setPoints(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-[11px] uppercase tracking-wide text-white/35 mb-1 block">Note (optional)</label>
+          <input
+            className={adminInputCls}
+            placeholder="Brief feedback for the ambassador"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          disabled={saving}
+          onClick={handleSave}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#7c93c3]/15 text-[#7c93c3] border border-[#7c93c3]/25 text-xs font-semibold hover:bg-[#7c93c3]/25 disabled:opacity-40"
+        >
+          {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
+          Save points
+        </button>
+        {report.admin_points_assigned_at && (
+          <p className="text-xs text-white/35">
+            Last updated {new Date(report.admin_points_assigned_at).toLocaleString()}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ReportDetailPanel = ({
   report,
   imageUrls,
+  adminUserId,
   onClose,
+  onPointsSaved,
 }: {
   report: AuditReport;
   imageUrls: Record<string, string>;
+  adminUserId: string;
   onClose: () => void;
+  onPointsSaved: (reportId: string, points: number | null, note: string | null) => void;
 }) => {
   const app = report.ambassador_applications;
   const items = [...(report.ambassador_report_items ?? [])].sort((a, b) => a.sort_order - b.sort_order);
@@ -61,8 +165,23 @@ const ReportDetailPanel = ({
             {app?.country ? ` · ${app.country}` : ""}
           </p>
           <p className="text-xs text-white/35 mt-1">{weekLabel(report.week_start)}</p>
+          {app?.id && (
+            <Link
+              to={buildAdminSectionUrl("ambassadors", { tab: "portal", applicant: app.id, queue: "approved" })}
+              className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-[#7c93c3] hover:underline"
+            >
+              <Users size={12} />
+              Open ambassador record
+            </Link>
+          )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          {report.admin_points != null && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#7c93c3]/15 text-[#a8c3f0] border border-[#7c93c3]/25">
+              <Award size={11} />
+              {report.admin_points} pts
+            </span>
+          )}
           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
             report.status === "submitted" ? "bg-emerald-400/10 text-emerald-400" : "bg-amber-400/10 text-amber-300"
           }`}>
@@ -87,6 +206,8 @@ const ReportDetailPanel = ({
             </p>
           </div>
         )}
+
+        <PointsEditor report={report} adminUserId={adminUserId} onSaved={onPointsSaved} />
 
         {links.length > 0 && (
           <div>
@@ -127,11 +248,14 @@ const ReportDetailPanel = ({
                   <div key={item.id} className="rounded-xl border border-white/[0.08] bg-black/20 overflow-hidden">
                     <div className="aspect-[16/10] bg-black/40 flex items-center justify-center">
                       {src ? (
-                        <a href={src} target="_blank" rel="noopener noreferrer">
-                          <img src={src} alt={item.caption ?? "Screenshot"} className="w-full h-full object-cover" />
+                        <a href={src} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                          <img src={src} alt={item.caption ?? "Screenshot"} className="w-full h-full object-cover" loading="lazy" />
                         </a>
                       ) : (
-                        <ImageIcon size={28} className="text-white/20" />
+                        <div className="text-center px-3">
+                          <ImageIcon size={28} className="text-white/20 mx-auto" />
+                          <p className="text-[10px] text-white/25 mt-2">Preview unavailable</p>
+                        </div>
                       )}
                     </div>
                     {item.caption && (
@@ -141,6 +265,15 @@ const ReportDetailPanel = ({
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {report.admin_points_note && (
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-white/35 mb-2">Points note</p>
+            <p className="text-sm text-white/60 rounded-xl border border-white/[0.08] bg-white/[0.02] p-3">
+              {report.admin_points_note}
+            </p>
           </div>
         )}
 
@@ -158,6 +291,7 @@ const AmbassadorReportsAuditSection = () => {
   const [reports, setReports] = useState<AuditReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [adminVerified, setAdminVerified] = useState(false);
+  const [adminUserId, setAdminUserId] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<ReportStatusFilter>("submitted");
   const [weekFilter, setWeekFilter] = useState<string>("all");
@@ -182,6 +316,7 @@ const AmbassadorReportsAuditSection = () => {
       return;
     }
     setAdminVerified(true);
+    setAdminUserId(user.id);
 
     const { data, error } = await supabase
       .from("ambassador_weekly_reports")
@@ -194,6 +329,10 @@ const AmbassadorReportsAuditSection = () => {
         submitted_at,
         created_at,
         updated_at,
+        admin_points,
+        admin_points_note,
+        admin_points_assigned_at,
+        admin_points_assigned_by,
         ambassador_report_items (
           id,
           item_type,
@@ -202,7 +341,8 @@ const AmbassadorReportsAuditSection = () => {
           caption,
           sort_order
         ),
-        application:application_id (
+        ambassador_applications (
+          id,
           full_name,
           x_handle,
           country
@@ -215,10 +355,7 @@ const AmbassadorReportsAuditSection = () => {
       toast.error("Failed to load weekly reports");
       setReports([]);
     } else {
-      setReports(((data ?? []) as Array<Omit<AuditReport, "ambassador_applications"> & { application: AuditReport["ambassador_applications"] }>).map((row) => ({
-        ...row,
-        ambassador_applications: row.application ?? null,
-      })));
+      setReports((data ?? []) as AuditReport[]);
     }
     setLoading(false);
   }, []);
@@ -237,19 +374,26 @@ const AmbassadorReportsAuditSection = () => {
 
     let cancelled = false;
     (async () => {
-      const entries = await Promise.all(
-        paths.map(async (path) => {
-          const { data } = await supabase.storage.from("ambassador-reports").createSignedUrl(path, 3600);
-          return [path, data?.signedUrl ?? ""] as const;
-        }),
-      );
-      if (!cancelled) {
-        setImageUrls(Object.fromEntries(entries.filter(([, url]) => url)));
-      }
+      const urls = await loadSignedReportImageUrls(paths);
+      if (!cancelled) setImageUrls(urls);
     })();
 
     return () => { cancelled = true; };
   }, [reports]);
+
+  const handlePointsSaved = (reportId: string, points: number | null, note: string | null) => {
+    setReports((prev) => prev.map((r) => (
+      r.id === reportId
+        ? {
+            ...r,
+            admin_points: points,
+            admin_points_note: note,
+            admin_points_assigned_at: points !== null ? new Date().toISOString() : null,
+            admin_points_assigned_by: points !== null ? adminUserId : null,
+          }
+        : r
+    )));
+  };
 
   const weekOptions = useMemo(() => {
     const weeks = [...new Set(reports.map((r) => r.week_start))].sort((a, b) => (a < b ? 1 : -1));
@@ -277,6 +421,8 @@ const AmbassadorReportsAuditSection = () => {
     submitted: reports.filter((r) => r.status === "submitted").length,
     drafts: reports.filter((r) => r.status === "draft").length,
     ambassadors: new Set(reports.map((r) => r.arxon_account_id)).size,
+    pointsAssigned: reports.filter((r) => r.admin_points != null).length,
+    totalPoints: totalPointsForReports(reports),
   }), [reports]);
 
   const selectedReport = reports.find((r) => r.id === selectedReportId) ?? null;
@@ -306,7 +452,7 @@ const AmbassadorReportsAuditSection = () => {
         <AdminCardHeader
           icon={ClipboardList}
           title="Ambassador Weekly Reports"
-          subtitle="Audit all submitted deliverables grouped by week"
+          subtitle="Audit submitted deliverables and assign weekly points"
           action={
             <button
               type="button"
@@ -319,11 +465,13 @@ const AmbassadorReportsAuditSection = () => {
             </button>
           }
         />
-        <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-3 border-b border-white/[0.06]">
+        <div className="p-4 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 border-b border-white/[0.06]">
           <AdminStatBox label="SUBMITTED REPORTS" value={stats.submitted} color="text-emerald-400" />
           <AdminStatBox label="DRAFT REPORTS" value={stats.drafts} color="text-amber-300" />
           <AdminStatBox label="TOTAL REPORTS" value={stats.total} color="text-[#7c93c3]" />
           <AdminStatBox label="AMBASSADORS REPORTING" value={stats.ambassadors} color="text-white" />
+          <AdminStatBox label="WEEKS SCORED" value={stats.pointsAssigned} color="text-[#a8c3f0]" />
+          <AdminStatBox label="TOTAL POINTS" value={stats.totalPoints} color="text-[#7c93c3]" />
         </div>
 
         <div className="p-4 flex flex-col lg:flex-row gap-3">
@@ -358,12 +506,14 @@ const AmbassadorReportsAuditSection = () => {
         </div>
       </AdminCard>
 
-      {selectedReport && (
+      {selectedReport && adminUserId && (
         <AnimatePresence>
           <ReportDetailPanel
             report={selectedReport}
             imageUrls={imageUrls}
+            adminUserId={adminUserId}
             onClose={() => setSelectedReportId(null)}
+            onPointsSaved={handlePointsSaved}
           />
         </AnimatePresence>
       )}
@@ -374,14 +524,17 @@ const AmbassadorReportsAuditSection = () => {
         </div>
       ) : grouped.size === 0 ? (
         <AdminCard>
-          <div className="py-16 text-center text-white/35 text-sm">
-            No reports match your filters yet.
+          <div className="py-16 text-center space-y-2">
+            <ClipboardList size={28} className="text-white/15 mx-auto" />
+            <p className="text-white/35 text-sm">No reports match your filters yet.</p>
+            <p className="text-white/25 text-xs">Submitted reports appear here after ambassadors use the portal.</p>
           </div>
         </AdminCard>
       ) : (
         [...grouped.entries()].map(([weekStart, weekReports]) => {
           const expanded = expandedWeeks.has(weekStart);
           const submittedInWeek = weekReports.filter((r) => r.status === "submitted").length;
+          const weekPoints = totalPointsForReports(weekReports);
           return (
             <AdminCard key={weekStart}>
               <button
@@ -396,6 +549,7 @@ const AmbassadorReportsAuditSection = () => {
                   <p className="text-base font-bold text-white">{weekLabel(weekStart)}</p>
                   <p className="text-xs text-white/40 mt-0.5">
                     {weekReports.length} report{weekReports.length !== 1 ? "s" : ""} · {submittedInWeek} submitted
+                    {weekPoints > 0 ? ` · ${weekPoints} pts assigned` : ""}
                   </p>
                 </div>
                 {expanded ? <ChevronUp size={18} className="text-white/40" /> : <ChevronDown size={18} className="text-white/40" />}
@@ -410,11 +564,12 @@ const AmbassadorReportsAuditSection = () => {
                     className="overflow-hidden border-t border-white/[0.06]"
                   >
                     <div className="overflow-x-auto">
-                      <table className="w-full min-w-[900px] text-sm">
+                      <table className="w-full min-w-[980px] text-sm">
                         <thead>
                           <tr className="border-b border-white/[0.06] bg-white/[0.02] text-left text-[11px] uppercase tracking-wide text-white/40">
                             <th className="px-4 py-3 font-semibold">Ambassador</th>
                             <th className="px-4 py-3 font-semibold">Status</th>
+                            <th className="px-4 py-3 font-semibold">Points</th>
                             <th className="px-4 py-3 font-semibold">Links</th>
                             <th className="px-4 py-3 font-semibold">Screenshots</th>
                             <th className="px-4 py-3 font-semibold">Submitted</th>
@@ -436,7 +591,7 @@ const AmbassadorReportsAuditSection = () => {
                                     </div>
                                     <div>
                                       <p className="font-semibold text-white">{app?.full_name ?? report.arxon_account_id}</p>
-                                      <p className="text-xs text-white/40">{app?.x_handle} · {report.arxon_account_id}</p>
+                                      <p className="text-xs text-white/40">{app?.x_handle ?? "—"} · {report.arxon_account_id}</p>
                                     </div>
                                   </div>
                                 </td>
@@ -449,6 +604,16 @@ const AmbassadorReportsAuditSection = () => {
                                     {report.status === "submitted" && <CheckCircle2 size={11} />}
                                     {report.status}
                                   </span>
+                                </td>
+                                <td className="px-4 py-4">
+                                  {report.admin_points != null ? (
+                                    <span className="inline-flex items-center gap-1 font-semibold text-[#a8c3f0]">
+                                      <Award size={12} />
+                                      {report.admin_points}
+                                    </span>
+                                  ) : (
+                                    <span className="text-white/30 text-xs">Not scored</span>
+                                  )}
                                 </td>
                                 <td className="px-4 py-4 font-semibold text-[#7c93c3]">{linkCount}</td>
                                 <td className="px-4 py-4 font-semibold text-sky-300">{imageCount}</td>
@@ -464,7 +629,7 @@ const AmbassadorReportsAuditSection = () => {
                                     className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#7c93c3]/10 text-[#7c93c3] border border-[#7c93c3]/20 text-xs font-semibold hover:bg-[#7c93c3]/20"
                                   >
                                     <Users size={13} />
-                                    Review full report
+                                    Review & score
                                   </button>
                                 </td>
                               </tr>

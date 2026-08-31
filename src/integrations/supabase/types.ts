@@ -105,6 +105,10 @@ export type Database = {
       }
       ambassador_weekly_reports: {
         Row: {
+          admin_points: number | null
+          admin_points_assigned_at: string | null
+          admin_points_assigned_by: string | null
+          admin_points_note: string | null
           application_id: string
           arxon_account_id: string
           created_at: string
@@ -116,6 +120,10 @@ export type Database = {
           week_start: string
         }
         Insert: {
+          admin_points?: number | null
+          admin_points_assigned_at?: string | null
+          admin_points_assigned_by?: string | null
+          admin_points_note?: string | null
           application_id: string
           arxon_account_id: string
           created_at?: string
@@ -127,6 +135,10 @@ export type Database = {
           week_start: string
         }
         Update: {
+          admin_points?: number | null
+          admin_points_assigned_at?: string | null
+          admin_points_assigned_by?: string | null
+          admin_points_note?: string | null
           application_id?: string
           arxon_account_id?: string
           created_at?: string
