@@ -107,7 +107,7 @@ const Litepaper = () => {
           <SectionHead icon={CheckCircle2} id="SECTION_02" label="WHAT_WE_BUILT" title="What We've Already Built"/>
           <div className="space-y-2">
             {[
-              {id:"B-001", title:"A Live Sovereign Blockchain", desc:"Running BABE/GRANDPA consensus with a new block every six seconds in multi-node testnet configuration."},
+              {id:"B-001", title:"A Live Sovereign Blockchain", desc:"Running AURA + GRANDPA consensus with a new block every six seconds in multi-node testnet configuration."},
               {id:"B-002", title:"Unique Chain ID & ARX Token", desc:"Fixed supply with its own unique identity, no inflation."},
               {id:"B-003", title:"Full Ethereum Compatibility", desc:"Any smart contract written for Ethereum deploys on Arxon without changes. MetaMask connects out of the box."},
               {id:"B-004", title:"Selective Privacy System", desc:"Four independent privacy flags working in any combination, eight distinct privacy modes."},
