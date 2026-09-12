@@ -15,7 +15,7 @@ const MiningWaitlist = () => {
   const navigate = useNavigate();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const counter = useCountUp({ end: 14, duration: 2500, suffix: "k+", decimals: 0 });
+  const counter = useCountUp({ end: 25, duration: 2500, suffix: "k+", decimals: 0 });
   const countriesCounter = useCountUp({ end: 30, duration: 2000, suffix: "+" });
   const [activeVideo, setActiveVideo] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);

@@ -112,7 +112,7 @@ const Litepaper = () => {
               {id:"B-003", title:"Full Ethereum Compatibility", desc:"Any smart contract written for Ethereum deploys on Arxon without changes. MetaMask connects out of the box."},
               {id:"B-004", title:"Selective Privacy System", desc:"Four independent privacy flags working in any combination, eight distinct privacy modes."},
               {id:"B-005", title:"Private Transaction Receipts", desc:"Tamper-proof records with single-use disclosure codes for third-party verification."},
-              {id:"B-006", title:"ARX-P Mining System", desc:"14k+ community of real miners earning points before mainnet, convertible to ARX tokens at launch."},
+              {id:"B-006", title:"ARX-P Mining System", desc:"25k+ community of real miners earning points before mainnet, convertible to ARX tokens at launch."},
             ].map((item,i)=>(
               <motion.div key={i} initial={{opacity:0,y:8}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:i*0.06}}
                 className="flex items-start gap-3 py-3.5 px-4 border border-white/[0.08] rounded-xl bg-[#0a0a0d] hover:border-[#a8c3f0]/15 transition-colors group">
@@ -173,7 +173,7 @@ const Litepaper = () => {
           <SectionHead icon={ArrowRight} id="SECTION_04" label="ROADMAP" title="Roadmap"/>
           <div className="space-y-4">
             {[
-              { status:"COMPLETE", variant:"green", items:["Sovereign Layer-1 blockchain in multi-node testnet","ARX native token with fixed supply","Full EVM compatibility, MetaMask, Solidity, all Ethereum tooling","Selective privacy system, four independent per-transaction flags","Private Transaction Receipt system with disclosure codes","ARX-P mining system, 14k+ community","On-chain ARX claim pallet for unlimited miners"] },
+              { status:"COMPLETE", variant:"green", items:["Sovereign Layer-1 blockchain in multi-node testnet","ARX native token with fixed supply","Full EVM compatibility, MetaMask, Solidity, all Ethereum tooling","Selective privacy system, four independent per-transaction flags","Private Transaction Receipt system with disclosure codes","ARX-P mining system, 25k+ community","On-chain ARX claim pallet for unlimited miners"] },
               { status:"IN BUILDING PROCESS", variant:"amber", items:["Public testnet launch, anyone can connect and transact","Block explorer, browse all Arxon transactions publicly","Testnet faucet for developers","Validator expansion","Anti-rug protection registry","Developer documentation and SDK release","MetaMask official chain registration","Halo2 zero-knowledge proof integration","Cryptographic enforcement of all four privacy flags","ZK voting Phase 1 — private on-chain votes","Privacy-preserving DeFi primitives","Third-party ZK circuit security audit"] },
               { status:"AHEAD — ECOSYSTEM", variant:"blue", items:["ZK voting Phase 2, national-scale batch proof elections","Remittance corridor integrations for Nigeria and diaspora","Mobile wallet with built-in privacy controls","Cross-chain bridges to major ecosystems","Mainnet launch with ARX-P conversion"] },
             ].map((phase,i)=>{
