@@ -94,7 +94,7 @@ const PrivacyPolicy = () => {
           <p className="text-muted-foreground mb-2">If you have any questions about this Privacy Policy, please contact us at:</p>
           <ul className="space-y-1 text-muted-foreground">
             <li><span className="text-foreground font-medium">Email:</span>{" "}
-              <a href="mailto:arxonchain@yahoo.com" className="text-[#7c93c3] hover:underline">arxonchain@yahoo.com</a>
+              <a href="mailto:team@arxon.io" className="text-[#7c93c3] hover:underline">team@arxon.io</a>
             </li>
             <li><span className="text-foreground font-medium">Website:</span>{" "}
               <a href="https://arxon.io" target="_blank" rel="noopener noreferrer" className="text-[#7c93c3] hover:underline">https://arxon.io</a>

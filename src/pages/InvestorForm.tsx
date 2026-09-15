@@ -94,6 +94,25 @@ export default function InvestorForm() {
         additional_notes: validated.additional_notes || null,
       }]);
       if (error) throw error;
+
+      const { error: notifyError } = await supabase.functions.invoke("notify-investor-submission", {
+        body: {
+          full_name: validated.full_name,
+          email: validated.email,
+          x_username: validated.x_username || null,
+          country: validated.country,
+          company: validated.company || null,
+          investment_range: validated.investment_range,
+          investment_timeline: validated.investment_timeline,
+          area_of_interest: validated.area_of_interest,
+          linkedin_profile: validated.linkedin_profile || null,
+          additional_notes: validated.additional_notes || null,
+        },
+      });
+      if (notifyError) {
+        console.error("Failed to send investor notification:", notifyError);
+      }
+
       toast({ title: "Success!", description: "Your investor inquiry has been submitted. We'll be in touch soon." });
       navigate("/");
     } catch (error) {

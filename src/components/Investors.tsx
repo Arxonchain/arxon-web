@@ -42,7 +42,7 @@ const Investors = () => {
     { q:"How does privacy work?", a:"All transactions and data are encrypted by choice, ensuring complete confidentiality based on user's consent while maintaining the security benefits of blockchain technology." },
     { q:"When is the private voting dApp coming?", a:"The private voting dApp is currently in development and will be released following the mining phase. Stay tuned to our community channels for updates." },
     { q:"Is Arxon open source?", a:"Yes, Arxon is committed to transparency and will be open source. The codebase will be available for community review and contribution as we progress through development." },
-    { q:"Can I invest in the seed round?", a:"Yes, we're raising $2.5M in our pre-seed round. Email us at arxonchain@yahoo.com or apply directly through our investor form.", hasLink:true },
+    { q:"Can I invest in the seed round?", a:"Yes, we're raising $2.5M in our pre-seed round. Email us at team@arxon.io or apply directly through our investor form.", hasLink:true },
     { q:"How do I stay updated?", a:"Join our Telegram channel, Discord, and follow us on X for the latest announcements and mining updates." },
   ];
 
@@ -130,9 +130,9 @@ const Investors = () => {
                   style={{background:"linear-gradient(135deg,#a8c3f0,#a8b8d8)"}}>
                   <span>Investors Form</span><ArrowRight size={14}/>
                 </motion.button>
-                <motion.a href="mailto:arxonchain@yahoo.com" whileHover={{scale:1.02}}
+                <motion.a href="mailto:team@arxon.io" whileHover={{scale:1.02}}
                   className="flex items-center gap-2 px-6 py-3.5 rounded-xl font-mono text-sm text-[#a8c3f0] border border-[#a8c3f0]/25 hover:bg-[#a8c3f0]/5 transition-all">
-                  <Mail size={14}/> arxonchain@yahoo.com
+                  <Mail size={14}/> team@arxon.io
                 </motion.a>
               </div>
               <div className="mt-8 flex items-center justify-center gap-4">
