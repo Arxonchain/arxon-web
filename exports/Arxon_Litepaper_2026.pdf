@@ -1,0 +1,1449 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 356
+>>
+stream
+0.200025 w
+0 G
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+205.3449999999999989 785.8899999999999864 Td
+(LITEPAPER_2026 · INFORMATIONAL_ONLY) Tj
+ET
+BT
+/F2 22 Tf
+25.2999999999999972 TL
+0.067 g
+56. 737.8899999999999864 Td
+(Sovereign Privacy Blockchain) Tj
+ET
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 709.8899999999999864 Td
+(for the Unbanked World) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 809
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(Table of Contents) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 757.8899999999999864 Td
+(01. Introduction) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(02. The Problem) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 715.8899999999999864 Td
+(03. What We've Already Built) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 694.8899999999999864 Td
+(04. What We Are Building) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 673.8899999999999864 Td
+(05. Roadmap) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 652.8899999999999864 Td
+(06. Why Arxon) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 631.8899999999999864 Td
+(07. Built For the World) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 1738
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(Introduction) Tj
+ET
+BT
+/F2 14 Tf
+16.0999999999999979 TL
+0.067 g
+56. 749.8899999999999864 Td
+(Sovereign Privacy Blockchain) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 721.8899999999999864 Td
+(for the Unbanked World) Tj
+ET
+BT
+/F3 11 Tf
+12.6499999999999986 TL
+0.067 g
+171.5249999999999204 697.8899999999999864 Td
+("Financial sovereignty is not a privilege. It is a right.") Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 672.8899999999999864 Td
+(This litepaper outlines Arxon's mission, the technology we have shipped, and what comes next.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 657.8899999999999864 Td
+(Arxon is a sovereign Layer 1 blockchain built for financial privacy and access, designed first for the) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 642.8899999999999864 Td
+(unbanked and underbanked populations of Africa, Asia, and Latin America.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 621.8899999999999864 Td
+(Bitcoin proved money without banks was possible. Ethereum proved programmable money was) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 606.8899999999999864 Td
+(possible. Arxon is building the next step: private, accessible, fair money for the people who need it) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 591.8899999999999864 Td
+(most.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 570.8899999999999864 Td
+(Use the chapter navigation to read at your own pace. Each section covers a distinct part of the) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 555.8899999999999864 Td
+(Arxon story, from the problem we solve to the roadmap ahead.) Tj
+ET
+endstream
+endobj
+9 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 10 0 R
+>>
+endobj
+10 0 obj
+<<
+/Length 4900
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(The Problem) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+56. 757.8899999999999864 Td
+(SECTION_01 · THE_PROBLEM) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(The global financial system was not built for everyone. Despite two generations of cryptocurrency innovation, over 1.4) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 721.8899999999999864 Td
+(billion adults worldwide remain without access to basic financial services. Blockchain promised to change this. In practice,) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 706.8899999999999864 Td
+(the benefits have mostly flowed to those who were already financially included.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 685.8899999999999864 Td
+(For hundreds of millions of people, the choice is not between crypto and traditional banking. It is) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 670.8899999999999864 Td
+(between cash and nothing. Public blockchains offer an alternative, but they introduce a different) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 655.8899999999999864 Td
+(kind of exposure: every balance, every payment, and every counterparty is permanently visible on a) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 640.8899999999999864 Td
+(public ledger.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 611.8899999999999864 Td
+(P-001 — Financial Exclusion) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 591.8899999999999864 Td
+(Hundreds of millions in Africa, Asia, and Latin America conduct their entire financial) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 576.8899999999999864 Td
+(lives in cash. Without bank accounts, they cannot save securely, access credit, or) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 561.8899999999999864 Td
+(participate in the digital economy.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 532.8899999999999864 Td
+(P-002 — Financial Surveillance) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 512.8899999999999864 Td
+(Public blockchains solve financial exclusion but introduce total transparency. Your) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 497.8899999999999864 Td
+(wallet balance, every transaction, and every person you've ever paid is permanently) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 482.8899999999999864 Td
+(visible to anyone on earth.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 453.8899999999999864 Td
+(P-003 — The Cost of Sending Money Home) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 433.8899999999999864 Td
+(The Nigerian diaspora alone sends over $20 billion home yearly. At current fees of) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 418.8899999999999864 Td
+(6% to 8%, over $1.5 billion is extracted from the world's poorest families every single) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 403.8899999999999864 Td
+(year.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 374.8899999999999864 Td
+(P-004 — The Compliance Cost of Total Privacy) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 354.8899999999999864 Td
+(Privacy first chains built on absolute anonymity create a structural conflict with) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 339.8899999999999864 Td
+(regulators and exchanges. Total opacity is treated as unacceptable risk, leading to) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 324.8899999999999864 Td
+(delistings, closed gateways, and legitimate users locked out. Arxon rejects the all or) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 309.8899999999999864 Td
+(nothing model. With privacy by choice, each transaction sets four independent flags) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 294.8899999999999864 Td
+(for sender, recipient, amount, and balance in any combination across eight privacy) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 279.8899999999999864 Td
+(modes. Stay private by default, prove compliance when required, and keep the) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 264.8899999999999864 Td
+(network usable in the real world.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 243.8899999999999864 Td
+(These are not abstract market failures. They are daily realities for families sending remittances,) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 228.8899999999999864 Td
+(workers paid in cash, and communities locked out of credit. A blockchain built for the unbanked) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 213.8899999999999864 Td
+(world must address exclusion and surveillance together, not trade one for the other or sacrifice) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 198.8899999999999864 Td
+(access to privacy maximalism.) Tj
+ET
+endstream
+endobj
+11 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 12 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 2864
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(What We've Already Built) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+56. 757.8899999999999864 Td
+(SECTION_02 · WHAT_WE_BUILT) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(Arxon is not a whitepaper promise. The core network is live in a multi node testnet, with real miners, real transactions, and) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 721.8899999999999864 Td
+(real privacy controls already in operation. Everything listed here exists today.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 700.8899999999999864 Td
+(• B-001 — A Live Sovereign Blockchain: Running AURA + GRANDPA consensus with a new block) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 685.8899999999999864 Td
+(every six seconds in multi node testnet configuration.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 664.8899999999999864 Td
+(• B-002 — Unique Chain ID & ARX Token: Fixed supply with its own unique identity, no inflation.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 643.8899999999999864 Td
+(• B-003 — Full Ethereum Compatibility: Any smart contract written for Ethereum deploys on Arxon) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 628.8899999999999864 Td
+(without changes. MetaMask connects out of the box.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 607.8899999999999864 Td
+(• B-004 — Selective Privacy System: Four independent privacy flags working in any combination,) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 592.8899999999999864 Td
+(eight distinct privacy modes.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 571.8899999999999864 Td
+(• B-005 — Private Transaction Receipts: Tamper proof records with single use disclosure codes for) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 556.8899999999999864 Td
+(third party verification.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 535.8899999999999864 Td
+(• B-006 — ARX P Mining System: 25k+ community of real miners earning points before mainnet,) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 520.8899999999999864 Td
+(convertible to ARX tokens at launch.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 499.8899999999999864 Td
+(AURA + GRANDPA gives Arxon fast, deterministic finality suitable for everyday payments. EVM) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 484.8899999999999864 Td
+(compatibility means developers can deploy existing Solidity contracts without rewriting tooling. The) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 469.8899999999999864 Td
+(selective privacy system and private receipts are already usable on testnet, not scheduled for a) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 454.8899999999999864 Td
+(distant milestone.) Tj
+ET
+endstream
+endobj
+13 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 14 0 R
+>>
+endobj
+14 0 obj
+<<
+/Length 3055
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(What We Are Building) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+56. 757.8899999999999864 Td
+(SECTION_03 · WHAT_WE_BUILD) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(The foundation is in place. The next phase adds cryptographic guarantees that make privacy mathematically enforced) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 721.8899999999999864 Td
+(rather than conventionally hidden, and opens the network to applications that require both confidentiality and verifiability.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 692.8899999999999864 Td
+(Zero Knowledge Cryptographic Privacy) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 672.8899999999999864 Td
+(Halo2 zero knowledge proofs make hidden information impossible to reveal, even) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 657.8899999999999864 Td
+(with complete access to the blockchain's raw data. Halo2 requires no trusted setup.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 642.8899999999999864 Td
+(The security is mathematical, not ceremonial.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 613.8899999999999864 Td
+(On Chain Private Voting) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 593.8899999999999864 Td
+(A voting system where coercion is cryptographically impossible. Voters prove) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 578.8899999999999864 Td
+(eligibility without revealing identity. Results are tallied through Layer 2 ZK batch) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 563.8899999999999864 Td
+(proofs. One billion votes across 10,000 batches settles on chain in seconds.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 g
+56. 534.8899999999999864 Td
+(Developer Ecosystem) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 514.8899999999999864 Td
+(• Privacy preserving DeFi: trading, lending with confidential amounts) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 493.8899999999999864 Td
+(• Private remittance applications for diaspora markets) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 472.8899999999999864 Td
+(• Confidential payroll systems with private salary information) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 451.8899999999999864 Td
+(• ZK voting applications for communities, DAOs, and governments) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 430.8899999999999864 Td
+(• Private NFT marketplaces and confidential identity systems) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 409.8899999999999864 Td
+(These capabilities extend what Arxon already ships on testnet. Developers building on Arxon get) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 394.8899999999999864 Td
+(Ethereum compatible tooling today, with a clear path to ZK enforced privacy and voting as those) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 379.8899999999999864 Td
+(integrations reach production readiness.) Tj
+ET
+endstream
+endobj
+15 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 16 0 R
+>>
+endobj
+16 0 obj
+<<
+/Length 3913
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(Roadmap) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+56. 757.8899999999999864 Td
+(SECTION_04 · ROADMAP) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(Arxon's roadmap reflects what is already complete, what is actively in development, and what follows once the public) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 721.8899999999999864 Td
+(testnet and ZK integrations are production ready. Timelines may shift as security audits and community feedback land.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 g
+56. 692.8899999999999864 Td
+(COMPLETE) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 672.8899999999999864 Td
+(• Sovereign Layer 1 blockchain in multi node testnet) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 651.8899999999999864 Td
+(• ARX native token with fixed supply) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 630.8899999999999864 Td
+(• Full EVM compatibility, MetaMask, Solidity, all Ethereum tooling) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 609.8899999999999864 Td
+(• Selective privacy system, four independent per transaction flags) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 588.8899999999999864 Td
+(• Private Transaction Receipt system with disclosure codes) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 567.8899999999999864 Td
+(• ARX P mining system, 25k+ community) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 546.8899999999999864 Td
+(• On chain ARX claim pallet for unlimited miners) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 g
+56. 517.8899999999999864 Td
+(IN BUILDING PROCESS) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 497.8899999999999864 Td
+(• Public testnet launch, anyone can connect and transact) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 476.8899999999999864 Td
+(• Block explorer, browse all Arxon transactions publicly) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 455.8899999999999864 Td
+(• Testnet faucet for developers) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 434.8899999999999864 Td
+(• Validator expansion) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 413.8899999999999864 Td
+(• Anti rug protection registry) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 392.8899999999999864 Td
+(• Developer documentation and SDK release) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 371.8899999999999864 Td
+(• MetaMask official chain registration) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 350.8899999999999864 Td
+(• Halo2 zero knowledge proof integration) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 329.8899999999999864 Td
+(• Cryptographic enforcement of all four privacy flags) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 308.8899999999999864 Td
+(• ZK voting Phase 1: private on chain votes) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 287.8899999999999864 Td
+(• Privacy preserving DeFi primitives) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 266.8899999999999864 Td
+(• Third party ZK circuit security audit) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0.067 g
+56. 237.8899999999999864 Td
+(AHEAD: ECOSYSTEM) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 217.8899999999999864 Td
+(• ZK voting Phase 2, national scale batch proof elections) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 196.8899999999999864 Td
+(• Remittance corridor integrations for Nigeria and diaspora) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 175.8899999999999864 Td
+(• Mobile wallet with built in privacy controls) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 154.8899999999999864 Td
+(• Cross chain bridges to major ecosystems) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 133.8899999999999864 Td
+(• Mainnet launch with ARX P conversion) Tj
+ET
+endstream
+endobj
+17 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 18 0 R
+>>
+endobj
+18 0 obj
+<<
+/Length 2384
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(Why Arxon) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+56. 757.8899999999999864 Td
+(SECTION_05 · WHY_ARXON) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 736.8899999999999864 Td
+(Arxon exists because the combination of financial exclusion and financial surveillance creates a gap no existing chain) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 721.8899999999999864 Td
+(adequately addresses. Most public networks optimize for traders and developers in already banked markets. Privacy) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 706.8899999999999864 Td
+(maximalist chains trade surveillance for total anonymity, only to face exchange delistings and blocked onramps. Arxon) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 691.8899999999999864 Td
+(optimizes for people who need privacy and access at the same time through privacy by choice.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 662.8899999999999864 Td
+(The problem is real and the users are real) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 642.8899999999999864 Td
+(Financial exclusion affects hundreds of millions right now. The diaspora paying 7%) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 627.8899999999999864 Td
+(fees to send money home is real. The voter who fears coercion is real. Arxon is built) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 612.8899999999999864 Td
+(for these people.) Tj
+ET
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.067 g
+56. 583.8899999999999864 Td
+(The technology is original) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 563.8899999999999864 Td
+(Selective transaction privacy does not exist on any other production blockchain.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 548.8899999999999864 Td
+(This is not an incremental improvement. It is a new capability.) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 527.8899999999999864 Td
+(With 25k+ active miners already participating before mainnet, Arxon also has a community that) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 512.8899999999999864 Td
+(matches its mission: people earning their place on the network before launch, not speculating on a) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+56. 497.8899999999999864 Td
+(distant token event.) Tj
+ET
+endstream
+endobj
+19 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 20 0 R
+>>
+endobj
+20 0 obj
+<<
+/Length 1287
+>>
+stream
+0.200025 w
+0 G
+BT
+/F2 16 Tf
+18.3999999999999986 TL
+0.067 g
+56. 777.8899999999999864 Td
+(Built For the World) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+150.5699999999999363 757.8899999999999864 Td
+(Bitcoin proved money without banks was possible. Ethereum) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+151.2849999999999397 742.8899999999999864 Td
+(proved programmable money was possible. Arxon is proving) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+149.5799999999998988 727.8899999999999864 Td
+(that private, accessible, fair money is possible, and building it) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.067 g
+219.8149999999999977 712.8899999999999864 Td
+(for the people who need it most.) Tj
+ET
+BT
+/F4 13 Tf
+14.9499999999999993 TL
+0.067 g
+203.5199999999999818 683.8899999999999864 Td
+("Arxon is Built For the World.") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+150.6249999999999147 650.8899999999999864 Td
+(DISCLAIMER: This litepaper is for informational purposes only. It does not) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+165.7449999999999193 635.8899999999999864 Td
+(constitute financial advice or an offer of any kind. Arxon is in active) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.4 g
+270.8199999999999932 620.8899999999999864 Td
+(development.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R ]
+/Count 9
+>>
+endobj
+21 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+22 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+23 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+24 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+25 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+26 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+27 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+28 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+29 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+30 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+31 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+32 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+33 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+34 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 21 0 R
+/F2 22 0 R
+/F3 23 0 R
+/F4 24 0 R
+/F5 25 0 R
+/F6 26 0 R
+/F7 27 0 R
+/F8 28 0 R
+/F9 29 0 R
+/F10 30 0 R
+/F11 31 0 R
+/F12 32 0 R
+/F13 33 0 R
+/F14 34 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+35 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260919005221+01'00')
+>>
+endobj
+36 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 37
+0000000000 65535 f 
+0000023037 00000 n 
+0000024912 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000000559 00000 n 
+0000000696 00000 n 
+0000001556 00000 n 
+0000001693 00000 n 
+0000003483 00000 n 
+0000003621 00000 n 
+0000008574 00000 n 
+0000008713 00000 n 
+0000011630 00000 n 
+0000011769 00000 n 
+0000014877 00000 n 
+0000015016 00000 n 
+0000018982 00000 n 
+0000019121 00000 n 
+0000021558 00000 n 
+0000021697 00000 n 
+0000023147 00000 n 
+0000023273 00000 n 
+0000023404 00000 n 
+0000023538 00000 n 
+0000023676 00000 n 
+0000023800 00000 n 
+0000023929 00000 n 
+0000024061 00000 n 
+0000024197 00000 n 
+0000024325 00000 n 
+0000024452 00000 n 
+0000024581 00000 n 
+0000024714 00000 n 
+0000024816 00000 n 
+0000025165 00000 n 
+0000025251 00000 n 
+trailer
+<<
+/Size 37
+/Root 36 0 R
+/Info 35 0 R
+/ID [ <D2E8280E2F65F67312458D20B70A44A4> <D2E8280E2F65F67312458D20B70A44A4> ]
+>>
+startxref
+25355
+%%EOF

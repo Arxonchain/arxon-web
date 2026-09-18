@@ -9,6 +9,7 @@ import {
   Coins,
   Lock,
   Vote,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -131,11 +132,17 @@ export const LITEPAPER_CHAPTERS: LitepaperChapter[] = [
             title: "The Cost of Sending Money Home",
             desc: "The Nigerian diaspora alone sends over $20 billion home yearly. At current fees of 6% to 8%, over $1.5 billion is extracted from the world's poorest families every single year.",
           },
+          {
+            icon: ShieldCheck,
+            id: "P-004",
+            title: "The Compliance Cost of Total Privacy",
+            desc: "Privacy first chains built on absolute anonymity create a structural conflict with regulators and exchanges. Total opacity is treated as unacceptable risk, leading to delistings, closed gateways, and legitimate users locked out. Arxon rejects the all or nothing model. With privacy by choice, each transaction sets four independent flags for sender, recipient, amount, and balance in any combination across eight privacy modes. Stay private by default, prove compliance when required, and keep the network usable in the real world.",
+          },
         ],
       },
       {
         type: "paragraph",
-        text: "These are not abstract market failures. They are daily realities for families sending remittances, workers paid in cash, and communities locked out of credit. A blockchain built for the unbanked world must address exclusion and surveillance together, not trade one for the other.",
+        text: "These are not abstract market failures. They are daily realities for families sending remittances, workers paid in cash, and communities locked out of credit. A blockchain built for the unbanked world must address exclusion and surveillance together, not trade one for the other or sacrifice access to privacy maximalism.",
       },
     ],
   },
@@ -311,7 +318,7 @@ export const LITEPAPER_CHAPTERS: LitepaperChapter[] = [
     blocks: [
       {
         type: "paragraph",
-        text: "Arxon exists because the combination of financial exclusion and financial surveillance creates a gap no existing chain adequately addresses. Most networks optimize for traders and developers in already banked markets. Arxon optimizes for people who need privacy and access at the same time.",
+        text: "Arxon exists because the combination of financial exclusion and financial surveillance creates a gap no existing chain adequately addresses. Most public networks optimize for traders and developers in already banked markets. Privacy maximalist chains trade surveillance for total anonymity, only to face exchange delistings and blocked onramps. Arxon optimizes for people who need privacy and access at the same time through privacy by choice.",
       },
       {
         type: "why-cards",
