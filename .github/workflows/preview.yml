@@ -34,12 +34,11 @@ jobs:
 
       - name: Deploy preview to Cloudflare Pages
         id: cf_deploy
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: arxon-web
-          directory: dist
+          command: pages deploy dist --project-name=arxon-web
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment preview URL on PR
@@ -50,5 +49,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 🚀 Preview Deployed\n\n**URL:** ${{ steps.cf_deploy.outputs.url }}\n\nThis preview will be updated with each new commit to this PR.`
+              body: `## 🚀 Preview Deployed\n\n**URL:** ${{ steps.cf_deploy.outputs.pages-deployment-alias-url || steps.cf_deploy.outputs.deployment-url }}\n\nThis preview will be updated with each new commit to this PR.`
             })
